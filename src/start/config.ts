@@ -30,7 +30,7 @@ module.exports = (app: Express) => {
   app.use(express.static(path.join(path.resolve(), "client", "dist")))
 
   // Development Logging
-  if (process.env.NODE_ENV === "development") app.use(morgan("dev"));
+  app.use(morgan("dev"));
 
   // Set security HTTP headers
   app.use(
@@ -50,9 +50,9 @@ module.exports = (app: Express) => {
   const limiter = rateLimit({
     windowMs: ms("15m"),
     limit: 100,
-    message: "درخواست های این IP بسیار زیاد است، لطفاً یک ساعت دیگر دوباره امتحان کنید!",
+    message: "درخواست های IP شما بسیار زیاد است، لطفاً یک ساعت دیگر دوباره امتحان کنید!",
   });
-  app.use("/api", limiter);
+  if(process.env.NODE === "production") app.use("/api", limiter);
 
   // Request's Body parser
   app.use(express.json({ limit: "5mb" }));
