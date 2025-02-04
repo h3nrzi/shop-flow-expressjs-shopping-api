@@ -3,106 +3,27 @@ html
   head
     meta(charset="UTF-8")
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
-    title= title
+    title= "Shop Flow"
     link(
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
       rel="stylesheet"
       integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
       crossorigin="anonymous")
     link(rel="stylesheet" href="css/style.css")
+
+  //- Include the mixin files
+  include mixins/productForm
+  include mixins/productTable
+
   body
     main.container.my-2.py-2.border.rounded
-      //////////////////- FORM
-      h1.h1.text-center.m-5 ایجاد کردن محصول جدید
-      form.form
-        div
-          label(for="name") Name:
-          input#name.form-control(type="text" name="name" dir="rtl" required)
-        div
-          label(for="description") Description:
-          textarea#description.form-control(name="description" dir="rtl" rows="5" required)
-
-        div
-          label(for="image") Image:
-          input.form-control(type="text" id="image" name="image" required)
-        div
-          label(for="images") Images:
-          input.form-control(type="text" id="images" name="images")
-
-        div
-          label(for="countInStock") CountInStock:
-          input.form-control(type="number" id="countInStock" name="countInStock")
-        div.form-check
-          label.form-check-label(for="isAvailable") IsAvailable
-          input.form-check-input(type="checkbox" id="isAvailable" name="isAvailable")
-
-        div
-          label(for="category") Category:
-          input.form-control(type="text" id="category" name="category" required)
-        div
-          label(for="brand") Brand:
-          input.form-control(type="text" id="brand" name="brand" required)
-
-        div
-          label(for="rating") Rating:
-          input.form-control(type="number" id="rating" name="rating")
-        div
-          label(for="numReviews") NumReviews:
-          input.form-control(type="number" id="numReviews" name="numReviews")
-
-        div
-          label(for="price") Price:
-          input.form-control(type="number" id="price" name="price" required)
-        div
-          label(for="discount") Discount:
-          input.form-control(type="number" id="discount" name="discount")
-
-        button.btn.btn-primary.mt-3(type="submit") Submit
-
-      //////////////////- TABLE OF PRODUCTS
+      +productForm()
       if products.length > 0
-        h1.h1.text-center.m-5 محصولات ساخته شده
-        div.table-responsive
-          table.table.table-sm.table-bordered.fs-6
-            thead
-              tr.text-center
-                th(scope="col") #
-                th(scope="col" style="padding: 0 200px") Name
-                th(scope="col" style="padding: 0 200px") Slug
-                th(scope="col" style="padding: 0 200px") Description
-                th(scope="col" style="padding: 0 200px") Image
-                th(scope="col") Images
-                th(scope="col") CountInStock
-                th(scope="col") IsAvailable
-                th(scope="col") Category
-                th(scope="col") Brand
-                th(scope="col") Rating
-                th(scope="col") NumReviews
-                th(scope="col") Price
-                th(scope="col") Discount
-                th(scope="col") DiscountedPrice
-            tbody
-            each p in products
-              tr
-                td: button.btn.btn-danger(data-id=p.id) Delete
-                td(dir="rtl")=p.name
-                td(dir="rtl")=p.slug
-                td(dir="rtl")=p.description
-                td=p.image
-                td=p.images.join("\n")
-                td=p.countInStock
-                td=p.isAvailable
-                td=p.category
-                td=p.brand
-                td=p.rating
-                td=p.numReviews
-                td=p.price
-                td=p.discount + "%"
-                td=p.discountedPrice
+        +productTable(products)
 
       script(src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js")
       script(
         src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous")
-      script(src="js/index.js")
+      script(src="js/index.js" type="module")
