@@ -7,6 +7,7 @@ import helmet from "helmet";
 import mongoSanitize from "express-mongo-sanitize";
 import hpp from "hpp";
 const cookieParser = require("cookie-parser");
+import cors from "cors";
 import swaggerUi from "swagger-ui-express";
 import swaggerSpec from "../swagger/config";
 import securityMiddleware from "../middlewares/security";
@@ -45,6 +46,19 @@ module.exports = (app: Express) => {
       },
     }),
   );
+
+  // CORS Configuration
+  const corsOptions = {
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:3000",
+      "https://azogeh.onrender.com",
+    ],
+    methods: ["GET", "POST","PATCH", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true, // Allow cookies to be sent with requests
+  };
+  app.use(cors(corsOptions));
 
   // Limit requests
   const limiter = rateLimit({
