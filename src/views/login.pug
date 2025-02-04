@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  h1.h1.text-center.m-5.text-primary ورود
+  form#loginForm.form.p-4.border.rounded.shadow.col-sm-12.col-lg-6.m-auto
+    div.mb-3
+      label(for="email") Email:
+      input#email.form-control(type="email" name="email" required)
+    div.mb-3
+      label(for="password") Password:
+      input#password.form-control(type="password" name="password" required)
+    button.btn.btn-primary.mt-3.w-100(type="submit") ورود

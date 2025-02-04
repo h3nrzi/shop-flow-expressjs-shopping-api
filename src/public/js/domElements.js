@@ -2,6 +2,7 @@
 
 export const form = document.querySelector(".form");
 export const deleteButtons = document.querySelectorAll(".btn-danger");
+export const loginForm = document.getElementById('loginForm')
 
 export const elements = {
   name: document.getElementById("name"),
@@ -15,3 +16,4 @@ export const elements = {
   price: document.getElementById("price"),
   discount: document.getElementById("discount"),
 };
+
