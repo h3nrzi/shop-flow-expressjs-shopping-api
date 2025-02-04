@@ -1,0 +1,44 @@
+mixin productList(products)
+  .row
+    each product in products
+      .col-sm-12.col-md-6.mb-4
+        .card
+          img.card-img-top(src=product.image alt=product.name style="width: 100px")
+          .card-body
+            h5.card-title(dir="rtl")= product.name
+            p.card-text(dir="rtl")= product.description
+            hr
+            div.row
+              div.col
+                p.card-text
+                  strong Price:
+                  |  $#{product.price}
+                p.card-text
+                  strong Discount:
+                  |  #{product.discount ? `${product.discount}%`: "---"}
+                p.card-text
+                  strong discountedPrice:
+                  |  #{product.discountedPrice ? `$${product.discountedPrice}`: "---"}
+                p.card-text
+                  strong Rating:
+                  |  #{product.rating}
+                p.card-text
+                  strong NumReviews:
+                  |  #{product.numReviews}
+              div.col
+                p.card-text
+                  strong CountInStock:
+                  |  #{product.countInStock}
+                p.card-text
+                  strong IsAvailable:
+                  |  #{product.isAvailable ? '✅' : '❌'}
+                p.card-text
+                  strong Category:
+                  |  #{product.category}
+                p.card-text
+                  strong Brand:
+                  |  #{product.brand}
+            hr
+            div.d-flex.justify-content-between
+              a.btn.btn-warning(href=`/admin/product-edit/${product._id}`) ویرایش
+              button.btn.btn-danger(data-id=product._id) حذف

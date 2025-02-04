@@ -33,19 +33,20 @@ module.exports = (app: Express) => {
   // Development Logging
   app.use(morgan("dev"));
 
-  // Set security HTTP headers
-  app.use(
-    helmet({
-      contentSecurityPolicy: {
-        directives: {
-          defaultSrc: ["'self'"],
-          scriptSrc: ["'self'", "https://cdn.jsdelivr.net"],
-          styleSrc: ["'self'", "https://cdn.jsdelivr.net", "'unsafe-inline'"],
-          imgSrc: ["'self'", "data:"],
-        },
+// Set security HTTP headers
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "https://cdn.jsdelivr.net"],
+        styleSrc: ["'self'", "https://cdn.jsdelivr.net", "'unsafe-inline'"],
+        imgSrc: ["'self'", "data:", "https://res.cloudinary.com"],
       },
-    }),
-  );
+    },
+  }),
+);
+
 
   // CORS Configuration
   const corsOptions = {

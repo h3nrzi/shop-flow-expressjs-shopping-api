@@ -27,8 +27,12 @@ const handleDelete = (e) => {
   deleteProduct(productId);
 };
 
-form.addEventListener("submit", handleSubmit);
+if(form){
+  form.addEventListener("submit", handleSubmit);
+}
 
-deleteButtons.forEach((button) => {
-  button.addEventListener("click", handleDelete);
-});
+if(deleteButtons){
+  deleteButtons.forEach((button) => {
+    button.addEventListener("click", handleDelete);
+  });
+}
