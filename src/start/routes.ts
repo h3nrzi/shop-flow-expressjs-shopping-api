@@ -6,7 +6,6 @@ import viewRouter from "../routers/view";
 import userRouter from "../routers/user";
 import uploadRouter from "../routers/upload";
 import orderRouter from "../routers/order";
-import path from "node:path";
 
 module.exports = (app: Express) => {
   app.use("/admin", viewRouter);
@@ -15,9 +14,11 @@ module.exports = (app: Express) => {
   app.use("/api/upload", uploadRouter);
   app.use("/api/orders", orderRouter);
 
-  if (process.env.NODE_ENV === "production")
-    app.get("*", (req, res) => res.sendFile(path.join(path.resolve(), "client", "dist", "index.html")));
-  else app.get("/", (req, res) => res.send("API is running..."));
+  // if (process.env.NODE_ENV === "production")
+  //   app.get("*", (req, res) => res.sendFile(path.join(path.resolve(), "client", "dist", "index.html")));
+  // else app.get("/", (req, res) => res.send("API is running..."));
+
+  app.get("/", (req, res) => res.send("API is running..."));
 
   app.all("*", errorMiddleware.notFound);
   app.use(errorController.globalErrorHandler);

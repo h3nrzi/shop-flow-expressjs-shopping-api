@@ -1,16 +1,14 @@
 {
-  "name": "azooghe",
+  "name": "shop-flow",
   "version": "1.0.0",
   "description": "",
-  "main": "src/server.ts",
+  "main": "src/dist/server.js",
   "scripts": {
     "data:import": "ts-node src/data/seeder.ts -i",
     "data:destroy": "ts-node src/data/seeder.ts -d",
-    "server": "nodemon src/server.ts",
-    "client": "npm run dev --prefix client",
-    "start:dev": "concurrently \"npm run server\" \"npm run client\"",
+    "start:dev": "nodemon src/server.ts",
     "start": "node src/dist/server.js",
-    "build": "npm i && npm i --prefix client && tsc -p src && npm run build --prefix client"
+    "build": "npm install && tsc -p src"
   },
   "keywords": [],
   "author": "Hossein Rezaei",
@@ -24,7 +22,6 @@
     "@types/node": "^20.17.10",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.7",
-    "concurrently": "^8.2.2",
     "nodemon": "^3.1.4",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.3"
