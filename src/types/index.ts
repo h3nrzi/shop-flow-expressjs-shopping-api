@@ -1,62 +1,62 @@
 import { Document, Model } from "mongoose";
 
 export interface Populate {
-  path: string;
-  select?: string;
+	path: string;
+	select?: string;
 }
 
 export interface OperationalError extends Error {
-  statusCode: number;
-  status: string;
-  isOperational?: boolean;
+	statusCode: number;
+	status: string;
+	isOperational?: boolean;
 }
 
 export interface IProduct extends Document {
-  _id: string;
-  name: string;
-  slug: string;
-  description: string;
-  image: string;
-  images?: string[];
-  countInStock: number; // default: 1
-  isAvailable: boolean; // default: true
-  brand: string;
-  category: string;
-  rating: number; // default: 4.5
-  numReviews: number; // default: 1
-  price: number;
-  discount: number; // default: 0
-  discountedPrice?: number; // Virtual Property
+	_id: string;
+	name: string;
+	slug: string;
+	description: string;
+	image: string;
+	images?: string[];
+	countInStock: number; // default: 1
+	isAvailable: boolean; // default: true
+	brand: string;
+	category: string;
+	rating: number; // default: 4.5
+	numReviews: number; // default: 1
+	price: number;
+	discount: number; // default: 0
+	discountedPrice?: number; // Virtual Property
 }
 
 export interface IUser extends Document {
-  _id: string;
-  name: string;
-  email: string;
-  photo?: string;
-  role: "user" | "admin"; // default: user
-  active: boolean; // default: true
-  password: string;
-  passwordConfirmation?: string;
-  passwordChangedAt?: Date;
-  passwordResetToken?: String;
-  passwordResetExpires?: Number;
+	_id: string;
+	name: string;
+	email: string;
+	photo?: string;
+	role: "user" | "admin"; // default: user
+	active: boolean; // default: true
+	password: string;
+	passwordConfirmation?: string;
+	passwordChangedAt?: Date;
+	passwordResetToken?: String;
+	passwordResetExpires?: Number;
 
-  // Instance methods
-  correctPassword: (candidate_password: string) => Promise<boolean>;
-  signToken: () => string;
-  changePasswordAfter: (jwtTimeStamp: number) => boolean;
-  createPasswordResetToken: () => string;
+	// Instance methods
+	correctPassword: (candidate_password: string) => Promise<boolean>;
+	signToken: () => string;
+	changePasswordAfter: (jwtTimeStamp: number) => boolean;
+	createPasswordResetToken: () => string;
 }
 
 export interface IReview extends Document {
-  _id: string;
-  comment: string;
-  rating: number;
-  user: IUser;
-  product: IProduct;
+	_id: string;
+	comment: string;
+	rating: number;
+	user: IUser;
+	product: IProduct;
 }
 
 export interface ReviewModel extends Model<IReview> {
-  calcAverageRatings(productId: string): void;
+	calcAverageRatings(productId: string): void;
 }

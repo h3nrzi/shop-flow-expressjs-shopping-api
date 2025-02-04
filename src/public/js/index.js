@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-import { form, deleteButtons, elements,loginForm } from "./domElements.js";
+import { form, deleteButtons, elements, loginForm } from "./domElements.js";
 // import { createProduct, deleteProduct } from "./api.js";
 
 // const handleSubmit = (e) => {
@@ -27,29 +27,7 @@ import { form, deleteButtons, elements,loginForm } from "./domElements.js";
 //   deleteProduct(productId);
 // };
 
-const handleLogin = async (event) => {
-  event.preventDefault();
-
-  const form = event.target;
-  const formData = new FormData(form);
-  const data = Object.fromEntries(formData.entries());
-
-  console.log(data);
-
-  try {
-    const response = await axios.post("/api/users/login", data, {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-
-    if (response.status === 200)
-      window.location.href = '/admin';
-
-  } catch (error) {
-    window.alert('Error: ' + error.message);
-  }
-}
+const handleLogin = async event => {};
 
 ////////////////
 
@@ -63,6 +41,24 @@ const handleLogin = async (event) => {
 //   });
 // }
 
-if(loginForm) {
-  loginForm.addEventListener('submit', handleLogin);
+if (loginForm) {
+	loginForm.addEventListener("submit", async event => {
+		event.preventDefault();
+
+		const form = event.target;
+		const formData = new FormData(form);
+		const data = Object.fromEntries(formData.entries());
+
+		try {
+			const response = await axios.post("/api/users/login", data, {
+				headers: {
+					"Content-Type": "application/json",
+				},
+			});
+
+			if (response.status === 200) window.location.href = "/admin";
+		} catch (error) {
+			window.alert("Error: " + error.message);
+		}
+	});
 }

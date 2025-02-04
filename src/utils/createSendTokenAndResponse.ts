@@ -4,21 +4,21 @@ import _ from "lodash";
 import ms from "ms";
 
 const createSendTokenAndResponse = (user: IUser, statusCode: number, res: Response) => {
-  const token = user.signToken();
+	const token = user.signToken();
 
-  res.cookie("jwt", token, {
-    expires: new Date(Date.now() + ms(process.env.JWT_COOKIE_EXPIRES_IN!)),
-    secure: process.env.ENVIRONMENT === "production",
-    httpOnly: true,
-  });
+	res.cookie("jwt", token, {
+		expires: new Date(Date.now() + ms(process.env.JWT_COOKIE_EXPIRES_IN!)),
+		secure: process.env.ENVIRONMENT === "production",
+		httpOnly: true,
+	});
 
-  return res
-    .status(statusCode)
-    .header("x-auth-token", token)
-    .json({
-      status: "success",
-      data: { user: _.pick(user, ["id", "name", "email", "role"]) },
-    });
+	return res
+		.status(statusCode)
+		.header("x-auth-token", token)
+		.json({
+			status: "success",
+			data: { user: _.pick(user, ["id", "name", "email", "role"]) },
+		});
 };
 
 export default createSendTokenAndResponse;

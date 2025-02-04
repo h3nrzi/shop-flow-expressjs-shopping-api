@@ -29,16 +29,16 @@ userRouter.use(authMiddleware.restrictTo("admin"));
 userRouter.get("/get-users-count", userController.getUsersCountByDay);
 
 userRouter
-  //
-  .route("/")
-  .get(userController.getAll)
-  .post(userController.createOne);
+	//
+	.route("/")
+	.get(userController.getAll)
+	.post(userController.createOne);
 
 userRouter
-  //
-  .route("/:id")
-  .get(userController.getOne)
-  .delete(userController.deleteOne)
-  .patch(userController.updateOne);
+	//
+	.route("/:id")
+	.get(userController.getOne)
+	.delete(userController.deleteOne)
+	.patch(userController.updateOne);
 
 export default userRouter;

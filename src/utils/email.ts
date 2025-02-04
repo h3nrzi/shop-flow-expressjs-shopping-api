@@ -1,25 +1,25 @@
 import nodemailer from "nodemailer";
 
 const sendEmail = async (email: string, resetUrl: string, subject: string) => {
-  const { EMAIL_HOST, EMAIL_PORT, EMAIL_USERNAME, EMAIL_PASSWORD } = process.env;
+	const { EMAIL_HOST, EMAIL_PORT, EMAIL_USERNAME, EMAIL_PASSWORD } = process.env;
 
-  const transporter = nodemailer.createTransport({
-    service: "Gmail",
-    host: EMAIL_HOST,
-    port: +EMAIL_PORT!,
-    secure: true,
-    auth: {
-      user: EMAIL_USERNAME,
-      pass: EMAIL_PASSWORD,
-    },
-  });
+	const transporter = nodemailer.createTransport({
+		service: "Gmail",
+		host: EMAIL_HOST,
+		port: +EMAIL_PORT!,
+		secure: true,
+		auth: {
+			user: EMAIL_USERNAME,
+			pass: EMAIL_PASSWORD,
+		},
+	});
 
-  const mailOptions = {
-    from: "Hossein Rezaei <rezaeig22@gmail.com>",
-    to: email,
-    subject: subject,
-    // text: resetUrl,
-    html: `
+	const mailOptions = {
+		from: "Hossein Rezaei <rezaeig22@gmail.com>",
+		to: email,
+		subject: subject,
+		// text: resetUrl,
+		html: `
       <div style="font-family: Arial, sans-serif; direction: rtl; text-align: right; color: #333;">
         <h1 style="color: #0056b3;">درخواست بازیابی رمز عبور</h1>
         <p style="font-size: 16px;">کاربر گرامی،</p>
@@ -51,9 +51,9 @@ const sendEmail = async (email: string, resetUrl: string, subject: string) => {
         </p>
       </div>
     `,
-  };
+	};
 
-  await transporter.sendMail(mailOptions);
+	await transporter.sendMail(mailOptions);
 };
 
 export default sendEmail;

@@ -14,10 +14,10 @@ orderRouter.route("/get-myorders").get(orderMiddleware.getMyOrders, orderControl
 orderRouter.route("/top-selling-products").get(orderController.getAllTops);
 orderRouter.route("/:id/pay").patch(orderController.updateOrderToPaid);
 orderRouter
-  .route("/:id")
-  .get(orderController.getOne)
-  .patch(orderMiddleware.beforeUpdate, orderController.updateOne)
-  .delete(orderController.deleteOne);
+	.route("/:id")
+	.get(orderController.getOne)
+	.patch(orderMiddleware.beforeUpdate, orderController.updateOne)
+	.delete(orderController.deleteOne);
 
 //////////// @access ADMIN ////////////
 orderRouter.use(authMiddleware.restrictTo("admin"));
