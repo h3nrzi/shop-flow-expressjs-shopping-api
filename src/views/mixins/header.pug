@@ -6,10 +6,7 @@ mixin header()
                 span= user.email
             div
                 ul.navbar-nav.ml-auto.d-flex.flex-row.gap-3
-                    if(!user)
-                        li.nav-item
-                            a.btn.btn-primary(href="/admin/login") ورود
-                    else
+                    if(user)
                         li.nav-item.d-flex.flex-row.gap-3.justify-content-center.align-items-center
                             a.btn.btn-primary(href="#" data-bs-toggle="modal" data-bs-target="#logoutModal") خروج
 
@@ -20,4 +17,4 @@ mixin header()
                                             | آیا مطمئن هستید که می خواهید از سیستم خارج شوید؟
                                         div.modal-footer
                                             button.btn.btn-secondary(type="button" data-bs-dismiss="modal") خیر
-                                            a.btn.btn-primary(href="/admin/logout") بله
+                                            button.btn.btn-primary#logoutButton(type="button" data-bs-dismiss="modal") بله

@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-import { form, deleteButtons, elements, loginForm } from "./domElements.js";
+import { form, deleteButtons, elements, loginForm, logoutButton } from "./domElements.js";
 // import { createProduct, deleteProduct } from "./api.js";
 
 // const handleSubmit = (e) => {
@@ -57,6 +57,17 @@ if (loginForm) {
 			});
 
 			if (response.status === 200) window.location.href = "/admin";
+		} catch (error) {
+			window.alert("Error: " + error.message);
+		}
+	});
+}
+
+if (logoutButton) {
+	logoutButton.addEventListener("click", async () => {
+		try {
+			const res = await axios.post("/api/users/logout");
+			if (res.status === 204) window.location.reload();
 		} catch (error) {
 			window.alert("Error: " + error.message);
 		}

@@ -3,6 +3,7 @@
 export const form = document.querySelector(".form");
 export const deleteButtons = document.querySelectorAll(".btn-danger");
 export const loginForm = document.getElementById("loginForm");
+export const logoutButton = document.getElementById("logoutButton");
 
 export const elements = {
 	name: document.getElementById("name"),
