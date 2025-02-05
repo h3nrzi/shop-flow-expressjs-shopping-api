@@ -5,15 +5,15 @@ block content
     form#createProductForm.form.p-4.border.rounded.shadow.col-sm-12.col-lg-8.m-auto
         div.mb-3
             label(for="name") Name:
-            input#name.form-control(type="text" name="name" required dir="rtl")
+            input#name.form-control(type="text" name="name" dir="rtl")
         div.mb-3
             label(for="description") Description:
-            textarea#description.form-control(name="description" rows="5" required dir="rtl")
+            textarea#description.form-control(name="description" rows="5" dir="rtl")
 
         div.mb-3.row.justify-content-end.align-items-end
             div.col-md-4
                 label(for="imageUploader") Upload Image:
-                input#imageUploader.form-control(type="file" accept="image/*" required)
+                input#imageUploader.form-control(type="file" accept="image/*")
             div.col-md-8
                 label(for="images") Images:
                 input#image.form-control(type="text" name="image")
@@ -38,10 +38,10 @@ block content
         div.row
             div.mb-3.col-md-6
                 label(for="category") Category:
-                input.form-control(type="text" id="category" name="category" required)
+                input.form-control(type="text" id="category" name="category")
             div.mb-3.col-md-6
                 label(for="brand") Brand:
-                input.form-control(type="text" id="brand" name="brand" required)
+                input.form-control(type="text" id="brand" name="brand")
         div.row
             div.mb-3.col-md-6
                 label(for="rating") Rating:
@@ -52,7 +52,7 @@ block content
         div.row
             div.mb-3.col-md-6
                 label(for="price") Price:
-                input.form-control(type="number" id="price" name="price" required step="0.1" min="0")
+                input.form-control(type="number" id="price" name="price" step="0.1" min="0")
             div.mb-3.col-md-6
                 label(for="discount") Discount:
                 input.form-control(type="number" id="discount" name="discount" step="0.1" min="0" max="100")
