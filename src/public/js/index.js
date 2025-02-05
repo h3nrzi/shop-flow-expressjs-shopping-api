@@ -60,6 +60,43 @@ if (createProductForm) {
 	});
 }
 
+const editProductForm = document.getElementById("editProductForm");
+if (editProductForm) {
+	editProductForm.addEventListener("submit", async e => {
+		e.preventDefault();
+
+		// Extract data form formData
+		const form = e.target;
+		const formData = new FormData(form);
+		const data = Object.fromEntries(formData.entries());
+
+		// Parse string values into integer
+		data.countInStock = parseInt(data.countInStock);
+		data.rating = parseFloat(data.rating);
+		data.numReviews = parseInt(data.numReviews);
+		data.price = parseFloat(data.price);
+		data.discount = parseFloat(data.discount);
+		data.isAvailable = data.isAvailable === "on";
+
+		// Extract url params
+		const url = new URL(window.location.href);
+		const productId = url.pathname.split("/").pop();
+
+		// Mutation
+		try {
+			const res = await axios.patch(`/api/products/${productId}`, data, {
+				withCredentials: true,
+				headers: { "Content-Type": "application/json" },
+			});
+
+			if (res.data.status === "success") window.location.href = "/admin";
+		} catch (err) {
+			console.log(err);
+			window.alert(err.response.data.message);
+		}
+	});
+}
+
 // if (deleteButtons) {
 // 	deleteButtons.forEach(button => {
 // 		button.addEventListener("click", handleDelete);
