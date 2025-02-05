@@ -9,12 +9,25 @@ block content
         div.mb-3
             label(for="description") Description:
             textarea#description.form-control(name="description" rows="5" required dir="rtl")
-        div.mb-3
-            label(for="image") Image:
-            input.form-control(type="text" id="image" name="image" required)
-        div.mb-3
-            label(for="images") Images:
-            input.form-control(type="text" id="images" name="images")
+
+        div.mb-3.row.justify-content-end.align-items-end
+            div.col-md-4
+                label(for="imageUploader") Upload Image:
+                input#imageUploader.form-control(type="file" name="image" accept="image/*" required)
+            div.col-md-8
+                label(for="images") Images:
+                input#image.form-control(type="text" name="images")
+            div#imagePreviewContainer1
+
+        div.mb-3.row.justify-content-end.align-items-end
+            div.col-md-4
+                label(for="imagesUploader") Upload Images:
+                input#imagesUploader.form-control(type="file" accept="image/*" multiple)
+            div.col-md-8
+                label(for="images") Images:
+                input#images.form-control(type="text" name="images")
+            div#imagePreviewContainer2
+
         div.row.d-flex.justify-content-end.align-items-end
             div.mb-3.col-md-6
                 label(for="countInStock") CountInStock:
