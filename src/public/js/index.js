@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-import { form, deleteButtons, elements, loginForm, logoutButton } from "./domElements.js";
+import { createProductForm, loginForm, logoutButton } from "./domElements.js";
 // import { createProduct, deleteProduct } from "./api.js";
 
 // const handleSubmit = (e) => {
@@ -27,18 +27,43 @@ import { form, deleteButtons, elements, loginForm, logoutButton } from "./domEle
 //   deleteProduct(productId);
 // };
 
-const handleLogin = async event => {};
-
 ////////////////
 
-// if(form){
-//   form.addEventListener("submit", handleSubmit);
-// }
-//
-// if(deleteButtons){
-//   deleteButtons.forEach((button) => {
-//     button.addEventListener("click", handleDelete);
-//   });
+if (createProductForm) {
+	createProductForm.addEventListener("submit", async e => {
+		e.preventDefault();
+
+		const form = e.target;
+		const formData = new FormData(form);
+		const data = Object.fromEntries(formData.entries());
+
+		data.countInStock = parseInt(data.countInStock);
+		data.rating = parseFloat(data.rating);
+		data.numReviews = parseInt(data.numReviews);
+		data.price = parseFloat(data.price);
+		data.discount = parseFloat(data.discount);
+		data.isAvailable = data.isAvailable === "on";
+
+		try {
+			const res = await axios.post("/api/products", data, {
+				withCredentials: true,
+				headers: {
+					"Content-Type": "application/json",
+				},
+			});
+
+			if (res.data.status === "success") window.location.href = "/admin";
+		} catch (err) {
+			console.log(err);
+			window.alert(err.response.data.message);
+		}
+	});
+}
+
+// if (deleteButtons) {
+// 	deleteButtons.forEach(button => {
+// 		button.addEventListener("click", handleDelete);
+// 	});
 // }
 
 if (loginForm) {
@@ -58,7 +83,7 @@ if (loginForm) {
 
 			if (response.status === 200) window.location.href = "/admin";
 		} catch (error) {
-			window.alert("Error: " + error.message);
+			window.alert(error.message);
 		}
 	});
 }
@@ -69,7 +94,7 @@ if (logoutButton) {
 			const res = await axios.post("/api/users/logout");
 			if (res.status === 204) window.location.reload();
 		} catch (error) {
-			window.alert("Error: " + error.message);
+			window.alert(error.message);
 		}
 	});
 }

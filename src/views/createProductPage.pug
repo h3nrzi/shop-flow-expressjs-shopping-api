@@ -2,7 +2,7 @@ extends base
 
 block content
     h1.h1.text-center.m-5.text-primary ساختن محصول جدید
-    form.form.p-4.border.rounded.shadow.col-sm-12.col-lg-8.m-auto
+    form#createProductForm.form.p-4.border.rounded.shadow.col-sm-12.col-lg-8.m-auto
         div.mb-3
             label(for="name") Name:
             input#name.form-control(type="text" name="name" required dir="rtl")
@@ -42,5 +42,5 @@ block content
                 input.form-control(type="number" id="price" name="price" required step="0.1" min="0")
             div.mb-3.col-md-6
                 label(for="discount") Discount:
-                input.form-control(type="number" id="discount" name="discount" step="0.1" min="0")
+                input.form-control(type="number" id="discount" name="discount" step="0.1" min="0" max="100")
         button.btn.btn-primary.mt-3.w-100(type="submit") ایجاد محصول
