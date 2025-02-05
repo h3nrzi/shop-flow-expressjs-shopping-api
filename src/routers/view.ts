@@ -1,9 +1,10 @@
 import express, { Request, Response } from "express";
 import Product from "../models/product";
+import viewMiddleware from "../middlewares/view";
 
 const viewRouter = express.Router();
 
-viewRouter.get("/", async (req: Request, res: Response) => {
+viewRouter.get("/", viewMiddleware.isLoggedIn, async (req: Request, res: Response) => {
 	const products = await Product.find();
 
 	res.status(200).render("home", {
@@ -12,7 +13,7 @@ viewRouter.get("/", async (req: Request, res: Response) => {
 	});
 });
 
-viewRouter.get("/product-edit/:id", async (req: Request, res: Response) => {
+viewRouter.get("/product-edit/:id", viewMiddleware.isLoggedIn, async (req: Request, res: Response) => {
 	const product = await Product.findById(req.params.id);
 
 	res.status(200).render("editProduct", {
@@ -21,13 +22,13 @@ viewRouter.get("/product-edit/:id", async (req: Request, res: Response) => {
 	});
 });
 
-viewRouter.get("/product-create", async (req: Request, res: Response) => {
+viewRouter.get("/product-create", viewMiddleware.isLoggedIn, async (req: Request, res: Response) => {
 	res.status(200).render("createProduct", {
 		title: "Shop Flow - Create Product",
 	});
 });
 
-viewRouter.get("/login", async (req: Request, res: Response) => {
+viewRouter.get("/login", viewMiddleware.isLoggedIn, async (req: Request, res: Response) => {
 	res.status(200).render("login", {
 		title: "Shop Flow - Login",
 	});
