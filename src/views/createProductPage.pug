@@ -15,28 +15,32 @@ block content
         div.mb-3
             label(for="images") Images:
             input.form-control(type="text" id="images" name="images")
-        div.mb-3
-            label(for="countInStock") CountInStock:
-            input.form-control(type="number" id="countInStock" name="countInStock")
-        div.form-check.mb-3
-            label.form-check-label(for="isAvailable") IsAvailable
-            input.form-check-input(type="checkbox" id="isAvailable" name="isAvailable")
-        div.mb-3
-            label(for="category") Category:
-            input.form-control(type="text" id="category" name="category" required)
-        div.mb-3
-            label(for="brand") Brand:
-            input.form-control(type="text" id="brand" name="brand" required)
-        div.mb-3
-            label(for="rating") Rating:
-            input.form-control(type="number" id="rating" name="rating")
-        div.mb-3
-            label(for="numReviews") NumReviews:
-            input.form-control(type="number" id="numReviews" name="numReviews")
-        div.mb-3
-            label(for="price") Price:
-            input.form-control(type="number" id="price" name="price" required)
-        div.mb-3
-            label(for="discount") Discount:
-            input.form-control(type="number" id="discount" name="discount")
-        button.btn.btn-primary.mt-3.w-100(type="submit") ثبت تغییرات
+        div.row.d-flex.justify-content-end.align-items-end
+            div.mb-3.col-md-6
+                label(for="countInStock") CountInStock:
+                input.form-control(type="number" id="countInStock" name="countInStock")
+            div.form-check.mb-3.col-md-6
+                label.form-check-label(for="isAvailable") IsAvailable
+                input.form-check-input(type="checkbox" id="isAvailable" name="isAvailable")
+        div.row
+            div.mb-3.col-md-6
+                label(for="category") Category:
+                input.form-control(type="text" id="category" name="category" required)
+            div.mb-3.col-md-6
+                label(for="brand") Brand:
+                input.form-control(type="text" id="brand" name="brand" required)
+        div.row
+            div.mb-3.col-md-6
+                label(for="rating") Rating:
+                input.form-control(type="number" id="rating" name="rating" step="0.1" min="0")
+            div.mb-3.col-md-6
+                label(for="numReviews") NumReviews:
+                input.form-control(type="number" id="numReviews" name="numReviews" min="0")
+        div.row
+            div.mb-3.col-md-6
+                label(for="price") Price:
+                input.form-control(type="number" id="price" name="price" required step="0.1" min="0")
+            div.mb-3.col-md-6
+                label(for="discount") Discount:
+                input.form-control(type="number" id="discount" name="discount" step="0.1" min="0")
+        button.btn.btn-primary.mt-3.w-100(type="submit") ایجاد محصول
