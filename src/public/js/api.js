@@ -1,15 +1,11 @@
 // @ts-nocheck
 
 export const deleteProduct = async id => {
-	const confirmDelete = confirm("آیا مطمئن هستید که می خواهید این محصول را حذف کنید؟");
-
-	if (confirmDelete) {
-		try {
-			const res = await axios.delete(`http://localhost:3000/api/products/${id}`);
-			if (res.status === 204) window.location.reload();
-		} catch (err) {
-			alert(err.response.data.message);
-		}
+	try {
+		const res = await axios.delete(`/api/products/${id}`);
+		if (res.status === 204) window.location.reload();
+	} catch (err) {
+		alert(err.response.data.message);
 	}
 };
 

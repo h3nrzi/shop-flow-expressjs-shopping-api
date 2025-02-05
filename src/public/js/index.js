@@ -2,6 +2,7 @@
 
 import {
 	createProductForm,
+	deleteProductButtons,
 	editProductForm,
 	imageInput,
 	imagesInput,
@@ -10,7 +11,7 @@ import {
 	loginForm,
 	logoutButton,
 } from "./domElements.js";
-import { createProduct, editProduct, login, logout, uploadImage } from "./api.js";
+import { createProduct, deleteProduct, editProduct, login, logout, uploadImage } from "./api.js";
 
 if (createProductForm) {
 	createProductForm.addEventListener("submit", async e => {
@@ -60,11 +61,14 @@ if (editProductForm) {
 	});
 }
 
-// if (deleteButtons) {
-// 	deleteButtons.forEach(button => {
-// 		button.addEventListener("click", handleDelete);
-// 	});
-// }
+if (deleteProductButtons) {
+	deleteProductButtons.forEach(button => {
+		button.addEventListener("click", async e => {
+			const productId = e.target.getAttribute("data-id");
+			await deleteProduct(productId);
+		});
+	});
+}
 
 if (loginForm) {
 	loginForm.addEventListener("submit", async event => {

@@ -41,4 +41,14 @@ mixin productList(products)
             hr
             div.d-flex.justify-content-between
               a.btn.btn-warning(href=`/admin/product-edit/${product._id}`) ویرایش
-              button.btn.btn-danger(data-id=product._id) حذف
+              button.btn.btn-danger(data-id=product._id data-bs-toggle="modal" data-bs-target=`#deleteModal-${product._id}`) حذف
+
+            //- Modal
+            .modal.fade(id=`deleteModal-${product._id}`, tabindex="-1", aria-labelledby="deleteModalLabel", aria-hidden="true" dir="rtl")
+              .modal-dialog
+                .modal-content
+                  .modal-body
+                    | آیا مطمئن هستید که می خواهید این محصول را حذف کنید؟
+                  .modal-footer
+                    button.btn.btn-secondary(type="button", data-bs-dismiss="modal") خیر
+                    button.btn.btn-danger(type="button", data-bs-dismiss="modal", id=`confirmDeleteButton-${product._id}` data-id=product._id) بله
