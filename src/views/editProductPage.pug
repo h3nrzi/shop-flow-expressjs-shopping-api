@@ -2,41 +2,58 @@ extends base
 
 block content
     h1.h1.text-center.m-5.text-primary ویرایش کردن محصول
-    form.form.p-4.border.rounded.shadow.col-sm-12.col-lg-8.m-auto
+    form#createProductForm.form.p-4.border.rounded.shadow.col-sm-12.col-lg-8.m-auto
         div.mb-3
             label(for="name") Name:
-            input#name.form-control(type="text" name="name" value=product.name required dir="rtl")
+            input#name.form-control(type="text" name="name" required dir="rtl" value=product.name)
         div.mb-3
             label(for="description") Description:
             textarea#description.form-control(name="description" rows="5" required dir="rtl")= product.description
-        div.mb-3
-            label(for="image") Image:
-            input.form-control(type="text" id="image" name="image" value=product.image required)
-        div.mb-3
-            label(for="images") Images:
-            input.form-control(type="text" id="images" name="images" value=`${product.images.join(",")}`)
-        div.mb-3
-            label(for="countInStock") CountInStock:
-            input.form-control(type="number" id="countInStock" name="countInStock" value=product.countInStock)
-        div.form-check.mb-3
-            label.form-check-label(for="isAvailable") IsAvailable
-            input.form-check-input(type="checkbox" id="isAvailable" name="isAvailable" checked=product.isAvailable)
-        div.mb-3
-            label(for="category") Category:
-            input.form-control(type="text" id="category" name="category" value=product.category required)
-        div.mb-3
-            label(for="brand") Brand:
-            input.form-control(type="text" id="brand" name="brand" value=product.brand required)
-        div.mb-3
-            label(for="rating") Rating:
-            input.form-control(type="number" id="rating" name="rating" value=product.rating)
-        div.mb-3
-            label(for="numReviews") NumReviews:
-            input.form-control(type="number" id="numReviews" name="numReviews" value=product.numReviews)
-        div.mb-3
-            label(for="price") Price:
-            input.form-control(type="number" id="price" name="price" value=product.price required)
-        div.mb-3
-            label(for="discount") Discount:
-            input.form-control(type="number" id="discount" name="discount" value=product.discount)
+
+        div.mb-3.row.justify-content-end.align-items-end
+            div.col-md-4
+                label(for="imageUploader") Upload Image:
+                input#imageUploader.form-control(type="file" accept="image/*" required)
+            div.col-md-8
+                label(for="images") Images:
+                input#image.form-control(type="text" name="image" value=product.image)
+            div#imagePreviewContainer1
+
+        div.mb-3.row.justify-content-end.align-items-end
+            div.col-md-4
+                label(for="imagesUploader") Upload Images:
+                input#imagesUploader.form-control(type="file" accept="image/*" multiple)
+            div.col-md-8
+                label(for="images") Images:
+                input#images.form-control(type="text" name="images" value=`${product.images.join(",")}`)
+            div#imagePreviewContainer2
+
+        div.row.d-flex.justify-content-end.align-items-end
+            div.mb-3.col-md-6
+                label(for="countInStock") CountInStock:
+                input.form-control(type="number" id="countInStock" name="countInStock" value=product.countInStock)
+            div.form-check.mb-3.col-md-6
+                label.form-check-label(for="isAvailable") IsAvailable
+                input.form-check-input(type="checkbox" id="isAvailable" name="isAvailable" checked=product.isAvailable)
+        div.row
+            div.mb-3.col-md-6
+                label(for="category") Category:
+                input.form-control(type="text" id="category" name="category" required value=product.category)
+            div.mb-3.col-md-6
+                label(for="brand") Brand:
+                input.form-control(type="text" id="brand" name="brand" required value=product.brand)
+        div.row
+            div.mb-3.col-md-6
+                label(for="rating") Rating:
+                input.form-control(type="number" id="rating" name="rating" step="0.1" min="0" value=product.rating)
+            div.mb-3.col-md-6
+                label(for="numReviews") NumReviews:
+                input.form-control(type="number" id="numReviews" name="numReviews" min="0" value=product.numReviews)
+        div.row
+            div.mb-3.col-md-6
+                label(for="price") Price:
+                input.form-control(type="number" id="price" name="price" required step="0.1" min="0" value=product.price)
+            div.mb-3.col-md-6
+                label(for="discount") Discount:
+                input.form-control(type="number" id="discount" name="discount" step="0.1" min="0" max="100" value=product.discount)
         button.btn.btn-primary.mt-3.w-100(type="submit") ثبت تغییرات
