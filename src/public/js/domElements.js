@@ -1,20 +1,13 @@
 // @ts-nocheck
 
-export const form = document.querySelector(".form");
-export const deleteButtons = document.querySelectorAll(".btn-danger");
 export const loginForm = document.getElementById("loginForm");
 export const logoutButton = document.getElementById("logoutButton");
-export const createProductForm = document.getElementById("createProductForm");
 
-export const elements = {
-	name: document.getElementById("name"),
-	description: document.getElementById("description"),
-	image: document.getElementById("image"),
-	images: document.getElementById("images"),
-	countInStock: document.getElementById("countInStock"),
-	isAvailable: document.getElementById("isAvailable"),
-	category: document.getElementById("category"),
-	brand: document.getElementById("brand"),
-	price: document.getElementById("price"),
-	discount: document.getElementById("discount"),
-};
+export const createProductForm = document.getElementById("createProductForm");
+export const editProductForm = document.getElementById("editProductForm");
+
+export const imageUploader = document.getElementById("imageUploader");
+export const imagesUploader = document.getElementById("imagesUploader");
+
+export const imageInput = document.getElementById("image");
+export const imagesInput = document.getElementById("images");
