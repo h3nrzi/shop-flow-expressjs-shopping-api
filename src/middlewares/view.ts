@@ -2,29 +2,33 @@ import { RequestHandler } from "express";
 import verifyToken from "../utils/verifyToken";
 import User from "../models/user";
 
-// Only for rendered pages, no errors!
+// Only for rendered pages
 const isLoggedIn: RequestHandler = async (req, res, next) => {
 	if (req.cookies.jwt) {
 		try {
-			// 1) verify token
+			// Verify token
 			const decoded = (await verifyToken(req.cookies.jwt)) as { id: string; iat: number; exp: number };
 
-			// 2) Check if user still exists
+			// Check if user still exists
 			const currentUser = await User.findById(decoded.id);
-			if (!currentUser) return next();
+			if (!currentUser) {
+				return res.redirect("/admin/login");
+			}
 
-			// 3) Check if user changed password after the token was issued
-			if (currentUser.changePasswordAfter(decoded.iat)) return next();
+			// Check if user changed password after the token was issued
+			if (currentUser.changePasswordAfter(decoded.iat)) {
+				return res.redirect("/admin/login");
+			}
 
-			console.log(currentUser);
 			// THERE IS A Logged-in USER
 			res.locals.user = currentUser;
 			return next();
 		} catch (err) {
-			return next();
+			return res.redirect("/admin/login");
 		}
 	}
-	next();
+
+	return res.redirect("/admin/login");
 };
 
 const viewMiddleware = { isLoggedIn };

@@ -28,7 +28,7 @@ viewRouter.get("/product-create", viewMiddleware.isLoggedIn, async (req: Request
 	});
 });
 
-viewRouter.get("/login", viewMiddleware.isLoggedIn, async (req: Request, res: Response) => {
+viewRouter.get("/login", async (req: Request, res: Response) => {
 	res.status(200).render("login", {
 		title: "Shop Flow - Login",
 	});
