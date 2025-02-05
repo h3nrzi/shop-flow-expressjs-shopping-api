@@ -8,7 +8,16 @@ mixin header()
                 ul.navbar-nav.ml-auto.d-flex.flex-row.gap-3
                     if(!user)
                         li.nav-item
-                            a.nav-link(href="/admin/login") ورود
+                            a.btn.btn-primary(href="/admin/login") ورود
                     else
                         li.nav-item.d-flex.flex-row.gap-3.justify-content-center.align-items-center
-                            a.nav-link خروج
+                            a.btn.btn-primary(href="#" data-bs-toggle="modal" data-bs-target="#logoutModal") خروج
+
+                            div.modal.fade#logoutModal(tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true")
+                                div.modal-dialog
+                                    div.modal-content
+                                        div.modal-body
+                                            | آیا مطمئن هستید که می خواهید از سیستم خارج شوید؟
+                                        div.modal-footer
+                                            button.btn.btn-secondary(type="button" data-bs-dismiss="modal") خیر
+                                            a.btn.btn-primary(href="/admin/logout") بله
