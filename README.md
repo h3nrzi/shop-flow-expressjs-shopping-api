@@ -2,8 +2,6 @@
 
 Shop Flow is a backend service built with Node.js and Express, designed to handle authentication, user management, and data storage using MongoDB. It includes security features, file uploads, and API documentation via Swagger.
 
----
-
 ## Features
 - **Authentication & Authorization:** Uses JWT and bcrypt for secure user authentication.
 - **Database:** MongoDB with Mongoose for flexible and scalable data handling.
@@ -12,8 +10,6 @@ Shop Flow is a backend service built with Node.js and Express, designed to handl
 - **Logging & Debugging:** Integrated with Morgan for request logging.
 - **Swagger API Documentation:** Provides a clear and structured API reference.
 - **Templating Engine:** Uses Pug for rendering dynamic pages.
-
----
 
 ## Frontend Projects Using This API
 Here are the frontend projects currently using this API:
@@ -27,8 +23,6 @@ Here are the frontend projects currently using this API:
   <img src="azoghe3.png" alt="Azoghe Screenshot 3" width="400"/>
 </p>
 
----
-
 ## CMS for Shop Flow
 To help frontend developers set up their initial database data, a CMS has been developed:
 
@@ -37,8 +31,6 @@ To help frontend developers set up their initial database data, a CMS has been d
   <img src="cms2.png" alt="CMS Screenshot 2" width="400"/>
   <img src="cms3.png" alt="CMS Screenshot 3" width="400"/>
 </p>
-
----
 
 ## License
 This project is licensed under the MIT License.
