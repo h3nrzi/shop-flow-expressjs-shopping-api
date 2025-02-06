@@ -2,8 +2,6 @@
 
 Shop Flow is a backend service built with Node.js and Express, designed to handle authentication, user management, and data storage using MongoDB. It includes security features, file uploads, and API documentation via Swagger.
 
----
-
 ## Features
 - **Authentication & Authorization:** Uses JWT and bcrypt for secure user authentication.
 - **Database:** MongoDB with Mongoose for flexible and scalable data handling.
@@ -13,8 +11,6 @@ Shop Flow is a backend service built with Node.js and Express, designed to handl
 - **Swagger API Documentation:** Provides a clear and structured API reference.
 - **Templating Engine:** Uses Pug for rendering dynamic pages.
 
----
-
 ## Frontend Projects Using This API
 Here are the frontend projects currently using this API:
 
@@ -22,23 +18,19 @@ Here are the frontend projects currently using this API:
 - 🌐 [Visit Azoghe](https://azogeh.onrender.com) 
 - 🔗 [Azoghe Repository](https://github.com/m-mohammad-d/azogeh)
 <p>
-  <img src="azoghe1.png" alt="Azoghe Screenshot 1" width="400"/>
-  <img src="azoghe2.png" alt="Azoghe Screenshot 2" width="400"/>
-  <img src="azoghe3.png" alt="Azoghe Screenshot 3" width="400"/>
+  <img src="azoghe1.png" alt="Azoghe Screenshot 1" width="300"/>
+  <img src="azoghe2.png" alt="Azoghe Screenshot 2" width="300"/>
+  <img src="azoghe3.png" alt="Azoghe Screenshot 3" width="300"/>
 </p>
-
----
 
 ## CMS for Shop Flow
 To help frontend developers set up their initial database data, a CMS has been developed:
 
 <p>
-  <img src="cms1.png" alt="CMS Screenshot 1" width="400"/>
-  <img src="cms2.png" alt="CMS Screenshot 2" width="400"/>
-  <img src="cms3.png" alt="CMS Screenshot 3" width="400"/>
+  <img src="cms1.png" alt="CMS Screenshot 1" width="300"/>
+  <img src="cms2.png" alt="CMS Screenshot 2" width="300"/>
+  <img src="cms3.png" alt="CMS Screenshot 3" width="300"/>
 </p>
-
----
 
 ## License
 This project is licensed under the MIT License.
