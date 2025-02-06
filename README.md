@@ -1,73 +1,45 @@
-## Table of Contents
+# Shop Flow
 
-- [Installation](#installation)
-- [Usage](#usage)
+Shop Flow is a backend service built with Node.js and Express, designed to handle authentication, user management, and data storage using MongoDB. It includes security features, file uploads, and API documentation via Swagger.
 
-## Installation
+---
 
-To get started, follow these steps:
+## Features
+- **Authentication & Authorization:** Uses JWT and bcrypt for secure user authentication.
+- **Database:** MongoDB with Mongoose for flexible and scalable data handling.
+- **File Uploads:** Supports Cloudinary and Multer for handling media files.
+- **Security Enhancements:** Includes Helmet, CORS, XSS protection, rate limiting, and more.
+- **Logging & Debugging:** Integrated with Morgan for request logging.
+- **Swagger API Documentation:** Provides a clear and structured API reference.
+- **Templating Engine:** Uses Pug for rendering dynamic pages.
 
-1. Clone the repository:
+---
 
-   ```bash
-   git clone https://github.com/m-mohammad-d/azogeh.git
-   ```
+## Frontend Projects Using This API
+Here are the frontend projects currently using this API:
 
-2. Navigate into the project directory:
+### Azoghe
+- 🌐 [Visit Azoghe](https://azogeh.onrender.com) 
+- 🔗 [Azoghe Repository](https://github.com/m-mohammad-d/azogeh)
+<p>
+  <img src="azoghe1.png" alt="Azoghe Screenshot 1" width="400"/>
+  <img src="azoghe2.png" alt="Azoghe Screenshot 2" width="400"/>
+  <img src="azoghe3.png" alt="Azoghe Screenshot 3" width="400"/>
+</p>
 
-   ```bash
-   cd azogeh
-   ```
+---
 
-3. Install the backend dependencies:
+## CMS for Shop Flow
+To help frontend developers set up their initial database data, a CMS has been developed:
 
-   ```bash
-   npm install
-   ```
+<p>
+  <img src="cms1.png" alt="CMS Screenshot 1" width="400"/>
+  <img src="cms2.png" alt="CMS Screenshot 2" width="400"/>
+  <img src="cms3.png" alt="CMS Screenshot 3" width="400"/>
+</p>
 
-4. Install the client dependencies:
+---
 
-   ```bash
-   npm install --prefix client
-   ```
+## License
+This project is licensed under the MIT License.
 
-5. Create `.env` file in root of this project, and ask me for more details...🙂
-
-## Usage
-
-### Development
-
-To start the development server, run:
-
-```bash
-npm run start:dev
-```
-
-> This command will run both the server and the client concurrently.
-
-Now, navigate into `client` directory, and develop your project
-👌🏻
-
-### Data Seeding
-
-#### CMS
-
-- Open this address in your browser `http:localhost:3000/server` and create your sample data.
-
-#### In one-go
-
-- To import sample data into the database, follow these steps:
-
-1. Navigate into this directory: `src/data`, and find this file: `products.ts`, now create your sample data.
-
-2. After creating your data, in root directory of this project run these command:
-
-```bash
-npm run data:import
-```
-
-To destroy the seeded data, run:
-
-```bash
-npm run data:destroy
-```
