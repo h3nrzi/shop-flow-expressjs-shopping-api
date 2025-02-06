@@ -37,8 +37,9 @@ const login: LoginRequestHandler = async (req, res, next) => {
 const logout: RequestHandler = (req, res, next) => {
 	res.cookie("jwt", "", {
 		expires: new Date(Date.now() + ms(process.env.JWT_COOKIE_EXPIRES_IN!)),
-		secure: process.env.ENVIRONMENT === "production",
+		secure: process.env.NODE_ENV === "production",
 		httpOnly: true,
+		sameSite: "none",
 	});
 
 	return res.status(204).header("x-auth-token", "").json({});
