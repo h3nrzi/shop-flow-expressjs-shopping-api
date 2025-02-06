@@ -10,6 +10,7 @@ const createSendTokenAndResponse = (user: IUser, statusCode: number, res: Respon
 		expires: new Date(Date.now() + ms(process.env.JWT_COOKIE_EXPIRES_IN!)),
 		secure: process.env.ENVIRONMENT === "production",
 		httpOnly: true,
+		sameSite: "none",
 	});
 
 	return res
