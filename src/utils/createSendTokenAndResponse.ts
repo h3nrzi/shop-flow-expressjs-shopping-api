@@ -8,7 +8,7 @@ const createSendTokenAndResponse = (user: IUser, statusCode: number, res: Respon
 
 	res.cookie("jwt", token, {
 		expires: new Date(Date.now() + ms(process.env.JWT_COOKIE_EXPIRES_IN!)),
-		secure: process.env.ENVIRONMENT === "production",
+		secure: process.env.ENV === "production",
 		httpOnly: true,
 		sameSite: "none",
 	});
