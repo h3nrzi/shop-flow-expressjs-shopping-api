@@ -55,7 +55,7 @@ const forgotPassword: ForgotPasswordRequestHandler = async (req, res, next) => {
 	const resetToken = user.createPasswordResetToken();
 	await user.save({ validateBeforeSave: false });
 
-	let url = `${req.protocol}://localhost:5173/reset-password/${resetToken}`;
+	let url = `http://localhost:5173/reset-password/${resetToken}`;
 
 	if (process.env.NODE_ENV === "production") {
 		url = `https://${process.env.EMAIL_CLIENT}/reset-password/${resetToken}`;
