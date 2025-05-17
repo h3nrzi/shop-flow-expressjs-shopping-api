@@ -40,7 +40,7 @@ class UserController extends CrudController {
 			{
 				new: true,
 				runValidators: true,
-			},
+			}
 		);
 
 		return res.status(200).json({

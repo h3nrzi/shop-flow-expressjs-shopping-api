@@ -1,48 +1,47 @@
 import { Router } from "express";
 import authMiddleware from "../../middlewares/auth";
+import { ProductController } from "./product.controller";
+import { ProductService } from "./product.service";
+import ProductRepository from "./product.repository";
+import Product from "./entities/product.entity";
 
 const router = Router();
+const productRepository = new ProductRepository(Product);
+const productService = new ProductService(productRepository);
+const productController = new ProductController(productService);
 
 router.get(
-	"/:productId/reviews", // Route
-	authMiddleware.protect // protect middleware
+	"/:productId/reviews",
+	authMiddleware.protect
 	// TODO: bind the controller method to the router
 );
 
-router.get(
-	"/" // Route
-	// TODO: bind the controller method to the router
-);
-
-router.get(
-	"/:id" // Route
-	// TODO: bind the controller method to the router
-);
+router.get("/", productController.getAllProducts.bind(productController));
+router.get("/:id", productController.getProductById.bind(productController));
 
 router.post(
-	// Route
-	"/", // Route
+	"/",
 	// TODO: Validation rules
 	// TODO: validateRequest is a middleware that validates the request
-	authMiddleware.protect, // protect middleware
-	authMiddleware.restrictTo("admin") // restrict to admin
-	// TODO: bind the controller method to the router
+	authMiddleware.protect,
+	authMiddleware.restrictTo("admin"),
+	productController.createProduct.bind(productController)
 );
 
 router.patch(
-	"/:id", // Route
+	"/:id",
 	// TODO: Validation rules
 	// TODO: validateRequest is a middleware that validates the request
-	authMiddleware.protect, // protect middleware
-	authMiddleware.restrictTo("admin") // restrict to admin
-	// TODO: bind the controller method to the router
+	authMiddleware.protect,
+	authMiddleware.restrictTo("admin"),
+	productController.updateProduct.bind(productController)
 );
 
 router.delete(
-	"/:id", // Route
-	authMiddleware.protect, // protect middleware
-	authMiddleware.restrictTo("admin") // restrict to admin
-	// TODO: bind the controller method to the router
+	"/:id",
+	authMiddleware.protect,
+	authMiddleware.restrictTo("admin"),
+	productController.deleteProduct.bind(productController)
 );
 
 export { router as productRouter };

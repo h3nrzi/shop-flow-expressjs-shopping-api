@@ -1,19 +1,21 @@
-import { Document } from "mongoose";
+import { Document, Model } from "mongoose";
 
-export interface IProduct extends Document {
+export interface ProductDoc extends Document {
 	_id: string;
 	name: string;
 	slug: string;
 	description: string;
 	image: string;
 	images?: string[];
-	countInStock: number; // default: 1
-	isAvailable: boolean; // default: true
+	countInStock: number;
+	isAvailable: boolean;
 	brand: string;
 	category: string;
-	rating: number; // default: 4.5
-	numReviews: number; // default: 1
+	rating: number;
+	numReviews: number;
 	price: number;
-	discount: number; // default: 0
-	discountedPrice?: number; // Virtual Property
+	discount: number;
+	discountedPrice?: number;
 }
+
+export interface ProductModel extends Model<ProductDoc> {}

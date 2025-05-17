@@ -3,7 +3,7 @@ import { Populate } from "../types";
 import Order from "../models/order";
 import { RequestHandler, Response } from "express";
 import AppError from "../utils/appError";
-import Product from "../models/product";
+import Product from "../_refactor/products/entities/product.entity";
 
 class OrderController extends CrudController {
 	constructor(populate?: Populate) {

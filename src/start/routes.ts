@@ -1,5 +1,5 @@
 import { Express } from "express";
-import productRouter from "../routers/product";
+import { productRouter } from "../_refactor/products/product.routes";
 import errorMiddleware from "../middlewares/error";
 import errorController from "../controllers/error";
 import viewRouter from "../routers/view";

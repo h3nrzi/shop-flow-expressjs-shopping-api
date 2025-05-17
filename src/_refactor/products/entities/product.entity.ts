@@ -1,12 +1,12 @@
 import { model, Schema } from "mongoose";
 import slugify from "slugify";
-import { IProduct } from "../interfaces/product.interface";
+import { ProductDoc, ProductModel } from "../interfaces/product.interface";
 
 // ================================
 // Schema
 // ================================
 
-const productSchema = new Schema<IProduct>(
+const productSchema = new Schema<ProductDoc>(
 	{
 		name: {
 			type: String,
@@ -93,5 +93,5 @@ productSchema.pre("save", function (next) {
 	next();
 });
 
-const Product = model<IProduct>("Product", productSchema);
+const Product = model<ProductDoc, ProductModel>("Product", productSchema);
 export default Product;
