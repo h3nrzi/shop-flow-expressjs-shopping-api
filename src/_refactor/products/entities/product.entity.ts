@@ -1,6 +1,10 @@
 import { model, Schema } from "mongoose";
 import slugify from "slugify";
-import { IProduct } from "../types";
+import { IProduct } from "../interfaces/product.interface";
+
+// ================================
+// Schema
+// ================================
 
 const productSchema = new Schema<IProduct>(
 	{
@@ -68,7 +72,9 @@ const productSchema = new Schema<IProduct>(
 	}
 );
 
-//////////// Virtual Property ////////////
+// ================================
+// Virtual Property
+// ================================
 
 productSchema.virtual("discountedPrice").get(function () {
 	const defaultValue = 0;
@@ -78,7 +84,9 @@ productSchema.virtual("discountedPrice").get(function () {
 	return Math.round(this.price * discountMultiplier);
 });
 
-//////////// Document Middleware ////////////
+// ================================
+// Middlewares
+// ================================
 
 productSchema.pre("save", function (next) {
 	this.slug = slugify(this.name, { lower: true });
