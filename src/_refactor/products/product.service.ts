@@ -3,6 +3,7 @@ import { ProductDoc } from "./interfaces/product.interface";
 import ProductRepository from "./product.repository";
 import { CreateProductDto } from "./dtos/create-product.dto";
 import { UpdateProductDto } from "./dtos/update-product.dto";
+import AppError from "../../utils/appError";
 
 export class ProductService {
 	constructor(private readonly productRepository: ProductRepository) {}
@@ -14,7 +15,7 @@ export class ProductService {
 	async getProductById(id: string, populate?: PopulateOptions): Promise<ProductDoc> {
 		const product = await this.productRepository.getOne(id, populate);
 		if (!product) {
-			throw new Error("Product not found");
+			throw new AppError("هیچ محصولی با این شناسه یافت نشد", 404);
 		}
 
 		return product;
@@ -27,7 +28,7 @@ export class ProductService {
 	async updateProduct(id: string, updateProductDto: UpdateProductDto): Promise<ProductDoc> {
 		const product = await this.productRepository.updateOne(id, updateProductDto);
 		if (!product) {
-			throw new Error("Product not found");
+			throw new AppError("هیچ محصولی با این شناسه یافت نشد", 404);
 		}
 
 		return product;
@@ -36,7 +37,7 @@ export class ProductService {
 	async deleteProduct(id: string): Promise<ProductDoc> {
 		const product = await this.productRepository.deleteOne(id);
 		if (!product) {
-			throw new Error("Product not found");
+			throw new AppError("هیچ محصولی با این شناسه یافت نشد", 404);
 		}
 
 		return product;
