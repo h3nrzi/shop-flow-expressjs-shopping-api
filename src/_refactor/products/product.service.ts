@@ -4,12 +4,24 @@ import ProductRepository from "./product.repository";
 import { CreateProductDto } from "./dtos/create-product.dto";
 import { UpdateProductDto } from "./dtos/update-product.dto";
 import AppError from "../../utils/appError";
+import APIFeatures from "../../utils/apiFeatures";
+import Product from "./entities/product.entity";
 
 export class ProductService {
 	constructor(private readonly productRepository: ProductRepository) {}
 
-	async getAllProducts(populate?: PopulateOptions): Promise<ProductDoc[]> {
-		return this.productRepository.getAll(populate);
+	async getAllProducts(query: any, initialFilter?: any): Promise<{ pagination: any; products: ProductDoc[] }> {
+		const features = new APIFeatures(Product, query, initialFilter);
+		const { pagination, skip, total } = await features.filter().search().sort().limitFields().pagination();
+
+		if (query.page && skip >= total) {
+			throw new AppError("این صفحه وجود ندارد", 404);
+		}
+
+		return {
+			pagination,
+			products: await features.dbQuery,
+		};
 	}
 
 	async getProductById(id: string, populate?: PopulateOptions): Promise<ProductDoc> {
