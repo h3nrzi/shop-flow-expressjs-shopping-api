@@ -12,7 +12,7 @@ export class ProductService {
 
 	async getAllProducts(
 		query: any,
-		initialFilter?: any,
+		initialFilter?: any
 	): Promise<{ pagination: any; products: ProductDoc[] }> {
 		const features = new APIFeatures(Product, query, initialFilter);
 		const { pagination, skip, total } = await features
@@ -34,7 +34,7 @@ export class ProductService {
 
 	async getProductById(
 		id: string,
-		populate?: PopulateOptions,
+		populate?: PopulateOptions
 	): Promise<ProductDoc> {
 		const product = await this.productRepository.getOne(id, populate);
 		if (!product) {
@@ -50,11 +50,11 @@ export class ProductService {
 
 	async updateProduct(
 		id: string,
-		updateProductDto: UpdateProductDto,
+		updateProductDto: UpdateProductDto
 	): Promise<ProductDoc> {
 		const product = await this.productRepository.updateOne(
 			id,
-			updateProductDto,
+			updateProductDto
 		);
 		if (!product) {
 			throw new AppError("هیچ محصولی با این شناسه یافت نشد", 404);
