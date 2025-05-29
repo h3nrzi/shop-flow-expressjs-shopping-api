@@ -1,7 +1,6 @@
 import { RequestHandler, Response } from "express";
 import { Document, Model, Query } from "mongoose";
 import Order from "../models/order";
-import Review from "../models/review";
 import User from "../models/user";
 import { Populate } from "../types";
 import APIFeatures from "../utils/apiFeatures";
@@ -20,7 +19,7 @@ abstract class CrudController {
 		const features = new APIFeatures(
 			this.Model,
 			req.query,
-			req.body.initialFilter,
+			req.body.initialFilter
 		);
 		const { pagination, skip, total } = await features
 			.filter()
@@ -58,17 +57,17 @@ abstract class CrudController {
 		let doc: Document | null = await this.Model.findById(req.params.id);
 		if (!doc) return next(new AppError("هیچ موردی با این شناسه یافت نشد", 404));
 
-		if (doc instanceof Review) {
-			if (!(req.user.role === "admin") && !(doc.user.email === req.user.email))
-				return next(
-					new AppError("شما نمی توانید نظر دیگران را آپدیت کنید", 401),
-				);
-		}
+		// if (doc instanceof Review) {
+		// 	if (!(req.user.role === "admin") && !(doc.user.email === req.user.email))
+		// 		return next(
+		// 			new AppError("شما نمی توانید نظر دیگران را آپدیت کنید", 401),
+		// 		);
+		// }
 
 		if (doc instanceof Order) {
 			if (!(req.user.role === "admin") && !(doc.user.email === req.user.email))
 				return next(
-					new AppError("شما نمی توانید سفارش دیگران را آپدیت کنید", 401),
+					new AppError("شما نمی توانید سفارش دیگران را آپدیت کنید", 401)
 				);
 		}
 
@@ -78,7 +77,7 @@ abstract class CrudController {
 			{
 				new: true,
 				runValidators: true,
-			},
+			}
 		);
 
 		return this.sendCrudResponse(res, data, 200);
@@ -90,14 +89,14 @@ abstract class CrudController {
 			return next(new AppError("هیچ موردی با این شناسه یافت نشد", 404));
 		}
 
-		if (doc instanceof Review) {
-			if (
-				!(req.user.role === "admin") &&
-				!(doc.user.email === req.user.email)
-			) {
-				return next(new AppError("شما نمی توانید نظر دیگران را حذف کنید", 401));
-			}
-		}
+		// if (doc instanceof Review) {
+		// 	if (
+		// 		!(req.user.role === "admin") &&
+		// 		!(doc.user.email === req.user.email)
+		// 	) {
+		// 		return next(new AppError("شما نمی توانید نظر دیگران را حذف کنید", 401));
+		// 	}
+		// }
 
 		if (doc instanceof Order) {
 			if (
@@ -105,7 +104,7 @@ abstract class CrudController {
 				!(doc.user.email === req.user.email)
 			) {
 				return next(
-					new AppError("شما نمی توانید سفارش دیگران را حذف کنید", 401),
+					new AppError("شما نمی توانید سفارش دیگران را حذف کنید", 401)
 				);
 			}
 		}
@@ -125,7 +124,7 @@ abstract class CrudController {
 		res: Response,
 		data: any,
 		statusCode: number,
-		pagination?: any,
+		pagination?: any
 	): void;
 }
 
