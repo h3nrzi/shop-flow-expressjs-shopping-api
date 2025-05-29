@@ -2,12 +2,32 @@ import { Model, PopulateOptions } from "mongoose";
 import { ProductDoc } from "./interfaces/product.interface";
 import { CreateProductDto } from "./dtos/create-product.dto";
 import { UpdateProductDto } from "./dtos/update-product.dto";
+import APIFeatures from "../../utils/apiFeatures";
+import Product from "./entities/product.entity";
 
 class ProductRepository {
 	constructor(private readonly Model: Model<ProductDoc>) {}
 
-	getAll(populate?: PopulateOptions): Promise<ProductDoc[]> {
-		return this.Model.find().populate(populate as {} as PopulateOptions);
+	async getAll(
+		query: any,
+		initialFilter?: any
+	): Promise<{
+		pagination: any;
+		skip: number;
+		total: number;
+		products: ProductDoc[];
+	}> {
+		const features = new APIFeatures(Product as any, query, initialFilter);
+		const { pagination, skip, total } = await features
+			.filter()
+			.search()
+			.sort()
+			.limitFields()
+			.pagination();
+
+		const products = await features.dbQuery;
+
+		return { pagination, skip, total, products };
 	}
 
 	getOne(id: string, populate?: PopulateOptions): Promise<ProductDoc | null> {
