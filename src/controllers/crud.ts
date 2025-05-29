@@ -17,8 +17,17 @@ abstract class CrudController {
 	}
 
 	getAll: RequestHandler = async (req, res, next) => {
-		const features = new APIFeatures(this.Model, req.query, req.body.initialFilter);
-		const { pagination, skip, total } = await features.filter().search().sort().limitFields().pagination();
+		const features = new APIFeatures(
+			this.Model,
+			req.query,
+			req.body.initialFilter,
+		);
+		const { pagination, skip, total } = await features
+			.filter()
+			.search()
+			.sort()
+			.limitFields()
+			.pagination();
 
 		if (req.query.page && skip >= total) {
 			return next(new AppError("این صفحه وجود ندارد", 404));
@@ -51,18 +60,26 @@ abstract class CrudController {
 
 		if (doc instanceof Review) {
 			if (!(req.user.role === "admin") && !(doc.user.email === req.user.email))
-				return next(new AppError("شما نمی توانید نظر دیگران را آپدیت کنید", 401));
+				return next(
+					new AppError("شما نمی توانید نظر دیگران را آپدیت کنید", 401),
+				);
 		}
 
 		if (doc instanceof Order) {
 			if (!(req.user.role === "admin") && !(doc.user.email === req.user.email))
-				return next(new AppError("شما نمی توانید سفارش دیگران را آپدیت کنید", 401));
+				return next(
+					new AppError("شما نمی توانید سفارش دیگران را آپدیت کنید", 401),
+				);
 		}
 
-		const data = await this.Model.findOneAndUpdate({ _id: req.params.id }, req.body, {
-			new: true,
-			runValidators: true,
-		});
+		const data = await this.Model.findOneAndUpdate(
+			{ _id: req.params.id },
+			req.body,
+			{
+				new: true,
+				runValidators: true,
+			},
+		);
 
 		return this.sendCrudResponse(res, data, 200);
 	};
@@ -74,14 +91,22 @@ abstract class CrudController {
 		}
 
 		if (doc instanceof Review) {
-			if (!(req.user.role === "admin") && !(doc.user.email === req.user.email)) {
+			if (
+				!(req.user.role === "admin") &&
+				!(doc.user.email === req.user.email)
+			) {
 				return next(new AppError("شما نمی توانید نظر دیگران را حذف کنید", 401));
 			}
 		}
 
 		if (doc instanceof Order) {
-			if (!(req.user.role === "admin") && !(doc.user.email === req.user.email)) {
-				return next(new AppError("شما نمی توانید سفارش دیگران را حذف کنید", 401));
+			if (
+				!(req.user.role === "admin") &&
+				!(doc.user.email === req.user.email)
+			) {
+				return next(
+					new AppError("شما نمی توانید سفارش دیگران را حذف کنید", 401),
+				);
 			}
 		}
 
@@ -96,7 +121,12 @@ abstract class CrudController {
 		return this.sendCrudResponse(res, null, 204);
 	};
 
-	protected abstract sendCrudResponse(res: Response, data: any, statusCode: number, pagination?: any): void;
+	protected abstract sendCrudResponse(
+		res: Response,
+		data: any,
+		statusCode: number,
+		pagination?: any,
+	): void;
 }
 
 export default CrudController;

@@ -32,7 +32,10 @@ const reviewSchema = new Schema<IReview>({
 //////////// Static Methods ////////////
 
 // Static method for calculating Average Ratings
-reviewSchema.statics.calcAverageRatings = async function (this: Model<IReview>, productId: string) {
+reviewSchema.statics.calcAverageRatings = async function (
+	this: Model<IReview>,
+	productId: string,
+) {
 	const stats = await this.aggregate([
 		{
 			$match: { product: productId },

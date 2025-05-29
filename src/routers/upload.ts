@@ -4,6 +4,10 @@ import uploadMiddleware from "../middlewares/upload";
 
 const uploadRouter = express.Router();
 
-uploadRouter.post("/", uploadMiddleware.upload.single("image"), uploadController.upload);
+uploadRouter.post(
+	"/",
+	uploadMiddleware.upload.single("image"),
+	uploadController.upload,
+);
 
 export default uploadRouter;

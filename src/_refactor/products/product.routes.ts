@@ -12,7 +12,7 @@ const productController = new ProductController(productService);
 
 router.get(
 	"/:productId/reviews",
-	authMiddleware.protect
+	authMiddleware.protect,
 	// TODO: bind the controller method to the router
 );
 
@@ -22,26 +22,26 @@ router.get("/:id", productController.getProductById.bind(productController));
 router.post(
 	"/",
 	// TODO: Validation rules
-	// TODO: validateRequest is a middleware that validates the request
+	// TODO: validateRequest
 	authMiddleware.protect,
 	authMiddleware.restrictTo("admin"),
-	productController.createProduct.bind(productController)
+	productController.createProduct.bind(productController),
 );
 
 router.patch(
 	"/:id",
 	// TODO: Validation rules
-	// TODO: validateRequest is a middleware that validates the request
+	// TODO: validateRequest
 	authMiddleware.protect,
 	authMiddleware.restrictTo("admin"),
-	productController.updateProduct.bind(productController)
+	productController.updateProduct.bind(productController),
 );
 
 router.delete(
 	"/:id",
 	authMiddleware.protect,
 	authMiddleware.restrictTo("admin"),
-	productController.deleteProduct.bind(productController)
+	productController.deleteProduct.bind(productController),
 );
 
 export { router as productRouter };

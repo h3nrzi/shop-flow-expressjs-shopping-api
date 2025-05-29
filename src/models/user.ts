@@ -75,17 +75,28 @@ userSchema.methods.signToken = function (): string {
 	});
 };
 
-userSchema.methods.correctPassword = async function (this: IUser, candidate_password: string) {
+userSchema.methods.correctPassword = async function (
+	this: IUser,
+	candidate_password: string,
+) {
 	return await bcrypt.compare(candidate_password, this.password);
 };
 
-userSchema.methods.changePasswordAfter = function (this: IUser, jwtTimeStamp: number) {
-	return this.passwordChangedAt ? this.passwordChangedAt.getTime() / 1000 >= jwtTimeStamp : false;
+userSchema.methods.changePasswordAfter = function (
+	this: IUser,
+	jwtTimeStamp: number,
+) {
+	return this.passwordChangedAt
+		? this.passwordChangedAt.getTime() / 1000 >= jwtTimeStamp
+		: false;
 };
 
 userSchema.methods.createPasswordResetToken = function (this: IUser) {
 	const resetToken = crypto.randomBytes(32).toString("hex");
-	this.passwordResetToken = crypto.createHash("sha256").update(resetToken).digest("hex");
+	this.passwordResetToken = crypto
+		.createHash("sha256")
+		.update(resetToken)
+		.digest("hex");
 	this.passwordResetExpires = Date.now() + ms("10m");
 	return resetToken;
 };

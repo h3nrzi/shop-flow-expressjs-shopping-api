@@ -14,8 +14,14 @@ reviewRouter.get("/:id", reviewController.getOne);
 
 reviewRouter.use(authMiddleware.protect);
 
-reviewRouter.post("/", [reviewMiddleware.beforeCreate, reviewController.createOne]);
-reviewRouter.patch("/:id", [reviewMiddleware.beforeUpdate, reviewController.updateOne]);
+reviewRouter.post("/", [
+	reviewMiddleware.beforeCreate,
+	reviewController.createOne,
+]);
+reviewRouter.patch("/:id", [
+	reviewMiddleware.beforeUpdate,
+	reviewController.updateOne,
+]);
 reviewRouter.delete("/:id", reviewController.deleteOne);
 
 export default reviewRouter;

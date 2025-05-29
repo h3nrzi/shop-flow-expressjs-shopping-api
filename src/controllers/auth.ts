@@ -15,7 +15,12 @@ import ms from "ms";
 const signup: SignupRequestHandler = async (req, res, next) => {
 	const { name, email, password, passwordConfirmation } = req.body;
 
-	const user = await User.create({ name, email, password, passwordConfirmation });
+	const user = await User.create({
+		name,
+		email,
+		password,
+		passwordConfirmation,
+	});
 
 	return createSendTokenAndResponse(user, 201, res);
 };
@@ -26,7 +31,10 @@ const login: LoginRequestHandler = async (req, res, next) => {
 	const user = await User.findOne({ email }).select("+password +active");
 	if (!user) return next(new AppError("ایمیل یا رمز عبور نادرست!", 401));
 
-	if (!user.active) return next(new AppError("کاربری که به این ایمیل مرتبط است غیرفعال شده!", 404));
+	if (!user.active)
+		return next(
+			new AppError("کاربری که به این ایمیل مرتبط است غیرفعال شده!", 404),
+		);
 
 	const correct = await user.correctPassword(password);
 	if (!correct) return next(new AppError("ایمیل یا رمز عبور نادرست!", 401));
@@ -49,8 +57,12 @@ const forgotPassword: ForgotPasswordRequestHandler = async (req, res, next) => {
 	const { email } = req.body;
 
 	const user = await User.findOne({ email }).select("+active");
-	if (!user) return next(new AppError("هیچ کاربری با این آدرس ایمیل وجود ندارد.", 404));
-	if (!user.active) return next(new AppError("کاربری که به این ایمیل مرتبط است غیرفعال شده است.", 401));
+	if (!user)
+		return next(new AppError("هیچ کاربری با این آدرس ایمیل وجود ندارد.", 404));
+	if (!user.active)
+		return next(
+			new AppError("کاربری که به این ایمیل مرتبط است غیرفعال شده است.", 401),
+		);
 
 	const resetToken = user.createPasswordResetToken();
 	await user.save({ validateBeforeSave: false });
@@ -73,7 +85,12 @@ const forgotPassword: ForgotPasswordRequestHandler = async (req, res, next) => {
 		user.passwordResetExpires = undefined;
 		await user.save({ validateBeforeSave: false });
 
-		return next(new AppError("در ارسال ایمیل خطایی روی داد. لطفا بعدا دوباره امتحان کنید!", 500));
+		return next(
+			new AppError(
+				"در ارسال ایمیل خطایی روی داد. لطفا بعدا دوباره امتحان کنید!",
+				500,
+			),
+		);
 	}
 };
 
@@ -81,11 +98,19 @@ const resetPassword: ResetPasswordRequestHandler = async (req, res, next) => {
 	const { password, passwordConfirmation } = req.body;
 
 	const { resetToken } = req.query;
-	if (!resetToken) return next(new AppError("لطفا ریست توکن را ارائه دهید", 400));
+	if (!resetToken)
+		return next(new AppError("لطفا ریست توکن را ارائه دهید", 400));
 
-	const passwordResetToken = crypto.createHash("sha256").update(resetToken).digest("hex");
-	const user = await User.findOne({ passwordResetToken, passwordResetExpires: { $gt: Date.now() } });
-	if (!user) return next(new AppError("توکن نامعتبر است یا منقضی شده است!", 401));
+	const passwordResetToken = crypto
+		.createHash("sha256")
+		.update(resetToken)
+		.digest("hex");
+	const user = await User.findOne({
+		passwordResetToken,
+		passwordResetExpires: { $gt: Date.now() },
+	});
+	if (!user)
+		return next(new AppError("توکن نامعتبر است یا منقضی شده است!", 401));
 
 	user.password = password;
 	user.passwordConfirmation = passwordConfirmation;

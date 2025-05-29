@@ -8,7 +8,12 @@ class ReviewController extends CrudController {
 		super(Review as any, populate);
 	}
 
-	protected override sendCrudResponse(res: Response, data: any, statusCode: number, pagination?: any) {
+	protected override sendCrudResponse(
+		res: Response,
+		data: any,
+		statusCode: number,
+		pagination?: any,
+	) {
 		res.status(statusCode).json({
 			status: "success",
 			results: Array.isArray(data) ? data.length : undefined,

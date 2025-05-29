@@ -7,7 +7,8 @@ const protect: RequestHandler = async (req, res, next) => {
 	const { authorization } = req.headers;
 	let token: string | undefined = undefined;
 
-	if (authorization && authorization.startsWith("Bearer")) token = authorization.split(" ")[1];
+	if (authorization && authorization.startsWith("Bearer"))
+		token = authorization.split(" ")[1];
 	else if (req.cookies.jwt) token = req.cookies.jwt;
 
 	if (!token) {
@@ -15,7 +16,11 @@ const protect: RequestHandler = async (req, res, next) => {
 		return next(new AppError(msg, 401));
 	}
 
-	const decoded = (await verifyToken(token)) as { id: string; iat: number; exp: number };
+	const decoded = (await verifyToken(token)) as {
+		id: string;
+		iat: number;
+		exp: number;
+	};
 
 	const user = await User.findOne({ _id: decoded.id }).select("+active");
 
@@ -30,7 +35,8 @@ const protect: RequestHandler = async (req, res, next) => {
 	}
 
 	if (user.changePasswordAfter(decoded.iat)) {
-		const msg = "کاربر اخیرا رمز عبور را تغییر داده است! لطفا دوباره وارد شوید.";
+		const msg =
+			"کاربر اخیرا رمز عبور را تغییر داده است! لطفا دوباره وارد شوید.";
 		return next(new AppError(msg, 401));
 	}
 

@@ -3,7 +3,11 @@ import { IUser } from "../types";
 import _ from "lodash";
 import ms from "ms";
 
-const createSendTokenAndResponse = (user: IUser, statusCode: number, res: Response) => {
+const createSendTokenAndResponse = (
+	user: IUser,
+	statusCode: number,
+	res: Response,
+) => {
 	const token = user.signToken();
 
 	res.cookie("jwt", token, {

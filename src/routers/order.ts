@@ -9,8 +9,12 @@ const orderRouter = express.Router();
 //////////// @access USERS ////////////
 orderRouter.use(authMiddleware.protect);
 
-orderRouter.route("/").post(orderMiddleware.beforeCreate, orderController.createOne);
-orderRouter.route("/get-myorders").get(orderMiddleware.getMyOrders, orderController.getAll);
+orderRouter
+	.route("/")
+	.post(orderMiddleware.beforeCreate, orderController.createOne);
+orderRouter
+	.route("/get-myorders")
+	.get(orderMiddleware.getMyOrders, orderController.getAll);
 orderRouter.route("/top-selling-products").get(orderController.getAllTops);
 orderRouter.route("/:id/pay").patch(orderController.updateOrderToPaid);
 orderRouter

@@ -49,7 +49,11 @@ module.exports = (app: Express) => {
 
 	// CORS Configuration
 	const corsOptions = {
-		origin: ["http://localhost:5173", "http://localhost:3000", "https://azogeh.onrender.com"],
+		origin: [
+			"http://localhost:5173",
+			"http://localhost:3000",
+			"https://azogeh.onrender.com",
+		],
 		methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
 		allowedHeaders: ["Content-Type", "Authorization"],
 		credentials: true, // Allow cookies to be sent with requests
@@ -60,7 +64,8 @@ module.exports = (app: Express) => {
 	const limiter = rateLimit({
 		windowMs: ms("15m"),
 		limit: 100,
-		message: "درخواست های IP شما بسیار زیاد است، لطفاً یک ساعت دیگر دوباره امتحان کنید!",
+		message:
+			"درخواست های IP شما بسیار زیاد است، لطفاً یک ساعت دیگر دوباره امتحان کنید!",
 	});
 	if (process.env.NODE === "production") app.use("/api", limiter);
 
@@ -80,7 +85,16 @@ module.exports = (app: Express) => {
 	// Protect against HTTP Parameter Pollution attacks
 	app.use(
 		hpp({
-			whitelist: ["countInStock", "brand", "category", "rating", "numReviews", "price", "discount", "discountedPrice"],
+			whitelist: [
+				"countInStock",
+				"brand",
+				"category",
+				"rating",
+				"numReviews",
+				"price",
+				"discount",
+				"discountedPrice",
+			],
 		}),
 	);
 

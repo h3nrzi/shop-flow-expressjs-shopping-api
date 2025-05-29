@@ -94,7 +94,12 @@ class OrderController extends CrudController {
 		});
 	};
 
-	protected override sendCrudResponse(res: Response, data: any, statusCode: number, pagination?: any) {
+	protected override sendCrudResponse(
+		res: Response,
+		data: any,
+		statusCode: number,
+		pagination?: any,
+	) {
 		res.status(statusCode).json({
 			status: "success",
 			results: Array.isArray(data) ? data.length : undefined,
@@ -104,5 +109,7 @@ class OrderController extends CrudController {
 	}
 }
 
-const orderController = new OrderController({ path: "user orderItems.product" });
+const orderController = new OrderController({
+	path: "user orderItems.product",
+});
 export default orderController;

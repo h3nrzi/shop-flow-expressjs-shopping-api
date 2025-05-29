@@ -1,6 +1,9 @@
 import { RequestHandler, Response } from "express";
 import User from "../models/user";
-import { UpdateMePasswordRequestHandler, UpdateMeRequestHandler } from "../dtos";
+import {
+	UpdateMePasswordRequestHandler,
+	UpdateMeRequestHandler,
+} from "../dtos";
 import AppError from "../utils/appError";
 import _ from "lodash";
 import createSendTokenAndResponse from "../utils/createSendTokenAndResponse";
@@ -12,7 +15,12 @@ class UserController extends CrudController {
 		super(User, populate);
 	}
 
-	protected override sendCrudResponse(res: Response, data: any, statusCode: number, pagination?: any) {
+	protected override sendCrudResponse(
+		res: Response,
+		data: any,
+		statusCode: number,
+		pagination?: any,
+	) {
 		res.status(statusCode).json({
 			status: "success",
 			results: Array.isArray(data) ? data.length : undefined,
@@ -24,7 +32,9 @@ class UserController extends CrudController {
 	getMe: RequestHandler = async (req, res, next) => {
 		return res.status(200).json({
 			status: "success",
-			data: { user: _.pick(req.user, ["id", "name", "email", "role", "photo"]) },
+			data: {
+				user: _.pick(req.user, ["id", "name", "email", "role", "photo"]),
+			},
 		});
 	};
 
@@ -32,7 +42,9 @@ class UserController extends CrudController {
 		const { name, email, password, passwordConfirmation, photo } = req.body;
 
 		if (password || passwordConfirmation)
-			return next(new AppError("با این درخواست نمی توانید رمز عبور را آپدیت کنید", 400));
+			return next(
+				new AppError("با این درخواست نمی توانید رمز عبور را آپدیت کنید", 400),
+			);
 
 		const updatedUser = await User.findByIdAndUpdate(
 			req.user._id,
@@ -40,12 +52,14 @@ class UserController extends CrudController {
 			{
 				new: true,
 				runValidators: true,
-			}
+			},
 		);
 
 		return res.status(200).json({
 			status: "success",
-			data: { user: _.pick(updatedUser, ["id", "name", "email", "role", "photo"]) },
+			data: {
+				user: _.pick(updatedUser, ["id", "name", "email", "role", "photo"]),
+			},
 		});
 	};
 
@@ -55,7 +69,8 @@ class UserController extends CrudController {
 		const user = await User.findById(req.user._id).select("+password");
 
 		const correct = await user!.correctPassword(passwordCurrent);
-		if (!correct) return next(new AppError("رمز عبور فعلی شما اشتباه است", 401));
+		if (!correct)
+			return next(new AppError("رمز عبور فعلی شما اشتباه است", 401));
 
 		user!.password = password;
 		user!.passwordConfirmation = passwordConfirmation;
@@ -97,7 +112,9 @@ class UserController extends CrudController {
 				return next(new AppError(msg, 400));
 		}
 
-		const matchStage = startDate ? { createdAt: { $gte: startDate, $lte: endDate } } : {};
+		const matchStage = startDate
+			? { createdAt: { $gte: startDate, $lte: endDate } }
+			: {};
 
 		const result = await User.aggregate([
 			{

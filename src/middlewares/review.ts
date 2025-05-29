@@ -1,7 +1,9 @@
 import { RequestHandler } from "express";
 
 const beforeGetAll: RequestHandler = (req, res, next) => {
-	req.body.initialFilter = req.params.productId ? { product: req.params.productId } : {};
+	req.body.initialFilter = req.params.productId
+		? { product: req.params.productId }
+		: {};
 	next();
 };
 

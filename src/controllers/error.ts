@@ -43,7 +43,9 @@ const handleDuplicateFields = (err: any) => {
 };
 
 const handleValidationError = (err: any) => {
-	const messages: string[] = Object.values(err.errors).map((error: any) => error.message);
+	const messages: string[] = Object.values(err.errors).map(
+		(error: any) => error.message,
+	);
 	const message = `${messages.join(" - ")}`;
 	return new AppError(message, 400);
 };

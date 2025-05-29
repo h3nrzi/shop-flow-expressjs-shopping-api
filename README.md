@@ -3,6 +3,7 @@
 Shop Flow is a backend service built with Node.js and Express, designed to handle authentication, user management, and data storage using MongoDB. It includes security features, file uploads, and API documentation via Swagger.
 
 ## Features
+
 - **Authentication & Authorization:** Uses JWT and bcrypt for secure user authentication.
 - **Database:** MongoDB with Mongoose for flexible and scalable data handling.
 - **File Uploads:** Supports Cloudinary and Multer for handling media files.
@@ -12,10 +13,12 @@ Shop Flow is a backend service built with Node.js and Express, designed to handl
 - **Templating Engine:** Uses Pug for rendering dynamic pages.
 
 ## Frontend Projects Using This API
+
 Here are the frontend projects currently using this API:
 
 ### Azoghe
-- 🌐 [Visit Azoghe](https://azogeh.onrender.com) 
+
+- 🌐 [Visit Azoghe](https://azogeh.onrender.com)
 - 🔗 [Azoghe Repository](https://github.com/m-mohammad-d/azogeh)
 <p>
   <img src="azoghe1.jpeg" alt="Azoghe Screenshot 2" width="300"/>
@@ -25,6 +28,7 @@ Here are the frontend projects currently using this API:
 </p>
 
 ## CMS for Shop Flow
+
 To help frontend developers set up their initial database data, a CMS has been developed:
 
 <p>
@@ -35,5 +39,5 @@ To help frontend developers set up their initial database data, a CMS has been d
 </p>
 
 ## License
-This project is licensed under the MIT License.
 
+This project is licensed under the MIT License.

@@ -7,7 +7,11 @@ const isLoggedIn: RequestHandler = async (req, res, next) => {
 	if (req.cookies.jwt) {
 		try {
 			// Verify token
-			const decoded = (await verifyToken(req.cookies.jwt)) as { id: string; iat: number; exp: number };
+			const decoded = (await verifyToken(req.cookies.jwt)) as {
+				id: string;
+				iat: number;
+				exp: number;
+			};
 
 			// Check if user still exists
 			const currentUser = await User.findById(decoded.id);

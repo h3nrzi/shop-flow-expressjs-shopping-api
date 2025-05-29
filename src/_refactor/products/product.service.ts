@@ -10,9 +10,17 @@ import Product from "./entities/product.entity";
 export class ProductService {
 	constructor(private readonly productRepository: ProductRepository) {}
 
-	async getAllProducts(query: any, initialFilter?: any): Promise<{ pagination: any; products: ProductDoc[] }> {
+	async getAllProducts(
+		query: any,
+		initialFilter?: any,
+	): Promise<{ pagination: any; products: ProductDoc[] }> {
 		const features = new APIFeatures(Product, query, initialFilter);
-		const { pagination, skip, total } = await features.filter().search().sort().limitFields().pagination();
+		const { pagination, skip, total } = await features
+			.filter()
+			.search()
+			.sort()
+			.limitFields()
+			.pagination();
 
 		if (query.page && skip >= total) {
 			throw new AppError("این صفحه وجود ندارد", 404);
@@ -24,7 +32,10 @@ export class ProductService {
 		};
 	}
 
-	async getProductById(id: string, populate?: PopulateOptions): Promise<ProductDoc> {
+	async getProductById(
+		id: string,
+		populate?: PopulateOptions,
+	): Promise<ProductDoc> {
 		const product = await this.productRepository.getOne(id, populate);
 		if (!product) {
 			throw new AppError("هیچ محصولی با این شناسه یافت نشد", 404);
@@ -37,8 +48,14 @@ export class ProductService {
 		return this.productRepository.createOne(createProductDto);
 	}
 
-	async updateProduct(id: string, updateProductDto: UpdateProductDto): Promise<ProductDoc> {
-		const product = await this.productRepository.updateOne(id, updateProductDto);
+	async updateProduct(
+		id: string,
+		updateProductDto: UpdateProductDto,
+	): Promise<ProductDoc> {
+		const product = await this.productRepository.updateOne(
+			id,
+			updateProductDto,
+		);
 		if (!product) {
 			throw new AppError("هیچ محصولی با این شناسه یافت نشد", 404);
 		}
