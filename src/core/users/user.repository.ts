@@ -27,24 +27,24 @@ export class UserRepository {
 
 		const result = await this.userModel.aggregate([
 			{
-				$match: match,
+				$match: match, // filter the users by the startDate and endDate
 			},
 			{
 				$group: {
-					_id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
-					count: { $sum: 1 },
+					_id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } }, // group the users by the day
+					count: { $sum: 1 }, // count the number of users by the day
 				},
 			},
 			{
 				$project: {
-					_id: 0,
-					date: { $toDate: "$_id" },
-					count: 1,
+					_id: 0, // remove the _id field
+					date: { $toDate: "$_id" }, // convert the _id to a date
+					count: 1, // count the number of users by the day
 				},
 			},
 			{
 				$sort: {
-					date: 1,
+					date: 1, // sort the users by the day
 				},
 			},
 		]);
@@ -61,7 +61,8 @@ export class UserRepository {
 		updateUserDto: IUpdateUserDto
 	): Promise<IUserDoc | null> {
 		return this.userModel.findByIdAndUpdate(userId, updateUserDto, {
-			new: true,
+			new: true, // return the updated user
+			runValidators: true, // validate the updateUserDto
 		});
 	}
 
