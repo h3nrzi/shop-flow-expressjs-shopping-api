@@ -1,4 +1,5 @@
 import { ICreateUserDto } from "./dtos/create-user.dto";
+import { IUpdateCurrentUserInfoDto } from "./dtos/update-currenuser-info.dto";
 import { IUpdateUserDto } from "./dtos/update-user.dto";
 import { IUserDoc, IUserModel } from "./interfaces/user.interface";
 
@@ -58,9 +59,9 @@ export class UserRepository {
 
 	async update(
 		userId: string,
-		updateUserDto: IUpdateUserDto
+		payload: IUpdateUserDto | IUpdateCurrentUserInfoDto
 	): Promise<IUserDoc | null> {
-		return this.userModel.findByIdAndUpdate(userId, updateUserDto, {
+		return this.userModel.findByIdAndUpdate(userId, payload, {
 			new: true, // return the updated user
 			runValidators: true, // validate the updateUserDto
 		});

@@ -67,6 +67,7 @@ const userSchema = new Schema<IUserDoc>(
 				delete ret._id;
 				delete ret.__v;
 				delete ret.password;
+				delete ret.passwordConfirmation;
 				return ret;
 			},
 		},

@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { UserService } from "./user.service";
+import { IUserDoc } from "./interfaces/user.interface";
 
 export class UserController {
 	constructor(private readonly userService: UserService) {}
@@ -31,6 +32,26 @@ export class UserController {
 		res.status(200).json({
 			status: "success",
 			data: { user },
+		});
+	}
+
+	async getCurrentUser(req: Request, res: Response): Promise<void> {
+		const currentUser = req.user as IUserDoc;
+		res.status(200).json({
+			status: "success",
+			data: { currentUser },
+		});
+	}
+
+	async updateCurrentUserInfo(req: Request, res: Response): Promise<void> {
+		const currentUser = req.user as IUserDoc;
+		const updatedUser = await this.userService.updateCurrentUserInfo(
+			currentUser,
+			req.body
+		);
+		res.status(200).json({
+			status: "success",
+			data: { updatedUser },
 		});
 	}
 

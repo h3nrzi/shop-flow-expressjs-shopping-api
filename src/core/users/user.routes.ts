@@ -21,10 +21,19 @@ const userController = new UserController(userService);
  */
 router.use(authMiddleware.protect);
 
-// router.get("/get-me", userController.getMe);
-// router.patch("/update-me", userController.updateMe);
-// router.patch("/update-me-password", userController.updateMePassword);
-// router.delete("/delete-me", userController.deleteMe);
+router.get("/get-me", userController.getCurrentUser.bind(userController));
+router.patch(
+	"/update-me",
+	userController.updateCurrentUserInfo.bind(userController)
+);
+// router.patch(
+// 	"/update-me-password",
+// 	userController.updateCurrentUserPassword.bind(userController)
+// );
+// router.delete(
+// 	"/delete-me",
+// 	userController.deleteCurrentUser.bind(userController)
+// );
 
 /**
  ************* @description Restrict all routes below to users only *************

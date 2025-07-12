@@ -3,6 +3,7 @@ import { IUpdateUserDto } from "./dtos/update-user.dto";
 import { IUserDoc } from "./interfaces/user.interface";
 import { UserRepository } from "./user.repository";
 import AppError from "../../utils/appError";
+import { IUpdateCurrentUserInfoDto } from "./dtos/update-currenuser-info.dto";
 
 export class UserService {
 	constructor(private readonly userRepository: UserRepository) {}
@@ -59,6 +60,27 @@ export class UserService {
 		}
 
 		return this.userRepository.create(createUserDto);
+	}
+
+	async updateCurrentUserInfo(
+		currentUser: IUserDoc,
+		updateUserDto: IUpdateCurrentUserInfoDto
+	): Promise<IUserDoc | null> {
+		// if password or passwordConfirmation is provided, throw an error
+		if (updateUserDto.password || updateUserDto.passwordConfirmation) {
+			throw new AppError(
+				"با این درخواست نمی توانید رمز عبور را آپدیت کنید",
+				400
+			);
+		}
+
+		const updatedUser = await this.userRepository.update(currentUser.id, {
+			name: updateUserDto.name,
+			email: updateUserDto.email,
+			photo: updateUserDto.photo,
+		});
+
+		return updatedUser;
 	}
 
 	async updateUser(
