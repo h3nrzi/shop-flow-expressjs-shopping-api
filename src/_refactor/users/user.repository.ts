@@ -13,6 +13,10 @@ export class UserRepository {
 		return this.userModel.findById(userId);
 	}
 
+	async findByEmail(email: string): Promise<IUserDoc | null> {
+		return this.userModel.findOne({ email });
+	}
+
 	async create(createUserDto: ICreateUserDto): Promise<IUserDoc> {
 		return this.userModel.create(createUserDto);
 	}
