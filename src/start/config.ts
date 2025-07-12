@@ -11,12 +11,12 @@ import cors from "cors";
 import swaggerUi from "swagger-ui-express";
 import swaggerSpec from "../swagger/config";
 import securityMiddleware from "../middlewares/security";
-import { IUser } from "../types";
+import { IUserDoc } from "../_refactor/users/interfaces/user.interface";
 
 declare global {
 	namespace Express {
 		interface Request {
-			user: IUser;
+			user: IUserDoc;
 		}
 	}
 }
@@ -44,7 +44,7 @@ module.exports = (app: Express) => {
 					imgSrc: ["'self'", "data:", "https://res.cloudinary.com"],
 				},
 			},
-		}),
+		})
 	);
 
 	// CORS Configuration
@@ -95,7 +95,7 @@ module.exports = (app: Express) => {
 				"discount",
 				"discountedPrice",
 			],
-		}),
+		})
 	);
 
 	// Swagger UI route

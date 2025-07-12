@@ -1,5 +1,5 @@
 import crypto from "node:crypto";
-import User from "../models/user";
+import User from "../_refactor/users/entities/user.entity";
 import {
 	ForgotPasswordRequestHandler,
 	LoginRequestHandler,
@@ -33,7 +33,7 @@ const login: LoginRequestHandler = async (req, res, next) => {
 
 	if (!user.active)
 		return next(
-			new AppError("کاربری که به این ایمیل مرتبط است غیرفعال شده!", 404),
+			new AppError("کاربری که به این ایمیل مرتبط است غیرفعال شده!", 404)
 		);
 
 	const correct = await user.correctPassword(password);
@@ -61,7 +61,7 @@ const forgotPassword: ForgotPasswordRequestHandler = async (req, res, next) => {
 		return next(new AppError("هیچ کاربری با این آدرس ایمیل وجود ندارد.", 404));
 	if (!user.active)
 		return next(
-			new AppError("کاربری که به این ایمیل مرتبط است غیرفعال شده است.", 401),
+			new AppError("کاربری که به این ایمیل مرتبط است غیرفعال شده است.", 401)
 		);
 
 	const resetToken = user.createPasswordResetToken();
@@ -88,8 +88,8 @@ const forgotPassword: ForgotPasswordRequestHandler = async (req, res, next) => {
 		return next(
 			new AppError(
 				"در ارسال ایمیل خطایی روی داد. لطفا بعدا دوباره امتحان کنید!",
-				500,
-			),
+				500
+			)
 		);
 	}
 };

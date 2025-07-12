@@ -1,12 +1,12 @@
 import { Response } from "express";
-import { IUser } from "../types";
+import { IUserDoc } from "../_refactor/users/interfaces/user.interface";
 import _ from "lodash";
 import ms from "ms";
 
 const createSendTokenAndResponse = (
-	user: IUser,
+	user: IUserDoc,
 	statusCode: number,
-	res: Response,
+	res: Response
 ) => {
 	const token = user.signToken();
 

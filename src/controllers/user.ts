@@ -1,5 +1,5 @@
 import { RequestHandler, Response } from "express";
-import User from "../models/user";
+import User from "../_refactor/users/entities/user.entity";
 import {
 	UpdateMePasswordRequestHandler,
 	UpdateMeRequestHandler,
@@ -19,7 +19,7 @@ class UserController extends CrudController {
 		res: Response,
 		data: any,
 		statusCode: number,
-		pagination?: any,
+		pagination?: any
 	) {
 		res.status(statusCode).json({
 			status: "success",
@@ -43,7 +43,7 @@ class UserController extends CrudController {
 
 		if (password || passwordConfirmation)
 			return next(
-				new AppError("با این درخواست نمی توانید رمز عبور را آپدیت کنید", 400),
+				new AppError("با این درخواست نمی توانید رمز عبور را آپدیت کنید", 400)
 			);
 
 		const updatedUser = await User.findByIdAndUpdate(
@@ -52,7 +52,7 @@ class UserController extends CrudController {
 			{
 				new: true,
 				runValidators: true,
-			},
+			}
 		);
 
 		return res.status(200).json({

@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
 import verifyToken from "../utils/verifyToken";
-import User from "../models/user";
+import User from "../_refactor/users/entities/user.entity";
 
 // Only for rendered pages
 const isLoggedIn: RequestHandler = async (req, res, next) => {
