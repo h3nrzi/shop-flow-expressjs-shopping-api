@@ -17,14 +17,17 @@ export class UserRepository {
 		return this.userModel.findOne({ email });
 	}
 
-	async findCountByDay(endDate: Date, startDate?: Date): Promise<any> {
+	async findCountByDay(
+		endDate: Date,
+		startDate?: Date
+	): Promise<{ count: number; date: Date }[]> {
+		const match = startDate
+			? { createdAt: { $gte: startDate, $lte: endDate } }
+			: {};
+
 		const result = await this.userModel.aggregate([
 			{
-				$match: startDate
-					? {
-							createdAt: { $gte: startDate, $lte: endDate },
-					  }
-					: {},
+				$match: match,
 			},
 			{
 				$group: {

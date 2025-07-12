@@ -13,7 +13,18 @@ export class UserController {
 		});
 	}
 
-	async findUsersCountByDay(req: Request, res: Response): Promise<void> {}
+	async findUsersCountByDay(req: Request, res: Response): Promise<void> {
+		const period = req.query.period as string | undefined;
+		const usersCountByDay = await this.userService.findUsersCountByDay(
+			period ?? "all"
+		);
+
+		res.status(200).json({
+			status: "success",
+			results: usersCountByDay.length,
+			data: { usersCountByDay },
+		});
+	}
 
 	async findUserById(req: Request, res: Response): Promise<void> {
 		const user = await this.userService.findUserById(req.params.id);

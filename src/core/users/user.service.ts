@@ -21,7 +21,9 @@ export class UserService {
 		return targetUser;
 	}
 
-	async findUsersCountByDay(period: string): Promise<any> {
+	async findUsersCountByDay(
+		period: string
+	): Promise<{ count: number; date: Date }[]> {
 		let startDate: Date | undefined;
 		const endDate = new Date();
 
@@ -44,7 +46,7 @@ export class UserService {
 				throw new AppError("زمان وارد شده نامعتبر است", 400);
 		}
 
-		this.userRepository.findCountByDay(endDate, startDate);
+		return this.userRepository.findCountByDay(endDate, startDate);
 	}
 
 	async createUser(createUserDto: ICreateUserDto): Promise<IUserDoc> {
