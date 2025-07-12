@@ -2,11 +2,11 @@ import { model, Schema } from "mongoose";
 import validator from "validator";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { IUser } from "../types";
+import { IUserDoc, IUserModel } from "../interfaces/user.interface";
 import crypto from "node:crypto";
 import ms from "ms";
 
-const userSchema = new Schema<IUser>(
+const userSchema = new Schema<IUserDoc>(
 	{
 		name: {
 			type: String,
@@ -43,7 +43,7 @@ const userSchema = new Schema<IUser>(
 			type: String,
 			minLength: 8,
 			validate: {
-				validator: function (this: IUser, value: string): boolean {
+				validator: function (this: IUserDoc, value: string): boolean {
 					return value === this.password;
 				},
 				message: "رمزهای عبور یکسان نیستند!",
@@ -64,7 +64,7 @@ const userSchema = new Schema<IUser>(
 		toJSON: { virtuals: true },
 		toObject: { virtuals: true },
 		timestamps: true,
-	},
+	}
 );
 
 //////////// Instance Methods ////////////
@@ -76,22 +76,22 @@ userSchema.methods.signToken = function (): string {
 };
 
 userSchema.methods.correctPassword = async function (
-	this: IUser,
-	candidate_password: string,
+	this: IUserDoc,
+	candidate_password: string
 ) {
 	return await bcrypt.compare(candidate_password, this.password);
 };
 
 userSchema.methods.changePasswordAfter = function (
-	this: IUser,
-	jwtTimeStamp: number,
+	this: IUserDoc,
+	jwtTimeStamp: number
 ) {
 	return this.passwordChangedAt
 		? this.passwordChangedAt.getTime() / 1000 >= jwtTimeStamp
 		: false;
 };
 
-userSchema.methods.createPasswordResetToken = function (this: IUser) {
+userSchema.methods.createPasswordResetToken = function (this: IUserDoc) {
 	const resetToken = crypto.randomBytes(32).toString("hex");
 	this.passwordResetToken = crypto
 		.createHash("sha256")
@@ -129,5 +129,5 @@ userSchema.pre("save", async function (next) {
 	return next();
 });
 
-const User = model<IUser>("User", userSchema);
+const User = model<IUserDoc, IUserModel>("User", userSchema);
 export default User;
