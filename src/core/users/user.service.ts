@@ -21,6 +21,32 @@ export class UserService {
 		return targetUser;
 	}
 
+	async findUsersCountByDay(period: string): Promise<any> {
+		let startDate: Date | undefined;
+		const endDate = new Date();
+
+		switch (period) {
+			case "week":
+				startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+				break;
+			case "month":
+				startDate = new Date();
+				startDate.setMonth(startDate.getMonth() - 1);
+				break;
+			case "year":
+				startDate = new Date();
+				startDate.setFullYear(startDate.getFullYear() - 1);
+				break;
+			case "all":
+				startDate = undefined;
+				break;
+			default:
+				throw new AppError("زمان وارد شده نامعتبر است", 400);
+		}
+
+		this.userRepository.findCountByDay(endDate, startDate);
+	}
+
 	async createUser(createUserDto: ICreateUserDto): Promise<IUserDoc> {
 		// check if the email is already in use, if so, throw an error
 		const targetUser = await this.userRepository.findByEmail(

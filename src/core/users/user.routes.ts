@@ -46,7 +46,9 @@ router.route("/").get(userController.findAllUsers.bind(userController)).post(
  * @route GET /api/v1/users/get-users-count
  * @access ADMIN
  */
-router.get(userController.findUsersCountByDay.bind(userController));
+router
+	.route("/get-users-count")
+	.get(userController.findUsersCountByDay.bind(userController));
 
 /**
  * @route GET /api/v1/users/:id

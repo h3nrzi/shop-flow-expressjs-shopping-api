@@ -88,61 +88,61 @@ class UserController extends CrudController {
 		});
 	};
 
-	getUsersCountByDay: RequestHandler = async (req, res, next) => {
-		let startDate: Date | undefined;
-		const endDate = new Date();
+	// getUsersCountByDay: RequestHandler = async (req, res, next) => {
+	// 	let startDate: Date | undefined;
+	// 	const endDate = new Date();
 
-		switch (req.query.period) {
-			case "week":
-				startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-				break;
-			case "month":
-				startDate = new Date();
-				startDate.setMonth(startDate.getMonth() - 1);
-				break;
-			case "year":
-				startDate = new Date();
-				startDate.setFullYear(startDate.getFullYear() - 1);
-				break;
-			case "all":
-				startDate = undefined;
-				break;
-			default:
-				const msg = "زمان وارد شده نامعتبر است";
-				return next(new AppError(msg, 400));
-		}
+	// 	switch (req.query.period) {
+	// 		case "week":
+	// 			startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+	// 			break;
+	// 		case "month":
+	// 			startDate = new Date();
+	// 			startDate.setMonth(startDate.getMonth() - 1);
+	// 			break;
+	// 		case "year":
+	// 			startDate = new Date();
+	// 			startDate.setFullYear(startDate.getFullYear() - 1);
+	// 			break;
+	// 		case "all":
+	// 			startDate = undefined;
+	// 			break;
+	// 		default:
+	// 			const msg = "زمان وارد شده نامعتبر است";
+	// 			return next(new AppError(msg, 400));
+	// 	}
 
-		const matchStage = startDate
-			? { createdAt: { $gte: startDate, $lte: endDate } }
-			: {};
+	// 	const matchStage = startDate
+	// 		? { createdAt: { $gte: startDate, $lte: endDate } }
+	// 		: {};
 
-		const result = await User.aggregate([
-			{
-				$match: matchStage,
-			},
-			{
-				$group: {
-					_id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
-					count: { $sum: 1 },
-				},
-			},
-			{
-				$project: {
-					_id: 0,
-					date: { $toDate: "$_id" },
-					count: 1,
-				},
-			},
-			{
-				$sort: { date: 1 },
-			},
-		]);
+	// 	const result = await User.aggregate([
+	// 		{
+	// 			$match: matchStage,
+	// 		},
+	// 		{
+	// 			$group: {
+	// 				_id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+	// 				count: { $sum: 1 },
+	// 			},
+	// 		},
+	// 		{
+	// 			$project: {
+	// 				_id: 0,
+	// 				date: { $toDate: "$_id" },
+	// 				count: 1,
+	// 			},
+	// 		},
+	// 		{
+	// 			$sort: { date: 1 },
+	// 		},
+	// 	]);
 
-		return res.status(200).json({
-			status: "success",
-			data: result,
-		});
-	};
+	// 	return res.status(200).json({
+	// 		status: "success",
+	// 		data: result,
+	// 	});
+	// };
 }
 
 const userController = new UserController();
