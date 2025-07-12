@@ -61,7 +61,15 @@ const userSchema = new Schema<IUserDoc>(
 		},
 	},
 	{
-		toJSON: { virtuals: true },
+		toJSON: {
+			virtuals: true,
+			transform(doc, ret) {
+				delete ret._id;
+				delete ret.__v;
+				delete ret.password;
+				return ret;
+			},
+		},
 		toObject: { virtuals: true },
 		timestamps: true,
 	}
