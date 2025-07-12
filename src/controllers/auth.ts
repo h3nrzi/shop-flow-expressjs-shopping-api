@@ -1,5 +1,5 @@
 import crypto from "node:crypto";
-import User from "../_refactor/users/entities/user.entity";
+import User from "../core/users/entities/user.entity";
 import {
 	ForgotPasswordRequestHandler,
 	LoginRequestHandler,

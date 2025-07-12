@@ -11,7 +11,7 @@ import cors from "cors";
 import swaggerUi from "swagger-ui-express";
 import swaggerSpec from "../swagger/config";
 import securityMiddleware from "../middlewares/security";
-import { IUserDoc } from "../_refactor/users/interfaces/user.interface";
+import { IUserDoc } from "../core/users/interfaces/user.interface";
 
 declare global {
 	namespace Express {

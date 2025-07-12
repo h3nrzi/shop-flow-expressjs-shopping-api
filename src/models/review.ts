@@ -1,6 +1,6 @@
 import { Schema, model, Model, Query } from "mongoose";
 import { IReview, ReviewModel } from "../types";
-import Product from "../_refactor/products/entities/product.entity";
+import Product from "../core/products/entities/product.entity";
 
 const reviewSchema = new Schema<IReview>({
 	comment: {
@@ -34,7 +34,7 @@ const reviewSchema = new Schema<IReview>({
 // Static method for calculating Average Ratings
 reviewSchema.statics.calcAverageRatings = async function (
 	this: Model<IReview>,
-	productId: string,
+	productId: string
 ) {
 	const stats = await this.aggregate([
 		{

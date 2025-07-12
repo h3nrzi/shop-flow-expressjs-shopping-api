@@ -3,7 +3,7 @@ import { Populate } from "../types";
 import Order from "../models/order";
 import { RequestHandler, Response } from "express";
 import AppError from "../utils/appError";
-import Product from "../_refactor/products/entities/product.entity";
+import Product from "../core/products/entities/product.entity";
 
 class OrderController extends CrudController {
 	constructor(populate?: Populate) {
@@ -98,7 +98,7 @@ class OrderController extends CrudController {
 		res: Response,
 		data: any,
 		statusCode: number,
-		pagination?: any,
+		pagination?: any
 	) {
 		res.status(statusCode).json({
 			status: "success",

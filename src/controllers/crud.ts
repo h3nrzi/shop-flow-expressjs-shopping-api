@@ -1,7 +1,7 @@
 import { RequestHandler, Response } from "express";
 import { Document, Model, Query } from "mongoose";
 import Order from "../models/order";
-import User from "../_refactor/users/entities/user.entity";
+import User from "../core/users/entities/user.entity";
 import { Populate } from "../types";
 import APIFeatures from "../utils/apiFeatures";
 import AppError from "../utils/appError";

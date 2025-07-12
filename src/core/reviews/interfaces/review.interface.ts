@@ -1,13 +1,13 @@
 import mongoose from "mongoose";
-import { IProduct } from "../../../types";
-import { IUser } from "../../../types";
+import { IUserDoc } from "../../users/interfaces/user.interface";
+import { ProductDoc } from "../../products/interfaces/product.interface";
 
 export interface IReviewDoc extends mongoose.Document {
 	_id: string;
 	comment: string;
 	rating: number;
-	user: IUser;
-	product: IProduct;
+	user: IUserDoc;
+	product: ProductDoc;
 }
 
 export interface ReviewModel extends mongoose.Model<IReviewDoc> {

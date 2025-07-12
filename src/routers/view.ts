@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import Product from "../_refactor/products/entities/product.entity";
+import Product from "../core/products/entities/product.entity";
 import viewMiddleware from "../middlewares/view";
 
 const viewRouter = express.Router();
@@ -14,7 +14,7 @@ viewRouter.get(
 			title: "Shop Flow - Home Page",
 			products,
 		});
-	},
+	}
 );
 
 viewRouter.get(
@@ -27,7 +27,7 @@ viewRouter.get(
 			title: "Shop Flow - Edit Product",
 			product,
 		});
-	},
+	}
 );
 
 viewRouter.get(
@@ -37,7 +37,7 @@ viewRouter.get(
 		res.status(200).render("createProductPage", {
 			title: "Shop Flow - Create Product",
 		});
-	},
+	}
 );
 
 viewRouter.get("/login", async (req: Request, res: Response) => {

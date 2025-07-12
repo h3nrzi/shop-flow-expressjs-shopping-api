@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { IUserDoc } from "../_refactor/users/interfaces/user.interface";
+import { IUserDoc } from "../core/users/interfaces/user.interface";
 import _ from "lodash";
 import ms from "ms";
 

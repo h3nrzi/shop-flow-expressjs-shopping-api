@@ -1,5 +1,5 @@
 import { RequestHandler, Response } from "express";
-import User from "../_refactor/users/entities/user.entity";
+import User from "../core/users/entities/user.entity";
 import {
 	UpdateMePasswordRequestHandler,
 	UpdateMeRequestHandler,

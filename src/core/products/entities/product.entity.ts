@@ -69,7 +69,7 @@ const productSchema = new Schema<ProductDoc>(
 		toJSON: { virtuals: true },
 		toObject: { virtuals: true },
 		timestamps: true,
-	},
+	}
 );
 
 // ================================
