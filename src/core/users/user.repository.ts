@@ -1,10 +1,15 @@
 import { ICreateUserDto } from "./dtos/create-user.dto";
-import { IUpdateCurrentUserInfoDto } from "./dtos/update-currenuser-info.dto";
+import { IUpdateCurrentUserInfoDto } from "./dtos/update-currentuser-info.dto";
+import { IUpdateCurrentUserPasswordDto } from "./dtos/update-currentuser-password.dto";
 import { IUpdateUserDto } from "./dtos/update-user.dto";
 import { IUserDoc, IUserModel } from "./interfaces/user.interface";
 
 export class UserRepository {
 	constructor(private readonly userModel: IUserModel) {}
+
+	/**
+	 ************* @description READ OPERATIONS *************
+	 */
 
 	async findAll(): Promise<IUserDoc[]> {
 		return this.userModel.find();
@@ -17,6 +22,10 @@ export class UserRepository {
 	async findByEmail(email: string): Promise<IUserDoc | null> {
 		return this.userModel.findOne({ email });
 	}
+
+	/**
+	 ************* @description AGGREGATE OPERATIONS *************
+	 */
 
 	async findCountByDay(
 		endDate: Date,
@@ -53,19 +62,34 @@ export class UserRepository {
 		return result;
 	}
 
+	/**
+	 ************* @description CREATE OPERATIONS *************
+	 */
+
 	async create(createUserDto: ICreateUserDto): Promise<IUserDoc> {
 		return this.userModel.create(createUserDto);
 	}
 
+	/**
+	 ************* @description UPDATE OPERATIONS *************
+	 */
+
 	async update(
 		userId: string,
-		payload: IUpdateUserDto | IUpdateCurrentUserInfoDto
+		payload:
+			| IUpdateUserDto
+			| IUpdateCurrentUserInfoDto
+			| IUpdateCurrentUserPasswordDto
 	): Promise<IUserDoc | null> {
 		return this.userModel.findByIdAndUpdate(userId, payload, {
 			new: true, // return the updated user
 			runValidators: true, // validate the updateUserDto
 		});
 	}
+
+	/**
+	 ************* @description DELETE OPERATIONS *************
+	 */
 
 	async delete(userId: string): Promise<IUserDoc | null> {
 		return this.userModel.findByIdAndDelete(userId);

@@ -1,12 +1,16 @@
+import AppError from "../../utils/appError";
 import { ICreateUserDto } from "./dtos/create-user.dto";
+import { IUpdateCurrentUserInfoDto } from "./dtos/update-currentuser-info.dto";
 import { IUpdateUserDto } from "./dtos/update-user.dto";
 import { IUserDoc } from "./interfaces/user.interface";
 import { UserRepository } from "./user.repository";
-import AppError from "../../utils/appError";
-import { IUpdateCurrentUserInfoDto } from "./dtos/update-currenuser-info.dto";
 
 export class UserService {
 	constructor(private readonly userRepository: UserRepository) {}
+
+	/**
+	 ************* @description GET HANDLERS *************
+	 */
 
 	async findAllUsers(): Promise<IUserDoc[]> {
 		return this.userRepository.findAll();
@@ -50,6 +54,10 @@ export class UserService {
 		return this.userRepository.findCountByDay(endDate, startDate);
 	}
 
+	/**
+	 ************* @description POST HANDLERS *************
+	 */
+
 	async createUser(createUserDto: ICreateUserDto): Promise<IUserDoc> {
 		// check if the email is already in use, if so, throw an error
 		const targetUser = await this.userRepository.findByEmail(
@@ -60,6 +68,31 @@ export class UserService {
 		}
 
 		return this.userRepository.create(createUserDto);
+	}
+
+	/**
+	 ************* @description PATCH HANDLERS *************
+	 */
+
+	async updateUser(
+		userId: string,
+		updateUserDto: IUpdateUserDto,
+		currentUser: IUserDoc
+	): Promise<IUserDoc | null> {
+		// find the user, if not found, throw an error
+		const targetUser = await this.findUserById(userId);
+
+		// if the user is admin, only main admin can update the user
+		if (targetUser!.role === "admin") {
+			if (currentUser.email !== "admin@gmail.com") {
+				throw new AppError(
+					"شما نمی توانید حساب ادمین را آپدیت کنید فقط مدیر سیستم می تواند این کار را انجام دهد",
+					401
+				);
+			}
+		}
+
+		return this.userRepository.update(userId, updateUserDto);
 	}
 
 	async updateCurrentUserInfo(
@@ -83,47 +116,29 @@ export class UserService {
 		return updatedUser;
 	}
 
-	async updateUser(
-		userId: string,
-		updateUserDto: IUpdateUserDto,
-		currentUser: IUserDoc
-	): Promise<IUserDoc | null> {
-		// find the user, if not found, throw an error
-		const targetUser = await this.userRepository.findById(userId);
-		if (!targetUser) {
-			throw new AppError("هیچ موردی با این شناسه یافت نشد", 404);
-		}
+	// async updateCurrentUserPassword(
+	// 	currentUser: IUserDoc,
+	// 	updateCurrentUserPasswordDto: IUpdateCurrentUserPasswordDto
+	// ): Promise<IUserDoc | null> {
+	// 	return this.userRepository.update(currentUser.id, {
+	// 		password: updateCurrentUserPasswordDto.password,
+	// 		passwordConfirmation: updateCurrentUserPasswordDto.passwordConfirmation,
+	// 	});
+	// }
 
-		// if the user is admin, only main admin can update the user
-		if (targetUser.role === "admin") {
-			if (currentUser.email !== "admin@gmail.com") {
-				throw new AppError(
-					"شما نمی توانید حساب ادمین را آپدیت کنید فقط مدیر سیستم می تواند این کار را انجام دهد",
-					401
-				);
-			}
-		}
-
-		return this.userRepository.update(userId, updateUserDto);
-	}
+	/**
+	 ************* @description DELETE HANDLERS *************
+	 */
 
 	async deleteUser(
 		userId: string,
 		currentUser: IUserDoc
 	): Promise<IUserDoc | null> {
 		// find the user, if not found, throw an error
-		const targetUser = await this.userRepository.findById(userId);
-		if (!targetUser) {
-			throw new AppError("هیچ موردی با این شناسه یافت نشد", 404);
-		}
-
-		// check if the user is the same as the current user
-		if (targetUser.email === currentUser.email) {
-			throw new AppError("شما نمی توانید حساب خود را حذف کنید", 401);
-		}
+		const targetUser = await this.findUserById(userId);
 
 		// if the user is admin, only main admin can delete the user
-		if (targetUser.role === "admin") {
+		if (targetUser!.role === "admin") {
 			if (currentUser.email !== "admin@gmail.com") {
 				throw new AppError(
 					"شما نمی توانید حساب ادمین را حذف کنید فقط مدیر سیستم می تواند این کار را انجام دهد",
