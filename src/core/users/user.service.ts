@@ -135,13 +135,17 @@ export class UserService {
 			throw new AppError("رمز عبور فعلی شما اشتباه است", 401);
 		}
 
-		// update the password
-		const updatedUser = await this.userRepository.update(currentUser.id, {
-			password: updateCurrentUserPasswordDto.password,
-			passwordConfirmation: updateCurrentUserPasswordDto.passwordConfirmation,
-		});
+		// ---- UPDATE PASSWORD MANUALLY ----
+		// we cannot use this approach: "this.userRepository.update()",
+		// because userRepository.update() use findByIdAndUpdate() method
+		// which does not access the password field in validate function for passwordConfirmation
+		// so we need to update the password manually
+		const { password, passwordConfirmation } = updateCurrentUserPasswordDto;
+		targetUser!.password = password;
+		targetUser!.passwordConfirmation = passwordConfirmation;
+		await targetUser!.save();
 
-		return updatedUser;
+		return targetUser;
 	}
 
 	/**
