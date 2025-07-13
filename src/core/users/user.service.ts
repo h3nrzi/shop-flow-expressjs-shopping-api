@@ -152,10 +152,7 @@ export class UserService {
 	 ************* @description DELETE HANDLERS *************
 	 */
 
-	async deleteUser(
-		userId: string,
-		currentUser: IUserDoc
-	): Promise<IUserDoc | null> {
+	async deleteUser(userId: string, currentUser: IUserDoc): Promise<void> {
 		// find the user, if not found, throw an error
 		const targetUser = await this.findUserById(userId);
 
@@ -169,6 +166,10 @@ export class UserService {
 			}
 		}
 
-		return this.userRepository.delete(userId);
+		await this.userRepository.delete(userId);
+	}
+
+	async deleteCurrentUser(currentUser: IUserDoc): Promise<void> {
+		await this.userRepository.delete(currentUser.id);
 	}
 }

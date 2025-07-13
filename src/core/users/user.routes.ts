@@ -17,8 +17,11 @@ const userController = new UserController(userService);
 // router.patch("/reset-password", authController.resetPassword);
 
 /**
+ ********************************************************************************
  ************* @description Protect all routes below to users only *************
+ ********************************************************************************
  */
+
 router.use(authMiddleware.protect);
 
 router.get("/get-me", userController.getCurrentUser.bind(userController));
@@ -30,14 +33,17 @@ router.patch(
 	"/update-me-password",
 	userController.updateCurrentUserPassword.bind(userController)
 );
-// router.delete(
-// 	"/delete-me",
-// 	userController.deleteCurrentUser.bind(userController)
-// );
+router.delete(
+	"/delete-me",
+	userController.deleteCurrentUser.bind(userController)
+);
 
 /**
- ************* @description Restrict all routes below to users only *************
+ ********************************************************************************
+ ************* @description Restrict all routes below to admin only *************
+ ********************************************************************************
  */
+
 router.use(authMiddleware.restrictTo("admin"));
 
 /**

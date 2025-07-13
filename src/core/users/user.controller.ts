@@ -114,7 +114,7 @@ export class UserController {
 	}
 
 	async deleteCurrentUser(req: Request, res: Response): Promise<void> {
-		await this.userService.deleteUser(req.user.id, req.user);
+		await this.userService.deleteCurrentUser(req.user);
 		res.status(204).json({
 			status: "success",
 			data: null,
