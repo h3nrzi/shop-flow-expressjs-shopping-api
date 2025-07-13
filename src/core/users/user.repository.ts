@@ -7,9 +7,9 @@ import { IUserDoc, IUserModel } from "./interfaces/user.interface";
 export class UserRepository {
 	constructor(private readonly userModel: IUserModel) {}
 
-	/**
+	/********************************************************
 	 ************* @description READ OPERATIONS *************
-	 */
+	 ********************************************************/
 
 	async findAll(): Promise<IUserDoc[]> {
 		return this.userModel.find();
@@ -24,9 +24,9 @@ export class UserRepository {
 		return this.userModel.findOne({ email });
 	}
 
-	/**
-	 ************* @description AGGREGATE OPERATIONS *************
-	 */
+	/**************************************************************
+	 ************* @description AGGREGATE OPERATIONS **************
+	 **************************************************************/
 
 	async findCountByDay(
 		endDate: Date,
@@ -63,17 +63,17 @@ export class UserRepository {
 		return result;
 	}
 
-	/**
-	 ************* @description CREATE OPERATIONS *************
-	 */
+	/*************************************************************
+	 ************* @description CREATE OPERATIONS ****************
+	 *************************************************************/
 
 	async create(createUserDto: ICreateUserDto): Promise<IUserDoc> {
 		return this.userModel.create(createUserDto);
 	}
 
-	/**
-	 ************* @description UPDATE OPERATIONS *************
-	 */
+	/************************************************************
+	 ************* @description UPDATE OPERATIONS ***************
+	 ************************************************************/
 
 	async update(
 		userId: string,
@@ -88,9 +88,9 @@ export class UserRepository {
 		});
 	}
 
-	/**
-	 ************* @description DELETE OPERATIONS *************
-	 */
+	/************************************************************
+	 ************* @description DELETE OPERATIONS ***************
+	 ************************************************************/
 
 	async delete(userId: string): Promise<IUserDoc | null> {
 		return this.userModel.findByIdAndDelete(userId);

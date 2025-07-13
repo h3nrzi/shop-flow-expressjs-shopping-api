@@ -9,9 +9,9 @@ import { UserRepository } from "./user.repository";
 export class UserService {
 	constructor(private readonly userRepository: UserRepository) {}
 
-	/**
+	/******************************************************
 	 ************* @description GET HANDLERS *************
-	 */
+	 ******************************************************/
 
 	async findAllUsers(): Promise<IUserDoc[]> {
 		return this.userRepository.findAll();
@@ -58,9 +58,9 @@ export class UserService {
 		return this.userRepository.findCountByDay(endDate, startDate);
 	}
 
-	/**
+	/******************************************************
 	 ************* @description POST HANDLERS *************
-	 */
+	 ******************************************************/
 
 	async createUser(createUserDto: ICreateUserDto): Promise<IUserDoc> {
 		// check if the email is already in use, if so, throw an error
@@ -74,9 +74,9 @@ export class UserService {
 		return this.userRepository.create(createUserDto);
 	}
 
-	/**
+	/*******************************************************
 	 ************* @description PATCH HANDLERS *************
-	 */
+	 *******************************************************/
 
 	async updateUser(
 		userId: string,
@@ -148,9 +148,9 @@ export class UserService {
 		return targetUser;
 	}
 
-	/**
-	 ************* @description DELETE HANDLERS *************
-	 */
+	/*******************************************************
+	 ************* @description DELETE HANDLERS ************
+	 *******************************************************/
 
 	async deleteUser(userId: string, currentUser: IUserDoc): Promise<void> {
 		// find the user, if not found, throw an error
