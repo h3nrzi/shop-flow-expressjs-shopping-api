@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { IUserDoc } from "../../users/interfaces/user.interface";
+import { IUserDoc } from "../../users/user.interface";
 import { ProductDoc } from "../../products/interfaces/product.interface";
 
 export interface IReviewDoc extends mongoose.Document {

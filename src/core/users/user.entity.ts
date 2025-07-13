@@ -2,7 +2,7 @@ import { model, Schema } from "mongoose";
 import validator from "validator";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { IUserDoc, IUserModel } from "../interfaces/user.interface";
+import { IUserDoc, IUserModel } from "./user.interface";
 import crypto from "node:crypto";
 import ms from "ms";
 

@@ -1,9 +1,9 @@
 import express from "express";
 import authMiddleware from "../../middlewares/auth";
-import { UserController } from "./user.controller";
-import { UserService } from "./user.service";
+import { UserController } from "./controllers/user.controller";
+import { UserService } from "./services/user.service";
 import { UserRepository } from "./user.repository";
-import User from "./entities/user.entity";
+import User from "./user.entity";
 
 const router = express.Router();
 const userRepository = new UserRepository(User);

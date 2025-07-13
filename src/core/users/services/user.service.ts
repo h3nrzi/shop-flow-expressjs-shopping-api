@@ -1,10 +1,10 @@
-import AppError from "../../utils/appError";
-import { ICreateUserDto } from "./dtos/create-user.dto";
-import { IUpdateCurrentUserInfoDto } from "./dtos/update-currentuser-info.dto";
-import { IUpdateCurrentUserPasswordDto } from "./dtos/update-currentuser-password.dto";
-import { IUpdateUserDto } from "./dtos/update-user.dto";
-import { IUserDoc } from "./interfaces/user.interface";
-import { UserRepository } from "./user.repository";
+import AppError from "../../../utils/appError";
+import { ICreateUserDto } from "../dtos/create-user.dto";
+import { IUpdateCurrentUserInfoDto } from "../dtos/update-currentuser-info.dto";
+import { IUpdateCurrentUserPasswordDto } from "../dtos/update-currentuser-password.dto";
+import { IUpdateUserDto } from "../dtos/update-user.dto";
+import { IUserDoc } from "../user.interface";
+import { UserRepository } from "../user.repository";
 
 export class UserService {
 	constructor(private readonly userRepository: UserRepository) {}

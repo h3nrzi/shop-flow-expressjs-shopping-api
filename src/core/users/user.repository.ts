@@ -2,7 +2,7 @@ import { ICreateUserDto } from "./dtos/create-user.dto";
 import { IUpdateCurrentUserInfoDto } from "./dtos/update-currentuser-info.dto";
 import { IUpdateCurrentUserPasswordDto } from "./dtos/update-currentuser-password.dto";
 import { IUpdateUserDto } from "./dtos/update-user.dto";
-import { IUserDoc, IUserModel } from "./interfaces/user.interface";
+import { IUserDoc, IUserModel } from "./user.interface";
 
 export class UserRepository {
 	constructor(private readonly userModel: IUserModel) {}

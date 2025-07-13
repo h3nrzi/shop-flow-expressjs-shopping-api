@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import { ICreateUserDto } from "./dtos/create-user.dto";
-import { IUpdateCurrentUserInfoDto } from "./dtos/update-currentuser-info.dto";
-import { IUpdateUserDto } from "./dtos/update-user.dto";
-import { UserService } from "./user.service";
-import { IUpdateCurrentUserPasswordDto } from "./dtos/update-currentuser-password.dto";
-import createSendTokenAndResponse from "../../utils/createSendTokenAndResponse";
+import { ICreateUserDto } from "../dtos/create-user.dto";
+import { IUpdateCurrentUserInfoDto } from "../dtos/update-currentuser-info.dto";
+import { IUpdateUserDto } from "../dtos/update-user.dto";
+import { UserService } from "../services/user.service";
+import { IUpdateCurrentUserPasswordDto } from "../dtos/update-currentuser-password.dto";
+import createSendTokenAndResponse from "../../../utils/createSendTokenAndResponse";
 
 export class UserController {
 	constructor(private readonly userService: UserService) {}

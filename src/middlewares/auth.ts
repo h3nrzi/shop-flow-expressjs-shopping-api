@@ -1,6 +1,6 @@
 import AppError from "../utils/appError";
 import verifyToken from "../utils/verifyToken";
-import User from "../core/users/entities/user.entity";
+import User from "../core/users/user.entity";
 import { RequestHandler } from "express";
 
 const protect: RequestHandler = async (req, res, next) => {
