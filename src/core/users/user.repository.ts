@@ -20,8 +20,9 @@ export class UserRepository {
 		return user as IUserDoc;
 	}
 
-	async findByEmail(email: string): Promise<IUserDoc | null> {
-		return this.userModel.findOne({ email });
+	async findByEmail(email: string, select?: string): Promise<IUserDoc | null> {
+		const user = await this.userModel.findOne({ email }).select(select ?? "");
+		return user as IUserDoc;
 	}
 
 	/**************************************************************

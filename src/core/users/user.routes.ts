@@ -16,7 +16,7 @@ const userController = new UserController(userService);
 const authController = new AuthController(authService);
 
 router.post("/signup", authController.signup.bind(authController));
-// router.post("/login", authController.login);
+router.post("/login", authController.login.bind(authController));
 // router.post("/logout", authController.logout);
 // router.post("/forgot-password", authController.forgotPassword);
 // router.patch("/reset-password", authController.resetPassword);
