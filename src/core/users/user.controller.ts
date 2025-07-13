@@ -9,9 +9,9 @@ import createSendTokenAndResponse from "../../utils/createSendTokenAndResponse";
 export class UserController {
 	constructor(private readonly userService: UserService) {}
 
-	/**
+	/******************************************************
 	 ************* @description GET HANDLERS *************
-	 */
+	 ******************************************************/
 
 	async findAllUsers(req: Request, res: Response): Promise<void> {
 		const users = await this.userService.findAllUsers();
@@ -51,9 +51,9 @@ export class UserController {
 		});
 	}
 
-	/**
+	/******************************************************
 	 ************* @description POST HANDLERS *************
-	 */
+	 ******************************************************/
 
 	async createUser(req: Request, res: Response): Promise<void> {
 		const user = await this.userService.createUser(req.body as ICreateUserDto);
@@ -63,9 +63,9 @@ export class UserController {
 		});
 	}
 
-	/**
+	/*******************************************************
 	 ************* @description PATCH HANDLERS *************
-	 */
+	 *******************************************************/
 
 	async updateUser(req: Request, res: Response): Promise<void> {
 		const user = await this.userService.updateUser(
@@ -101,9 +101,9 @@ export class UserController {
 		createSendTokenAndResponse(updatedUser!, 200, res);
 	}
 
-	/**
+	/********************************************************
 	 ************* @description DELETE HANDLERS *************
-	 */
+	 *********************************************************/
 
 	async deleteUser(req: Request, res: Response): Promise<void> {
 		await this.userService.deleteUser(req.params.id, req.user);

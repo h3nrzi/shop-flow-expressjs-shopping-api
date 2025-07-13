@@ -10,7 +10,7 @@ const userRepository = new UserRepository(User);
 const userService = new UserService(userRepository);
 const userController = new UserController(userService);
 
-// router.post("/signup", authController.signup);
+// router.post("/signup", userController.signup.bind(userController));
 // router.post("/login", authController.login);
 // router.post("/logout", authController.logout);
 // router.post("/forgot-password", authController.forgotPassword);
@@ -46,31 +46,16 @@ router.delete(
 
 router.use(authMiddleware.restrictTo("admin"));
 
-/**
- * @route GET /api/v1/users
- * @route POST /api/v1/users
- * @access ADMIN
- */
 router.route("/").get(userController.findAllUsers.bind(userController)).post(
 	// TODO: Validation rules
 	// TODO: validateRequest
 	userController.createUser.bind(userController)
 );
 
-/**
- * @route GET /api/v1/users/get-users-count
- * @access ADMIN
- */
 router
 	.route("/get-users-count")
 	.get(userController.findUsersCountByDay.bind(userController));
 
-/**
- * @route GET /api/v1/users/:id
- * @route DELETE /api/v1/users/:id
- * @route PATCH /api/v1/users/:id
- * @access ADMIN
- */
 router
 	.route("/:id")
 	.get(userController.findUserById.bind(userController))
