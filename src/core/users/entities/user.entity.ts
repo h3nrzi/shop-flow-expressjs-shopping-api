@@ -29,18 +29,18 @@ const userSchema = new Schema<IUserDoc>(
 		},
 		active: {
 			type: Boolean,
-			select: false,
 			default: true,
 		},
 
 		password: {
 			type: String,
-			minLength: 8,
 			select: false,
+			minLength: 8,
 			required: [true, "لطفا رمز عبور خود را وارد کنید"],
 		},
 		passwordConfirmation: {
 			type: String,
+			select: false,
 			minLength: 8,
 			validate: {
 				validator: function (this: IUserDoc, value: string): boolean {
@@ -51,13 +51,16 @@ const userSchema = new Schema<IUserDoc>(
 			required: [true, "لطفا تایید رمز عبور خود را وارد کنید"],
 		},
 		passwordChangedAt: {
+			select: false,
 			type: Date,
 		},
 		passwordResetToken: {
 			type: String,
+			select: false,
 		},
 		passwordResetExpires: {
 			type: Date,
+			select: false,
 		},
 	},
 	{
@@ -66,8 +69,6 @@ const userSchema = new Schema<IUserDoc>(
 			transform(doc, ret) {
 				delete ret._id;
 				delete ret.__v;
-				delete ret.password;
-				delete ret.passwordConfirmation;
 				return ret;
 			},
 		},

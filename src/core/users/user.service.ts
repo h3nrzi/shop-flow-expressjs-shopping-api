@@ -1,6 +1,7 @@
 import AppError from "../../utils/appError";
 import { ICreateUserDto } from "./dtos/create-user.dto";
 import { IUpdateCurrentUserInfoDto } from "./dtos/update-currentuser-info.dto";
+import { IUpdateCurrentUserPasswordDto } from "./dtos/update-currentuser-password.dto";
 import { IUpdateUserDto } from "./dtos/update-user.dto";
 import { IUserDoc } from "./interfaces/user.interface";
 import { UserRepository } from "./user.repository";
@@ -16,9 +17,12 @@ export class UserService {
 		return this.userRepository.findAll();
 	}
 
-	async findUserById(userId: string): Promise<IUserDoc | null> {
+	async findUserById(
+		userId: string,
+		select?: string
+	): Promise<IUserDoc | null> {
 		// find the user, if not found, throw an error
-		const targetUser = await this.userRepository.findById(userId);
+		const targetUser = await this.userRepository.findById(userId, select);
 		if (!targetUser) {
 			throw new AppError("هیچ موردی با این شناسه یافت نشد", 404);
 		}
@@ -116,15 +120,29 @@ export class UserService {
 		return updatedUser;
 	}
 
-	// async updateCurrentUserPassword(
-	// 	currentUser: IUserDoc,
-	// 	updateCurrentUserPasswordDto: IUpdateCurrentUserPasswordDto
-	// ): Promise<IUserDoc | null> {
-	// 	return this.userRepository.update(currentUser.id, {
-	// 		password: updateCurrentUserPasswordDto.password,
-	// 		passwordConfirmation: updateCurrentUserPasswordDto.passwordConfirmation,
-	// 	});
-	// }
+	async updateCurrentUserPassword(
+		currentUser: IUserDoc,
+		updateCurrentUserPasswordDto: IUpdateCurrentUserPasswordDto
+	): Promise<IUserDoc | null> {
+		// find the user, if not found, throw an error
+		const targetUser = await this.findUserById(currentUser.id, "+password");
+
+		// check if the password current is correct
+		const correct = await targetUser!.correctPassword(
+			updateCurrentUserPasswordDto.passwordCurrent
+		);
+		if (!correct) {
+			throw new AppError("رمز عبور فعلی شما اشتباه است", 401);
+		}
+
+		// update the password
+		const updatedUser = await this.userRepository.update(currentUser.id, {
+			password: updateCurrentUserPasswordDto.password,
+			passwordConfirmation: updateCurrentUserPasswordDto.passwordConfirmation,
+		});
+
+		return updatedUser;
+	}
 
 	/**
 	 ************* @description DELETE HANDLERS *************

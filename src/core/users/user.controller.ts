@@ -3,6 +3,8 @@ import { ICreateUserDto } from "./dtos/create-user.dto";
 import { IUpdateCurrentUserInfoDto } from "./dtos/update-currentuser-info.dto";
 import { IUpdateUserDto } from "./dtos/update-user.dto";
 import { UserService } from "./user.service";
+import { IUpdateCurrentUserPasswordDto } from "./dtos/update-currentuser-password.dto";
+import createSendTokenAndResponse from "../../utils/createSendTokenAndResponse";
 
 export class UserController {
 	constructor(private readonly userService: UserService) {}
@@ -88,16 +90,16 @@ export class UserController {
 		});
 	}
 
-	// async updateCurrentUserPassword(req: Request, res: Response): Promise<void> {
-	// 	const updatedUser = await this.userService.updateCurrentUserPassword(
-	// 		req.user,
-	// 		req.body as IUpdateCurrentUserPasswordDto
-	// 	);
-	// 	res.status(200).json({
-	// 		status: "success",
-	// 		data: { updatedUser },
-	// 	});
-	// }
+	async updateCurrentUserPassword(req: Request, res: Response): Promise<void> {
+		// update the password
+		const updatedUser = await this.userService.updateCurrentUserPassword(
+			req.user,
+			req.body as IUpdateCurrentUserPasswordDto
+		);
+
+		// send the response
+		createSendTokenAndResponse(updatedUser!, 200, res);
+	}
 
 	/**
 	 ************* @description DELETE HANDLERS *************

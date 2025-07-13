@@ -26,10 +26,10 @@ router.patch(
 	"/update-me",
 	userController.updateCurrentUserInfo.bind(userController)
 );
-// router.patch(
-// 	"/update-me-password",
-// 	userController.updateCurrentUserPassword.bind(userController)
-// );
+router.patch(
+	"/update-me-password",
+	userController.updateCurrentUserPassword.bind(userController)
+);
 // router.delete(
 // 	"/delete-me",
 // 	userController.deleteCurrentUser.bind(userController)

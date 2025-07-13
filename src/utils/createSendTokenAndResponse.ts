@@ -22,7 +22,7 @@ const createSendTokenAndResponse = (
 		.header("x-auth-token", token)
 		.json({
 			status: "success",
-			data: { user: _.pick(user, ["id", "name", "email", "role"]) },
+			data: { user: _.pick(user, ["id", "name", "email", "role", "photo"]) },
 		});
 };
 
