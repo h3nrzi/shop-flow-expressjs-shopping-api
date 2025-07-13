@@ -4,13 +4,18 @@ import { UserController } from "./controllers/user.controller";
 import { UserService } from "./services/user.service";
 import { UserRepository } from "./user.repository";
 import User from "./user.entity";
+import { AuthController } from "./controllers/auth.controller";
+import { AuthService } from "./services/auth.service";
 
 const router = express.Router();
+
 const userRepository = new UserRepository(User);
 const userService = new UserService(userRepository);
+const authService = new AuthService(userRepository);
 const userController = new UserController(userService);
+const authController = new AuthController(authService);
 
-// router.post("/signup", userController.signup.bind(userController));
+router.post("/signup", authController.signup.bind(authController));
 // router.post("/login", authController.login);
 // router.post("/logout", authController.logout);
 // router.post("/forgot-password", authController.forgotPassword);
