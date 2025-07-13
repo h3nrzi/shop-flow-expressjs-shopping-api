@@ -25,6 +25,15 @@ export class UserRepository {
 		return user as IUserDoc;
 	}
 
+	async findByPasswordRestToken(
+		passwordResetToken: string
+	): Promise<IUserDoc | null> {
+		return this.userModel.findOne({
+			passwordResetToken,
+			passwordResetExpires: { $gt: Date.now() },
+		});
+	}
+
 	/**************************************************************
 	 ************* @description AGGREGATE OPERATIONS **************
 	 **************************************************************/

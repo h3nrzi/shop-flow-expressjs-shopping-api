@@ -17,9 +17,15 @@ const authController = new AuthController(authService);
 
 router.post("/signup", authController.signup.bind(authController));
 router.post("/login", authController.login.bind(authController));
-// router.post("/logout", authController.logout);
-// router.post("/forgot-password", authController.forgotPassword);
-// router.patch("/reset-password", authController.resetPassword);
+router.post("/logout", authController.logout.bind(authController));
+router.post(
+	"/forgot-password",
+	authController.forgotPassword.bind(authController)
+);
+router.patch(
+	"/reset-password",
+	authController.resetPassword.bind(authController)
+);
 
 /**
  ********************************************************************************

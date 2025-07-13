@@ -3,4 +3,5 @@ export interface ICreateUserDto {
 	email: string;
 	password: string;
 	passwordConfirmation: string;
+	active?: boolean;
 }

@@ -40,7 +40,6 @@ const userSchema = new Schema<IUserDoc>(
 		},
 		passwordConfirmation: {
 			type: String,
-			select: false,
 			minLength: 8,
 			validate: {
 				validator: function (this: IUserDoc, value: string): boolean {
@@ -51,16 +50,13 @@ const userSchema = new Schema<IUserDoc>(
 			required: [true, "لطفا تایید رمز عبور خود را وارد کنید"],
 		},
 		passwordChangedAt: {
-			select: false,
 			type: Date,
 		},
 		passwordResetToken: {
 			type: String,
-			select: false,
 		},
 		passwordResetExpires: {
 			type: Date,
-			select: false,
 		},
 	},
 	{
