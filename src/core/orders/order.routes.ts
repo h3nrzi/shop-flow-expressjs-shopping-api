@@ -27,7 +27,7 @@ router
 	.route("/get-myorders")
 	.get(
 		orderMiddleware.getMyOrders,
-		orderController.getMyOrders.bind(orderController)
+		orderController.getCurrentUserOrders.bind(orderController)
 	);
 
 // router
@@ -47,12 +47,13 @@ router.use(authMiddleware.restrictTo("admin"));
 
 router.route("/").get(orderController.getAllOrders.bind(orderController));
 
-// router
-// 	.patch(
-// 		orderMiddleware.beforeUpdate,
-// 		orderController.updateOrder.bind(orderController)
-// 	)
-// 	.delete(orderController.deleteOrder.bind(orderController));
+router
+	.route("/:id")
+	.patch(
+		orderMiddleware.beforeUpdate,
+		orderController.updateOrder.bind(orderController)
+	)
+	.delete(orderController.deleteOrder.bind(orderController));
 
 // router
 // 	.route("/:id/deliver")

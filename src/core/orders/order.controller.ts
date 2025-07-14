@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import { OrderService } from "./order.service";
+import { UpdateOrderDto } from "./dtos/update-order.dto";
+import { CreateOrderDto } from "./dtos/create-order.dto";
 
 export class OrderController {
 	constructor(private readonly orderService: OrderService) {}
@@ -17,8 +19,8 @@ export class OrderController {
 		});
 	};
 
-	getMyOrders = async (req: Request, res: Response): Promise<void> => {
-		const orders = await this.orderService.getMyOrders(req.user.id);
+	getCurrentUserOrders = async (req: Request, res: Response): Promise<void> => {
+		const orders = await this.orderService.getCurrentUserOrders(req.user.id);
 		res.status(200).json({
 			status: "success",
 			length: orders.length,
@@ -43,10 +45,39 @@ export class OrderController {
 	 ******************************************************** */
 
 	createOrder = async (req: Request, res: Response): Promise<void> => {
-		const order = await this.orderService.createOrder(req.body);
+		const order = await this.orderService.createOrder(
+			req.body as CreateOrderDto
+		);
 		res.status(201).json({
 			status: "success",
 			data: { order },
+		});
+	};
+
+	/*******************************************************
+	 ****************** PATCH HANDLERS **********************
+	 ******************************************************** */
+
+	updateOrder = async (req: Request, res: Response): Promise<void> => {
+		const order = await this.orderService.updateOrder(
+			req.params.id,
+			req.body as UpdateOrderDto,
+			req.user.id
+		);
+		res.status(200).json({
+			status: "success",
+			data: { order },
+		});
+	};
+
+	/*******************************************************
+	 ****************** DELETE HANDLERS *********************
+	 ******************************************************** */
+
+	deleteOrder = async (req: Request, res: Response): Promise<void> => {
+		await this.orderService.deleteOrder(req.params.id, req.user.id);
+		res.status(204).json({
+			status: "success",
 		});
 	};
 }
