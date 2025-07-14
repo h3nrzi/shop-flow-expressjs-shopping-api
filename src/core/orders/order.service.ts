@@ -10,6 +10,10 @@ export class OrderService {
 	 ****************** GET HANDLERS ************************
 	 ******************************************************** */
 
+	async getAllOrders(): Promise<OrderDoc[]> {
+		return this.orderRepository.findAll({});
+	}
+
 	async getMyOrders(userId: string): Promise<OrderDoc[]> {
 		return this.orderRepository.findAll({ user: userId });
 	}

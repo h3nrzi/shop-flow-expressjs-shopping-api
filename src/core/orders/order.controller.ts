@@ -8,6 +8,15 @@ export class OrderController {
 	 ****************** GET HANDLERS ************************
 	 ******************************************************** */
 
+	getAllOrders = async (req: Request, res: Response): Promise<void> => {
+		const orders = await this.orderService.getAllOrders();
+		res.status(200).json({
+			status: "success",
+			length: orders.length,
+			data: { orders },
+		});
+	};
+
 	getMyOrders = async (req: Request, res: Response): Promise<void> => {
 		const orders = await this.orderService.getMyOrders(req.user.id);
 		res.status(200).json({

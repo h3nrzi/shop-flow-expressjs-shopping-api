@@ -43,9 +43,9 @@ router.route("/:id").get(orderController.getOrderById.bind(orderController));
 /************************************************************************
  *********  @description Protect all routes below to admin only *********
  ************************************************************************/
-// router.use(authMiddleware.restrictTo("admin"));
+router.use(authMiddleware.restrictTo("admin"));
 
-// router.route("/").get(orderController.getAllOrders.bind(orderController));
+router.route("/").get(orderController.getAllOrders.bind(orderController));
 
 // router
 // 	.patch(
