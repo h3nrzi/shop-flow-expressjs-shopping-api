@@ -16,11 +16,6 @@ const orderController = new OrderController(orderService);
  ************************************************************************/
 router.use(authMiddleware.protect);
 
-/**
- * @description 	Create order
- * @route POST 		/orders
- * @access USER
- */
 router.route("/").post(
 	// TODO: Validation rules
 	// TODO: validateRequest
@@ -28,11 +23,6 @@ router.route("/").post(
 	orderController.createOrder.bind(orderController)
 );
 
-/**
- * @description 	Get current user orders
- * @route GET 		/orders/get-myorders
- * @access USER
- */
 router
 	.route("/get-myorders")
 	.get(
@@ -40,27 +30,12 @@ router
 		orderController.getMyOrders.bind(orderController)
 	);
 
-/**
- * @description 	Get all top selling products
- * @route GET 		/orders/top-selling-products
- * @access ADMIN
- */
 // router
 // 	.route("/top-selling-products")
 // 	.get(orderController.getAllTopsOrders.bind(orderController));
 
-/**
- * @description 	Get order by id
- * @route GET 		/orders/:id
- * @access USER
- */
 router.route("/:id").get(orderController.getOrderById.bind(orderController));
 
-/**
- * @description 	Update order to paid
- * @route PATCH 		/orders/:id/pay
- * @access USER
- */
 // router
 // 	.route("/:id/pay")
 // 	.patch(orderController.updateOrderToPaid.bind(orderController));
@@ -68,21 +43,10 @@ router.route("/:id").get(orderController.getOrderById.bind(orderController));
 /************************************************************************
  *********  @description Protect all routes below to admin only *********
  ************************************************************************/
-router.use(authMiddleware.restrictTo("admin"));
+// router.use(authMiddleware.restrictTo("admin"));
 
-/**
- * @description 	Get all orders
- * @route GET 		/orders
- * @access ADMIN
- */
 // router.route("/").get(orderController.getAllOrders.bind(orderController));
 
-/**
- * @description 	Update & delete order by id
- * @route PATCH 	/orders/:id
- * @route DELETE 	/orders/:id
- * @access ADMIN
- */
 // router
 // 	.patch(
 // 		orderMiddleware.beforeUpdate,
@@ -90,11 +54,6 @@ router.use(authMiddleware.restrictTo("admin"));
 // 	)
 // 	.delete(orderController.deleteOrder.bind(orderController));
 
-/**
- * @description 	Update order to delivered
- * @route PATCH 	/orders/:id/deliver
- * @access ADMIN
- */
 // router
 // 	.route("/:id/deliver")
 // 	.patch(orderController.updateOrderToDeliver.bind(orderController));
