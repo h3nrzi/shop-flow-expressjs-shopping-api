@@ -24,9 +24,9 @@ const shippingAddressSchema = new mongoose.Schema<IShippingAddress>({
 const orderSchema = new mongoose.Schema<OrderDoc>(
 	{
 		user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-		orderItems: { type: [orderItemSchema], required: true },
 
-		shippingAddress: { type: shippingAddressSchema, required: true },
+		orderItems: [orderItemSchema],
+		shippingAddress: shippingAddressSchema,
 		paymentMethod: { type: String, required: true },
 
 		itemsPrice: { type: Number, required: true },
@@ -34,13 +34,22 @@ const orderSchema = new mongoose.Schema<OrderDoc>(
 		taxPrice: { type: Number, default: 0.0 },
 		totalPrice: { type: Number, required: true },
 
+		// paymentResult: paymentResultSchema,
 		isPaid: { type: Boolean, default: false },
 		isDelivered: { type: Boolean, default: false },
 
-		paidAt: { type: Date }, // optional
-		deliveredAt: { type: Date }, // optional
+		paidAt: { type: Date },
+		deliveredAt: { type: Date },
 	},
-	{ timestamps: true }
+	{
+		timestamps: true,
+		toJSON: {
+			transform: (doc, ret) => {
+				delete ret._id;
+				delete ret.__v;
+			},
+		},
+	}
 );
 
 const Order = mongoose.model<OrderDoc, OrderModel>("Order", orderSchema);
