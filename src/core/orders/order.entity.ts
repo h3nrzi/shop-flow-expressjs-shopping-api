@@ -6,20 +6,40 @@ import {
 	OrderModel,
 } from "./order.interface";
 
-const orderItemSchema = new mongoose.Schema<IOrderItem>({
-	product: {
-		type: mongoose.Schema.Types.ObjectId,
-		ref: "Product",
-		required: true,
+const orderItemSchema = new mongoose.Schema<IOrderItem>(
+	{
+		product: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Product",
+			required: true,
+		},
+		qty: { type: Number, required: true },
 	},
-	qty: { type: Number, required: true },
-});
+	{
+		toJSON: {
+			transform: (doc, ret) => {
+				ret.id = ret._id;
+				delete ret._id;
+			},
+		},
+	}
+);
 
-const shippingAddressSchema = new mongoose.Schema<IShippingAddress>({
-	province: { type: String, required: true },
-	city: { type: String, required: true },
-	street: { type: String, required: true },
-});
+const shippingAddressSchema = new mongoose.Schema<IShippingAddress>(
+	{
+		province: { type: String, required: true },
+		city: { type: String, required: true },
+		street: { type: String, required: true },
+	},
+	{
+		toJSON: {
+			transform: (doc, ret) => {
+				ret.id = ret._id;
+				delete ret._id;
+			},
+		},
+	}
+);
 
 const orderSchema = new mongoose.Schema<OrderDoc>(
 	{
@@ -45,6 +65,7 @@ const orderSchema = new mongoose.Schema<OrderDoc>(
 		timestamps: true,
 		toJSON: {
 			transform: (doc, ret) => {
+				ret.id = ret._id;
 				delete ret._id;
 				delete ret.__v;
 			},

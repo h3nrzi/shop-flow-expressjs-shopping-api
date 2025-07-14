@@ -50,6 +50,13 @@ router
 // 	.get(orderController.getAllTopsOrders.bind(orderController));
 
 /**
+ * @description 	Get order by id
+ * @route GET 		/orders/:id
+ * @access USER
+ */
+router.route("/:id").get(orderController.getOrderById.bind(orderController));
+
+/**
  * @description 	Update order to paid
  * @route PATCH 		/orders/:id/pay
  * @access USER
@@ -71,16 +78,12 @@ router.use(authMiddleware.restrictTo("admin"));
 // router.route("/").get(orderController.getAllOrders.bind(orderController));
 
 /**
- * @description 	Get & update & delete order by id
- * @route GET 		/orders
- * @route GET 		/orders/:id
+ * @description 	Update & delete order by id
  * @route PATCH 	/orders/:id
  * @route DELETE 	/orders/:id
  * @access ADMIN
  */
 // router
-// 	.route("/:id")
-// 	.get(orderController.getOrderById.bind(orderController))
 // 	.patch(
 // 		orderMiddleware.beforeUpdate,
 // 		orderController.updateOrder.bind(orderController)
