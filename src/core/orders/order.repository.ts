@@ -1,3 +1,4 @@
+import { FilterQuery } from "mongoose";
 import { CreateOrderDto } from "./dtos/create-order.dto";
 import { UpdateOrderDto } from "./dtos/update-order.dto";
 import Order from "./order.entity";
@@ -10,8 +11,8 @@ export class OrderRepository {
 	 ****************** QUERIES OPERATIONS ********************
 	 ******************************************************** */
 
-	async findAll(): Promise<OrderDoc[]> {
-		return this.orderModel.find();
+	async findAll(query: FilterQuery<OrderDoc>): Promise<OrderDoc[]> {
+		return this.orderModel.find(query);
 	}
 
 	async findById(orderId: string): Promise<OrderDoc | null> {

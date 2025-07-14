@@ -5,7 +5,7 @@ import errorController from "../controllers/error";
 import viewRouter from "../routers/view";
 import { userRouter } from "../core/users/user.routes";
 import uploadRouter from "../routers/upload";
-import orderRouter from "../routers/order";
+import { orderRouter } from "../core/orders/order.routes";
 
 module.exports = (app: Express) => {
 	app.use("/admin", viewRouter);

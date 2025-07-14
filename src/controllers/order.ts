@@ -1,11 +1,10 @@
-import CrudController from "./crud";
 import { Populate } from "../types";
-import Order from "../models/order";
+import Order from "../core/orders/order.entity";
 import { RequestHandler, Response } from "express";
 import AppError from "../utils/appError";
 import Product from "../core/products/entities/product.entity";
 
-class OrderController extends CrudController {
+class OrderController {
 	constructor(populate?: Populate) {
 		super(Order, populate);
 	}
