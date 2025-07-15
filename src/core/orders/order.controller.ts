@@ -40,6 +40,15 @@ export class OrderController {
 		});
 	};
 
+	getAllTopsOrders = async (req: Request, res: Response): Promise<void> => {
+		const orders = await this.orderService.getAllTopsOrders(10);
+		res.status(200).json({
+			status: "success",
+			result: orders.length,
+			data: { orders },
+		});
+	};
+
 	/*******************************************************
 	 ****************** POST HANDLERS ***********************
 	 ******************************************************** */

@@ -15,6 +15,39 @@ export class OrderRepository {
 		return this.orderModel.find(query);
 	}
 
+	async findAllTops(limit: number): Promise<OrderDoc[]> {
+		return this.orderModel.aggregate([
+			{
+				$unwind: "$orderItems",
+			},
+			{
+				$group: {
+					_id: "$orderItems.product",
+					totalSold: { $sum: "$orderItems.qty" },
+				},
+			},
+			{
+				$sort: { totalSold: -1 },
+			},
+			{
+				$limit: limit,
+			},
+			{
+				$lookup: {
+					from: "products",
+					localField: "_id",
+					foreignField: "_id",
+					as: "product",
+				},
+			},
+			{
+				$project: {
+					_id: 0,
+				},
+			},
+		]);
+	}
+
 	async findById(orderId: string): Promise<OrderDoc | null> {
 		return this.orderModel.findById(orderId);
 	}

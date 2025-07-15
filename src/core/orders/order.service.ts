@@ -45,6 +45,10 @@ export class OrderService {
 		return order;
 	}
 
+	async getAllTopsOrders(limit: number): Promise<OrderDoc[]> {
+		return this.orderRepository.findAllTops(10);
+	}
+
 	/*******************************************************
 	 ****************** POST HANDLERS ************************
 	 ******************************************************** */

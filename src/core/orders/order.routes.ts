@@ -33,9 +33,9 @@ router
 		orderController.getCurrentUserOrders.bind(orderController)
 	);
 
-// router
-// 	.route("/top-selling-products")
-// 	.get(orderController.getAllTopsOrders.bind(orderController));
+router
+	.route("/top-selling-products")
+	.get(orderController.getAllTopsOrders.bind(orderController));
 
 router.route("/:id").get(orderController.getOrderById.bind(orderController));
 
