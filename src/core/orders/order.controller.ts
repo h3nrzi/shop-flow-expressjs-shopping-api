@@ -33,7 +33,6 @@ export class OrderController {
 			req.params.id,
 			req.user.id
 		);
-
 		res.status(200).json({
 			status: "success",
 			data: { order },
@@ -64,6 +63,16 @@ export class OrderController {
 			req.body as UpdateOrderDto,
 			req.user.id
 		);
+		res.status(200).json({
+			status: "success",
+			data: { order },
+		});
+	};
+
+	updateOrderToPaid = async (req: Request, res: Response): Promise<void> => {
+		const orderId = req.params.id;
+		const userId = req.user.id;
+		const order = await this.orderService.updateOrderToPaid(orderId, userId);
 		res.status(200).json({
 			status: "success",
 			data: { order },

@@ -1,14 +1,17 @@
 import express from "express";
+import authMiddleware from "../../middlewares/auth";
+import orderMiddleware from "../../middlewares/order";
+import Product from "../products/entities/product.entity";
+import ProductRepository from "../products/product.repository";
+import { OrderController } from "./order.controller";
 import Order from "./order.entity";
 import { OrderRepository } from "./order.repository";
 import { OrderService } from "./order.service";
-import { OrderController } from "./order.controller";
-import authMiddleware from "../../middlewares/auth";
-import orderMiddleware from "../../middlewares/order";
 
 const router = express.Router();
 const orderRepository = new OrderRepository(Order);
-const orderService = new OrderService(orderRepository);
+const productRepository = new ProductRepository(Product);
+const orderService = new OrderService(orderRepository, productRepository);
 const orderController = new OrderController(orderService);
 
 /************************************************************************
@@ -36,9 +39,9 @@ router
 
 router.route("/:id").get(orderController.getOrderById.bind(orderController));
 
-// router
-// 	.route("/:id/pay")
-// 	.patch(orderController.updateOrderToPaid.bind(orderController));
+router
+	.route("/:id/pay")
+	.patch(orderController.updateOrderToPaid.bind(orderController));
 
 /************************************************************************
  *********  @description Protect all routes below to admin only *********
