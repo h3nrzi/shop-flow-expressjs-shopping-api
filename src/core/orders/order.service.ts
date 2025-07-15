@@ -25,7 +25,8 @@ export class OrderService {
 
 	async getOrderById(
 		orderId: string,
-		userId: string
+		userId: string,
+		role: "admin" | "user"
 	): Promise<OrderDoc | null> {
 		// check if order exists, if not throw error
 		const order = await this.orderRepository.findById(orderId);
@@ -33,8 +34,8 @@ export class OrderService {
 			throw new AppError("هیچ سفارشی با این شناسه یافت نشد", 404);
 		}
 
-		// check if order belongs to user, if not throw error
-		if (order.user.toString() !== userId) {
+		// check if order belongs to user and role is user, if true throw error
+		if (order.user.toString() !== userId && role === "user") {
 			throw new AppError(
 				"شما اجازه دسترسی و ویرایش یا حذف این سفارش را ندارید",
 				403
@@ -59,20 +60,25 @@ export class OrderService {
 	async updateOrder(
 		orderId: string,
 		updateOrderDto: UpdateOrderDto,
-		userId: string
+		userId: string,
+		role: "admin" | "user"
 	): Promise<OrderDoc | null> {
 		// check if order exists, if not throw error
 		// check if order belongs to user, if not throw error
-		await this.getOrderById(orderId, userId);
+		await this.getOrderById(orderId, userId, role);
 
 		// update order
 		return this.orderRepository.updateById(orderId, updateOrderDto);
 	}
 
-	async updateOrderToPaid(orderId: string, userId: string) {
+	async updateOrderToPaid(
+		orderId: string,
+		userId: string,
+		role: "admin" | "user"
+	) {
 		// check if order exists, if not throw error
 		// check if order belongs to user, if not throw error
-		const order = await this.getOrderById(orderId, userId);
+		const order = await this.getOrderById(orderId, userId, role);
 
 		// update order
 		order!.isPaid = true;
@@ -100,14 +106,35 @@ export class OrderService {
 		return order!.save();
 	}
 
+	async updateOrderToDeliver(
+		orderId: string,
+		userId: string,
+		role: "admin" | "user"
+	) {
+		// check if order exists, if not throw error
+		// check if order belongs to user, if not throw error
+		const order = await this.getOrderById(orderId, userId, role);
+
+		// Update order and save it into database
+		order!.isDelivered = true;
+		order!.deliveredAt = new Date(Date.now());
+		const updatedOrder = await order!.save();
+
+		return updatedOrder;
+	}
+
 	/*******************************************************
 	 ****************** DELETE HANDLERS **********************
 	 ******************************************************** */
 
-	async deleteOrder(orderId: string, userId: string): Promise<OrderDoc | null> {
+	async deleteOrder(
+		orderId: string,
+		userId: string,
+		role: "admin" | "user"
+	): Promise<OrderDoc | null> {
 		// check if order exists, if not throw error
 		// check if order belongs to user, if not throw error
-		await this.getOrderById(orderId, userId);
+		await this.getOrderById(orderId, userId, role);
 
 		// delete order
 		return this.orderRepository.deleteById(orderId);

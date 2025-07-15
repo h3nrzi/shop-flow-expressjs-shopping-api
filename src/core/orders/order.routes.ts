@@ -58,8 +58,8 @@ router
 	)
 	.delete(orderController.deleteOrder.bind(orderController));
 
-// router
-// 	.route("/:id/deliver")
-// 	.patch(orderController.updateOrderToDeliver.bind(orderController));
+router
+	.route("/:id/deliver")
+	.patch(orderController.updateOrderToDeliver.bind(orderController));
 
 export { router as orderRouter };
