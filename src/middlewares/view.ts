@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
 import verifyToken from "../utils/verifyToken";
-import User from "../core/users/user.entity";
+import { userRepository } from "../core";
 
 // Only for rendered pages
 const isLoggedIn: RequestHandler = async (req, res, next) => {
@@ -14,7 +14,7 @@ const isLoggedIn: RequestHandler = async (req, res, next) => {
 			};
 
 			// Check if user still exists
-			const currentUser = await User.findById(decoded.id);
+			const currentUser = await userRepository.findById(decoded.id);
 			if (!currentUser) {
 				return res.redirect("/admin/login");
 			}
