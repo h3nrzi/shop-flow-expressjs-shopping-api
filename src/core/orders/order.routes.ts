@@ -1,5 +1,5 @@
 import express from "express";
-import { body } from "express-validator";
+import { body, param } from "express-validator";
 import { orderController } from "..";
 import authMiddleware from "../../middlewares/auth";
 import orderMiddleware from "../../middlewares/order";
@@ -14,7 +14,7 @@ router.use(authMiddleware.protect);
 
 router
 	.route("/")
-	.post([
+	.post(
 		body("orderItems").isArray().withMessage("محصولات الزامی است"),
 		body("shippingAddress").isObject().withMessage("آدرس الزامی است"),
 		body("paymentMethod").isString().withMessage("روش پرداخت الزامی است"),
@@ -23,9 +23,8 @@ router
 		body("taxPrice").isNumeric().withMessage("مالیات الزامی است"),
 		body("totalPrice").isNumeric().withMessage("قیمت کل الزامی است"),
 		validateRequest,
-		orderMiddleware.beforeCreate,
-		orderController.createOrder.bind(orderController),
-	]);
+		orderController.createOrder.bind(orderController)
+	);
 
 router
 	.route("/get-myorders")
@@ -38,11 +37,21 @@ router
 	.route("/top-selling-products")
 	.get(orderController.getAllTopsOrders.bind(orderController));
 
-router.route("/:id").get(orderController.getOrderById.bind(orderController));
+router
+	.route("/:id")
+	.get(
+		param("id").isMongoId().withMessage("شناسه سفارش معتبر نیست"),
+		validateRequest,
+		orderController.getOrderById.bind(orderController)
+	);
 
 router
 	.route("/:id/pay")
-	.patch(orderController.updateOrderToPaid.bind(orderController));
+	.patch(
+		param("id").isMongoId().withMessage("شناسه سفارش معتبر نیست"),
+		validateRequest,
+		orderController.updateOrderToPaid.bind(orderController)
+	);
 
 /************************************************************************
  *********  @description Protect all routes below to admin only *********
@@ -54,13 +63,22 @@ router.route("/").get(orderController.getAllOrders.bind(orderController));
 router
 	.route("/:id")
 	.patch(
-		orderMiddleware.beforeUpdate,
+		param("id").isMongoId().withMessage("شناسه سفارش معتبر نیست"),
+		validateRequest,
 		orderController.updateOrder.bind(orderController)
 	)
-	.delete(orderController.deleteOrder.bind(orderController));
+	.delete(
+		param("id").isMongoId().withMessage("شناسه سفارش معتبر نیست"),
+		validateRequest,
+		orderController.deleteOrder.bind(orderController)
+	);
 
 router
 	.route("/:id/deliver")
-	.patch(orderController.updateOrderToDeliver.bind(orderController));
+	.patch(
+		param("id").isMongoId().withMessage("شناسه سفارش معتبر نیست"),
+		validateRequest,
+		orderController.updateOrderToDeliver.bind(orderController)
+	);
 
 export { router as orderRouter };
