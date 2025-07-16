@@ -5,6 +5,7 @@ import Review from "./entities/review.model";
 import { IReviewDoc } from "./interfaces/review.interface";
 
 export class ReviewRepository {
+	constructor(private readonly reviewModel: typeof Review) {}
 	async getAll(
 		query: any,
 		initialFilter?: any
@@ -14,7 +15,11 @@ export class ReviewRepository {
 		total: number;
 		reviews: IReviewDoc[];
 	}> {
-		const features = new APIFeatures(Review as any, query, initialFilter);
+		const features = new APIFeatures(
+			this.reviewModel as any,
+			query,
+			initialFilter
+		);
 		const { pagination, skip, total } = await features
 			.filter()
 			.search()
@@ -28,21 +33,23 @@ export class ReviewRepository {
 	}
 
 	create(createReviewDto: ICreateReviewDto): Promise<IReviewDoc> {
-		return Review.create(createReviewDto);
+		return this.reviewModel.create(createReviewDto);
 	}
 
 	getById(id: string): Promise<IReviewDoc | null> {
-		return Review.findById(id);
+		return this.reviewModel.findById(id);
 	}
 
 	update(
 		id: string,
 		updateReviewDto: IUpdateReviewDto
 	): Promise<IReviewDoc | null> {
-		return Review.findByIdAndUpdate(id, updateReviewDto, { new: true });
+		return this.reviewModel.findByIdAndUpdate(id, updateReviewDto, {
+			new: true,
+		});
 	}
 
 	delete(id: string): Promise<IReviewDoc | null> {
-		return Review.findByIdAndDelete(id);
+		return this.reviewModel.findByIdAndDelete(id);
 	}
 }

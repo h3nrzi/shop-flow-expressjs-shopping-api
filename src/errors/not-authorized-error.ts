@@ -3,8 +3,8 @@ import { CustomError } from "./custom-error";
 export class NotAuthorizedError extends CustomError {
 	statusCode = 401;
 
-	constructor() {
-		super("دسترسی غیرمجاز");
+	constructor(message?: string) {
+		super(message || "دسترسی غیرمجاز");
 
 		// Only because we are extending a built in class
 		Object.setPrototypeOf(this, NotAuthorizedError.prototype);
@@ -13,7 +13,7 @@ export class NotAuthorizedError extends CustomError {
 	serializeErrors() {
 		return [
 			{
-				message: "دسترسی غیرمجاز",
+				message: this.message,
 			},
 		];
 	}

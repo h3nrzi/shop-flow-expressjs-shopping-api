@@ -1,18 +1,9 @@
 import express from "express";
+import { orderController } from "..";
 import authMiddleware from "../../middlewares/auth";
 import orderMiddleware from "../../middlewares/order";
-import Product from "../products/entities/product.entity";
-import ProductRepository from "../products/product.repository";
-import { OrderController } from "./order.controller";
-import Order from "./order.entity";
-import { OrderRepository } from "./order.repository";
-import { OrderService } from "./order.service";
 
 const router = express.Router();
-const orderRepository = new OrderRepository(Order);
-const productRepository = new ProductRepository(Product);
-const orderService = new OrderService(orderRepository, productRepository);
-const orderController = new OrderController(orderService);
 
 /************************************************************************
  *********  @description Protect all routes below to users only *********
