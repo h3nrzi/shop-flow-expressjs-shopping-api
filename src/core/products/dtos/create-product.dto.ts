@@ -2,7 +2,7 @@ export interface CreateProductDto {
 	name: string;
 	description: string;
 	image: string;
-	images: string[];
+	images?: string[];
 	countInStock: number;
 	isAvailable: boolean;
 	brand: string;
