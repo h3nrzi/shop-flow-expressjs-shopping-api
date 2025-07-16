@@ -1,5 +1,5 @@
 export interface CreateOrderDto {
-	orderItems: { product: string; qty: number }[];
+	orderItems: { productId: string; qty: number }[];
 	shippingAddress: { province: string; city: string; street: string };
 	paymentMethod: string;
 	itemsPrice: number;

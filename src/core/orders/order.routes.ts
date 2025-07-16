@@ -15,8 +15,15 @@ router.use(authMiddleware.protect);
 router
 	.route("/")
 	.post(
-		body("orderItems").isArray().withMessage("محصولات الزامی است"),
-		body("shippingAddress").isObject().withMessage("آدرس الزامی است"),
+		body("orderItems[*].productId")
+			.isMongoId()
+			.withMessage("شناسه محصول معتبر نیست"),
+		body("orderItems[*].qty")
+			.isInt({ min: 1 })
+			.withMessage("تعداد محصولات الزامی است"),
+		body("shippingAddress.province").isString().withMessage("استان الزامی است"),
+		body("shippingAddress.city").isString().withMessage("شهر الزامی است"),
+		body("shippingAddress.street").isString().withMessage("خیابان الزامی است"),
 		body("paymentMethod").isString().withMessage("روش پرداخت الزامی است"),
 		body("itemsPrice").isNumeric().withMessage("قیمت محصولات الزامی است"),
 		body("shippingPrice").isNumeric().withMessage("قیمت حمل و نقل الزامی است"),
@@ -64,6 +71,40 @@ router
 	.route("/:id")
 	.patch(
 		param("id").isMongoId().withMessage("شناسه سفارش معتبر نیست"),
+		body("orderItems[*].productId")
+			.optional()
+			.isMongoId()
+			.withMessage("شناسه محصول معتبر نیست"),
+		body("orderItems[*].qty")
+			.optional()
+			.isInt({ min: 1 })
+			.withMessage("تعداد محصولات الزامی است"),
+		body("shippingAddress.province")
+			.optional()
+			.isString()
+			.withMessage("استان الزامی است"),
+		body("shippingAddress.city")
+			.optional()
+			.isString()
+			.withMessage("شهر الزامی است"),
+		body("shippingAddress.street")
+			.optional()
+			.isString()
+			.withMessage("خیابان الزامی است"),
+		body("paymentMethod")
+			.optional()
+			.isString()
+			.withMessage("روش پرداخت الزامی است"),
+		body("itemsPrice")
+			.optional()
+			.isNumeric()
+			.withMessage("قیمت محصولات الزامی است"),
+		body("shippingPrice")
+			.optional()
+			.isNumeric()
+			.withMessage("قیمت حمل و نقل الزامی است"),
+		body("taxPrice").optional().isNumeric().withMessage("مالیات الزامی است"),
+		body("totalPrice").optional().isNumeric().withMessage("قیمت کل الزامی است"),
 		validateRequest,
 		orderController.updateOrder.bind(orderController)
 	)

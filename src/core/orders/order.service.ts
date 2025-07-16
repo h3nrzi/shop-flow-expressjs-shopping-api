@@ -93,7 +93,7 @@ export class OrderService {
 		order!.paidAt = new Date();
 
 		// update product stock
-		order!.orderItems.forEach(async item => {
+		for (const item of order!.orderItems) {
 			// check if product exists, if not throw error
 			const productId = item.product.toString();
 			const product = await this.productRepository.getOne(productId);
@@ -102,13 +102,14 @@ export class OrderService {
 			}
 
 			// check if product has enough stock, if not throw error
-			if (product.countInStock <= 0 && product.countInStock < item.qty) {
+			if (product.countInStock <= 0 || product.countInStock < item.qty) {
 				throw new BadRequestError("موجودی محصول کافی نیست");
 			}
 
 			// update product stock
 			product.countInStock -= item.qty;
-		});
+			await product.save();
+		}
 
 		// save order and return it
 		return order!.save();

@@ -60,6 +60,10 @@ export class OrderRepository {
 		return this.orderModel.create({
 			...payload,
 			user: userId,
+			orderItems: payload.orderItems.map(item => ({
+				product: item.productId,
+				qty: item.qty,
+			})),
 		});
 	}
 
