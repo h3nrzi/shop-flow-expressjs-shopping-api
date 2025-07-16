@@ -1,11 +1,11 @@
-import { NotFoundError } from "../../errors/not-found-error";
+import { BadRequestError } from "../../errors/bad-request-error";
 import { ForbiddenError } from "../../errors/forbidden-error";
+import { NotFoundError } from "../../errors/not-found-error";
 import ProductRepository from "../products/product.repository";
 import { CreateOrderDto } from "./dtos/create-order.dto";
 import { UpdateOrderDto } from "./dtos/update-order.dto";
 import { OrderDoc } from "./order.interface";
 import { OrderRepository } from "./order.repository";
-import { BadRequestError } from "../../errors/bad-request-error";
 
 export class OrderService {
 	constructor(
@@ -54,8 +54,11 @@ export class OrderService {
 	 ****************** POST HANDLERS ************************
 	 ******************************************************** */
 
-	async createOrder(createOrderDto: CreateOrderDto): Promise<OrderDoc> {
-		return this.orderRepository.create(createOrderDto);
+	async createOrder(
+		createOrderDto: CreateOrderDto,
+		userId: string
+	): Promise<OrderDoc> {
+		return this.orderRepository.create(createOrderDto, userId);
 	}
 
 	/*******************************************************

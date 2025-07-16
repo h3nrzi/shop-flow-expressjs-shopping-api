@@ -56,8 +56,11 @@ export class OrderRepository {
 	 ****************** MUTATIONS OPERATIONS ******************
 	 ******************************************************** */
 
-	async create(payload: CreateOrderDto): Promise<OrderDoc> {
-		return this.orderModel.create(payload);
+	async create(payload: CreateOrderDto, userId: string): Promise<OrderDoc> {
+		return this.orderModel.create({
+			...payload,
+			user: userId,
+		});
 	}
 
 	async updateById(

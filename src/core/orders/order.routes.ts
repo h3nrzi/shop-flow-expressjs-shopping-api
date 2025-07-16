@@ -1,7 +1,9 @@
 import express from "express";
+import { body } from "express-validator";
 import { orderController } from "..";
 import authMiddleware from "../../middlewares/auth";
 import orderMiddleware from "../../middlewares/order";
+import { validateRequest } from "../../middlewares/validate-request";
 
 const router = express.Router();
 
@@ -10,12 +12,20 @@ const router = express.Router();
  ************************************************************************/
 router.use(authMiddleware.protect);
 
-router.route("/").post(
-	// TODO: Validation rules
-	// TODO: validateRequest
-	orderMiddleware.beforeCreate,
-	orderController.createOrder.bind(orderController)
-);
+router
+	.route("/")
+	.post([
+		body("orderItems").isArray().withMessage("محصولات الزامی است"),
+		body("shippingAddress").isObject().withMessage("آدرس الزامی است"),
+		body("paymentMethod").isString().withMessage("روش پرداخت الزامی است"),
+		body("itemsPrice").isNumeric().withMessage("قیمت محصولات الزامی است"),
+		body("shippingPrice").isNumeric().withMessage("قیمت حمل و نقل الزامی است"),
+		body("taxPrice").isNumeric().withMessage("مالیات الزامی است"),
+		body("totalPrice").isNumeric().withMessage("قیمت کل الزامی است"),
+		validateRequest,
+		orderMiddleware.beforeCreate,
+		orderController.createOrder.bind(orderController),
+	]);
 
 router
 	.route("/get-myorders")

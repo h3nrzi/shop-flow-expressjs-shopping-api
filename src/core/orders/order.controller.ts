@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { OrderService } from "./order.service";
 import { UpdateOrderDto } from "./dtos/update-order.dto";
+import { OrderService } from "./order.service";
 import { CreateOrderDto } from "./dtos/create-order.dto";
 
 export class OrderController {
@@ -54,9 +54,9 @@ export class OrderController {
 	 ******************************************************** */
 
 	createOrder = async (req: Request, res: Response): Promise<void> => {
-		const order = await this.orderService.createOrder(
-			req.body as CreateOrderDto
-		);
+		const createOrderDto = req.body as CreateOrderDto;
+		const userId = req.user.id;
+		const order = await this.orderService.createOrder(createOrderDto, userId);
 		res.status(201).json({
 			status: "success",
 			data: { order },
