@@ -1,6 +1,6 @@
 import { ReviewRepository } from "./review.repository";
-import { IReviewDoc } from "./interfaces/review.interface";
-import AppError from "../../utils/appError";
+import { IReviewDoc } from "./review.interface";
+import { NotFoundError } from "../../errors/not-found-error";
 import { ICreateReviewDto } from "./dtos/create-review.dto";
 import { IUpdateReviewDto } from "./dtos/update-review.dto";
 
@@ -18,7 +18,7 @@ export class ReviewService {
 			await this.reviewRepository.getAll(query, initialFilter);
 
 		if (query.page && skip >= total) {
-			throw new AppError("این صفحه وجود ندارد", 404);
+			throw new NotFoundError("این صفحه وجود ندارد");
 		}
 
 		return { pagination, reviews };
@@ -28,7 +28,7 @@ export class ReviewService {
 		// check if review exists, if not throw error
 		const review = await this.reviewRepository.getById(id);
 		if (!review) {
-			throw new AppError("نظری با این شناسه یافت نشد", 404);
+			throw new NotFoundError("نظری با این شناسه یافت نشد");
 		}
 
 		// return review

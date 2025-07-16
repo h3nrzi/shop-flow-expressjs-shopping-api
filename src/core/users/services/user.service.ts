@@ -1,4 +1,6 @@
-import AppError from "../../../utils/appError";
+import { BadRequestError } from "../../../errors/bad-request-error";
+import { NotAuthorizedError } from "../../../errors/not-authorized-error";
+import { NotFoundError } from "../../../errors/not-found-error";
 import { ICreateUserDto } from "../dtos/create-user.dto";
 import { IUpdateCurrentUserInfoDto } from "../dtos/update-currentuser-info.dto";
 import { IUpdateCurrentUserPasswordDto } from "../dtos/update-currentuser-password.dto";
@@ -24,7 +26,7 @@ export class UserService {
 		// find the user, if not found, throw an error
 		const targetUser = await this.userRepository.findById(userId, select);
 		if (!targetUser) {
-			throw new AppError("هیچ موردی با این شناسه یافت نشد", 404);
+			throw new NotFoundError("هیچ موردی با این شناسه یافت نشد");
 		}
 
 		return targetUser;
@@ -52,7 +54,7 @@ export class UserService {
 				startDate = undefined;
 				break;
 			default:
-				throw new AppError("زمان وارد شده نامعتبر است", 400);
+				throw new BadRequestError("زمان وارد شده نامعتبر است");
 		}
 
 		return this.userRepository.findCountByDay(endDate, startDate);
@@ -68,7 +70,7 @@ export class UserService {
 			createUserDto.email
 		);
 		if (targetUser) {
-			throw new AppError("این ایمیل قبلا استفاده شده است", 400);
+			throw new BadRequestError("این ایمیل قبلا استفاده شده است");
 		}
 
 		return this.userRepository.create(createUserDto);
@@ -89,9 +91,8 @@ export class UserService {
 		// if the user is admin, only main admin can update the user
 		if (targetUser!.role === "admin") {
 			if (currentUser.email !== "admin@gmail.com") {
-				throw new AppError(
-					"شما نمی توانید حساب ادمین را آپدیت کنید فقط مدیر سیستم می تواند این کار را انجام دهد",
-					401
+				throw new NotAuthorizedError(
+					"شما نمی توانید حساب ادمین را آپدیت کنید فقط مدیر سیستم می تواند این کار را انجام دهد"
 				);
 			}
 		}
@@ -105,9 +106,8 @@ export class UserService {
 	): Promise<IUserDoc | null> {
 		// if password or passwordConfirmation is provided, throw an error
 		if (updateUserDto.password || updateUserDto.passwordConfirmation) {
-			throw new AppError(
-				"با این درخواست نمی توانید رمز عبور را آپدیت کنید",
-				400
+			throw new BadRequestError(
+				"با این درخواست نمی توانید رمز عبور را آپدیت کنید"
 			);
 		}
 
@@ -132,7 +132,7 @@ export class UserService {
 			updateCurrentUserPasswordDto.passwordCurrent
 		);
 		if (!correct) {
-			throw new AppError("رمز عبور فعلی شما اشتباه است", 401);
+			throw new NotAuthorizedError("رمز عبور فعلی شما اشتباه است");
 		}
 
 		// ---- UPDATE PASSWORD MANUALLY ----
@@ -159,9 +159,8 @@ export class UserService {
 		// if the user is admin, only main admin can delete the user
 		if (targetUser!.role === "admin") {
 			if (currentUser.email !== "admin@gmail.com") {
-				throw new AppError(
-					"شما نمی توانید حساب ادمین را حذف کنید فقط مدیر سیستم می تواند این کار را انجام دهد",
-					401
+				throw new NotAuthorizedError(
+					"شما نمی توانید حساب ادمین را حذف کنید فقط مدیر سیستم می تواند این کار را انجام دهد"
 				);
 			}
 		}

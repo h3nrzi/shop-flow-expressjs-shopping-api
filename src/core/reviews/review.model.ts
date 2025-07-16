@@ -1,6 +1,6 @@
 import { Schema, model, Model, Query } from "mongoose";
-import { IReviewDoc, ReviewModel } from "../interfaces/review.interface";
-import Product from "../../products/entities/product.entity";
+import { IReviewDoc, ReviewModel } from "./review.interface";
+import Product from "../products/product.entity";
 
 const reviewSchema = new Schema<IReviewDoc>({
 	comment: {

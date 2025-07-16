@@ -1,9 +1,9 @@
 import { PopulateOptions } from "mongoose";
-import { ProductDoc } from "./interfaces/product.interface";
+import { ProductDoc } from "./product.interface";
 import ProductRepository from "./product.repository";
 import { CreateProductDto } from "./dtos/create-product.dto";
 import { UpdateProductDto } from "./dtos/update-product.dto";
-import AppError from "../../utils/appError";
+import { NotFoundError } from "../../errors/not-found-error";
 
 export class ProductService {
 	constructor(private readonly productRepository: ProductRepository) {}
@@ -16,7 +16,7 @@ export class ProductService {
 			await this.productRepository.getAll(query, initialFilter);
 
 		if (query.page && skip >= total) {
-			throw new AppError("این صفحه وجود ندارد", 404);
+			throw new NotFoundError("این صفحه وجود ندارد");
 		}
 
 		return { pagination, products };
@@ -28,7 +28,7 @@ export class ProductService {
 	): Promise<ProductDoc> {
 		const product = await this.productRepository.getOne(id, populate);
 		if (!product) {
-			throw new AppError("هیچ محصولی با این شناسه یافت نشد", 404);
+			throw new NotFoundError("هیچ محصولی با این شناسه یافت نشد");
 		}
 
 		return product;
@@ -47,7 +47,7 @@ export class ProductService {
 			updateProductDto
 		);
 		if (!product) {
-			throw new AppError("هیچ محصولی با این شناسه یافت نشد", 404);
+			throw new NotFoundError("هیچ محصولی با این شناسه یافت نشد");
 		}
 
 		return product;
@@ -56,7 +56,7 @@ export class ProductService {
 	async deleteProduct(id: string): Promise<ProductDoc> {
 		const product = await this.productRepository.deleteOne(id);
 		if (!product) {
-			throw new AppError("هیچ محصولی با این شناسه یافت نشد", 404);
+			throw new NotFoundError("هیچ محصولی با این شناسه یافت نشد");
 		}
 
 		return product;

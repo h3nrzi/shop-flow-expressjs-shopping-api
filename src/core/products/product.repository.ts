@@ -1,9 +1,9 @@
 import { Model, PopulateOptions } from "mongoose";
-import { ProductDoc } from "./interfaces/product.interface";
+import { ProductDoc } from "./product.interface";
 import { CreateProductDto } from "./dtos/create-product.dto";
 import { UpdateProductDto } from "./dtos/update-product.dto";
 import APIFeatures from "../../utils/apiFeatures";
-import Product from "./entities/product.entity";
+import Product from "./product.entity";
 
 class ProductRepository {
 	constructor(private readonly Model: Model<ProductDoc>) {}

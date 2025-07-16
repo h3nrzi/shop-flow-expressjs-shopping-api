@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { ProductDoc } from "../products/interfaces/product.interface";
+import { ProductDoc } from "../products/product.interface";
 import { IUserDoc } from "../users/user.interface";
 
 export interface IOrderItem {

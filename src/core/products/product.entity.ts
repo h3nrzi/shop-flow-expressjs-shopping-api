@@ -1,6 +1,6 @@
 import { model, Schema } from "mongoose";
 import slugify from "slugify";
-import { ProductDoc, ProductModel } from "../interfaces/product.interface";
+import { ProductDoc, ProductModel } from "./product.interface";
 
 // ================================
 // Schema

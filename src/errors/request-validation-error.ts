@@ -12,12 +12,12 @@ export class RequestValidationError extends CustomError {
 		Object.setPrototypeOf(this, RequestValidationError.prototype);
 	}
 
-	serializeErrors() {
+	serializeErrors = () => {
 		return this.errors.map(error => {
 			return {
-				field: error.type,
+				field: error.type === "field" ? error.path : null,
 				message: error.msg,
 			};
 		});
-	}
+	};
 }

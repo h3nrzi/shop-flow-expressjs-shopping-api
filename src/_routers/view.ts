@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import Product from "../core/products/entities/product.entity";
+import Product from "../core/products/product.entity";
 import viewMiddleware from "../middlewares/view";
 
 const viewRouter = express.Router();

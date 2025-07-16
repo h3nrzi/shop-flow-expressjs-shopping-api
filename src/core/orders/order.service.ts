@@ -1,9 +1,11 @@
-import AppError from "../../utils/appError";
+import { NotFoundError } from "../../errors/not-found-error";
+import { ForbiddenError } from "../../errors/forbidden-error";
 import ProductRepository from "../products/product.repository";
 import { CreateOrderDto } from "./dtos/create-order.dto";
 import { UpdateOrderDto } from "./dtos/update-order.dto";
 import { OrderDoc } from "./order.interface";
 import { OrderRepository } from "./order.repository";
+import { BadRequestError } from "../../errors/bad-request-error";
 
 export class OrderService {
 	constructor(
@@ -31,14 +33,13 @@ export class OrderService {
 		// check if order exists, if not throw error
 		const order = await this.orderRepository.findById(orderId);
 		if (!order) {
-			throw new AppError("هیچ سفارشی با این شناسه یافت نشد", 404);
+			throw new NotFoundError("هیچ سفارشی با این شناسه یافت نشد");
 		}
 
 		// check if order belongs to user and role is user, if true throw error
 		if (order.user.toString() !== userId && role === "user") {
-			throw new AppError(
-				"شما اجازه دسترسی و ویرایش یا حذف این سفارش را ندارید",
-				403
+			throw new ForbiddenError(
+				"شما اجازه دسترسی و ویرایش یا حذف این سفارش را ندارید"
 			);
 		}
 
@@ -94,12 +95,12 @@ export class OrderService {
 			const productId = item.product.toString();
 			const product = await this.productRepository.getOne(productId);
 			if (!product) {
-				throw new AppError("محصولی با این شناسه یافت نشد", 404);
+				throw new NotFoundError("محصولی با این شناسه یافت نشد");
 			}
 
 			// check if product has enough stock, if not throw error
 			if (product.countInStock <= 0 && product.countInStock < item.qty) {
-				throw new AppError("موجودی محصول کافی نیست", 400);
+				throw new BadRequestError("موجودی محصول کافی نیست");
 			}
 
 			// update product stock

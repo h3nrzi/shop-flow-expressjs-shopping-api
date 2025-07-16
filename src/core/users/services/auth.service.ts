@@ -1,4 +1,8 @@
-import AppError from "../../../utils/appError";
+import crypto from "node:crypto";
+import { BadRequestError } from "../../../errors/bad-request-error";
+import { InternalServerError } from "../../../errors/internal-server-error";
+import { NotAuthorizedError } from "../../../errors/not-authorized-error";
+import { NotFoundError } from "../../../errors/not-found-error";
 import sendEmail from "../../../utils/email";
 import { IForgotPasswordDto } from "../dtos/forgot.password.dto";
 import { ILoginDto } from "../dtos/login.dto";
@@ -6,7 +10,6 @@ import { IResetPasswordDto } from "../dtos/reset.password.dto";
 import { ISignupDto } from "../dtos/signup.dto";
 import { IUserDoc } from "../user.interface";
 import { UserRepository } from "../user.repository";
-import crypto from "node:crypto";
 
 export class AuthService {
 	constructor(private readonly userRepository: UserRepository) {}
@@ -20,7 +23,7 @@ export class AuthService {
 		const { name, email, password, passwordConfirmation } = signupDto;
 		const existingUser = await this.userRepository.findByEmail(email);
 		if (existingUser) {
-			throw new AppError("این ایمیل قبلا استفاده شده است", 400);
+			throw new BadRequestError("این ایمیل قبلا استفاده شده است");
 		}
 
 		// create the user and return it
@@ -40,20 +43,19 @@ export class AuthService {
 			"+password"
 		);
 		if (!authenticatedUser) {
-			throw new AppError("ایمیل یا رمز عبور اشتباه است!", 401);
+			throw new NotAuthorizedError("ایمیل یا رمز عبور اشتباه است!");
 		}
 
 		// check if the user is active, if not, throw an error
 		if (!authenticatedUser.active) {
-			throw new AppError(
-				"کاربری که به این ایمیل مرتبط است مسدود شده است! لطفا با پشتیبانی تماس بگیرید.",
-				404
+			throw new NotFoundError(
+				"کاربری که به این ایمیل مرتبط است مسدود شده است! لطفا با پشتیبانی تماس بگیرید."
 			);
 		}
 
 		// check if the password is correct, if not, throw an error
 		const correct = await authenticatedUser.correctPassword(password);
-		if (!correct) throw new AppError("ایمیل یا رمز عبور اشتباه است!", 401);
+		if (!correct) throw new NotAuthorizedError("ایمیل یا رمز عبور اشتباه است!");
 
 		return authenticatedUser;
 	}
@@ -62,14 +64,13 @@ export class AuthService {
 		// check if user exists, if not, throw an error
 		const user = await this.userRepository.findByEmail(forgotPasswordDto.email);
 		if (!user) {
-			throw new AppError("هیچ کاربری با این آدرس ایمیل وجود ندارد.", 404);
+			throw new NotFoundError("هیچ کاربری با این آدرس ایمیل وجود ندارد.");
 		}
 
 		// check if the user is active, if not, throw an error
 		if (!user.active) {
-			throw new AppError(
-				"کاربری که به این ایمیل مرتبط است مسدود شده است!",
-				401
+			throw new NotAuthorizedError(
+				"کاربری که به این ایمیل مرتبط است مسدود شده است!"
 			);
 		}
 
@@ -91,9 +92,8 @@ export class AuthService {
 			user.passwordResetExpires = undefined;
 			await user.save({ validateBeforeSave: false });
 
-			throw new AppError(
-				"در ارسال ایمیل خطایی روی داد. لطفا بعدا دوباره امتحان کنید!",
-				500
+			throw new InternalServerError(
+				"در ارسال ایمیل خطایی روی داد. لطفا بعدا دوباره امتحان کنید!"
 			);
 		}
 	}
@@ -108,14 +108,14 @@ export class AuthService {
 	): Promise<IUserDoc> {
 		// check if the reset token is provided, if not, throw an error
 		if (!resetToken) {
-			throw new AppError("لطفا ریست توکن را ارائه دهید", 400);
+			throw new BadRequestError("لطفا ریست توکن را ارائه دهید");
 		}
 
 		// check if the reset token is valid, if not, throw an error
 		const token = crypto.createHash("sha256").update(resetToken).digest("hex");
 		const user = await this.userRepository.findByPasswordRestToken(token);
 		if (!user) {
-			throw new AppError("توکن نامعتبر است یا منقضی شده است!", 401);
+			throw new NotAuthorizedError("توکن نامعتبر است یا منقضی شده است!");
 		}
 
 		// update the user password and reset the password reset token

@@ -1,8 +1,8 @@
 import APIFeatures from "../../utils/apiFeatures";
 import { ICreateReviewDto } from "./dtos/create-review.dto";
 import { IUpdateReviewDto } from "./dtos/update-review.dto";
-import Review from "./entities/review.model";
-import { IReviewDoc } from "./interfaces/review.interface";
+import Review from "./review.model";
+import { IReviewDoc } from "./review.interface";
 
 export class ReviewRepository {
 	constructor(private readonly reviewModel: typeof Review) {}

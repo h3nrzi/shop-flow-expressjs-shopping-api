@@ -7,6 +7,7 @@ export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
 	// in this case, we are sending a 400 error and logging the error
 	if (err.name === "CastError") {
 		return res.status(400).send({
+			status: "error",
 			errors: [
 				{
 					field: err.path,
