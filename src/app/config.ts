@@ -9,7 +9,7 @@ import hpp from "hpp";
 const cookieParser = require("cookie-parser");
 import cors from "cors";
 import swaggerUi from "swagger-ui-express";
-import swaggerSpec from "../swagger/config";
+import swaggerSpec from "../_swagger/config";
 import securityMiddleware from "../middlewares/security";
 import { IUserDoc } from "../core/users/user.interface";
 
