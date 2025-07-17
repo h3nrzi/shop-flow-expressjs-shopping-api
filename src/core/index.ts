@@ -16,6 +16,8 @@ import { UserService } from "./users/services/user.service";
 import { UserController } from "./users/controllers/user.controller";
 import { AuthService } from "./users/services/auth.service";
 import { AuthController } from "./users/controllers/auth.controller";
+import { UploadService } from "./uploads/upload.service";
+import { UploadController } from "./uploads/upload.controller";
 
 // Repositories Injection
 export const orderRepository = new OrderRepository(Order);
@@ -29,6 +31,7 @@ export const productService = new ProductService(productRepository);
 export const reviewService = new ReviewService(reviewRepository);
 export const userService = new UserService(userRepository);
 export const authService = new AuthService(userRepository);
+export const uploadService = new UploadService();
 
 // Controllers Injection
 export const orderController = new OrderController(orderService);
@@ -36,3 +39,4 @@ export const productController = new ProductController(productService);
 export const reviewController = new ReviewController(reviewService);
 export const userController = new UserController(userService);
 export const authController = new AuthController(authService);
+export const uploadController = new UploadController(uploadService);
