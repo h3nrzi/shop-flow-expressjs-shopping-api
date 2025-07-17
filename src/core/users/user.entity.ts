@@ -1,43 +1,19 @@
-import { model, Schema } from "mongoose";
-import validator from "validator";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { IUserDoc, IUserModel } from "./user.interface";
-import crypto from "node:crypto";
+import { model, Schema } from "mongoose";
 import ms from "ms";
+import crypto from "node:crypto";
+import { IUserDoc, IUserModel } from "./user.interface";
 
 const userSchema = new Schema<IUserDoc>(
 	{
-		name: {
-			type: String,
-			required: [true, "نام کاربر الزامی است"],
-		},
-		email: {
-			type: String,
-			unique: true,
-			lowercase: true,
-			validate: [validator.isEmail, "لطفا یک آدرس ایمیل معتبر وارد کنید"],
-			required: [true, "لطفا آدرس ایمیل خود را وارد کنید"],
-		},
-		photo: {
-			type: String,
-		},
-		role: {
-			type: String,
-			enum: ["user", "admin"],
-			default: "user",
-		},
-		active: {
-			type: Boolean,
-			default: true,
-		},
+		name: { type: String, required: true },
+		email: { type: String, unique: true, lowercase: true, required: true },
+		photo: { type: String },
+		role: { type: String, enum: ["user", "admin"], default: "user" },
+		active: { type: Boolean, default: true },
 
-		password: {
-			type: String,
-			select: false,
-			minLength: 8,
-			required: [true, "لطفا رمز عبور خود را وارد کنید"],
-		},
+		password: { type: String, select: false, minLength: 8, required: true },
 		passwordConfirmation: {
 			type: String,
 			minLength: 8,
@@ -45,19 +21,13 @@ const userSchema = new Schema<IUserDoc>(
 				validator: function (this: IUserDoc, value: string): boolean {
 					return value === this.password;
 				},
-				message: "رمزهای عبور یکسان نیستند!",
 			},
-			required: [true, "لطفا تایید رمز عبور خود را وارد کنید"],
+			required: true,
 		},
-		passwordChangedAt: {
-			type: Date,
-		},
-		passwordResetToken: {
-			type: String,
-		},
-		passwordResetExpires: {
-			type: Date,
-		},
+
+		passwordChangedAt: { type: Date },
+		passwordResetToken: { type: String },
+		passwordResetExpires: { type: Date },
 	},
 	{
 		toJSON: {
@@ -70,7 +40,7 @@ const userSchema = new Schema<IUserDoc>(
 		},
 		toObject: { virtuals: true },
 		timestamps: true,
-	},
+	}
 );
 
 //////////// Instance Methods ////////////

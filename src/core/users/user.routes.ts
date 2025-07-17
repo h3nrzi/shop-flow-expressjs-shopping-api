@@ -7,10 +7,21 @@ import { validateRequest } from "../../middlewares/validate-request";
 const router = express.Router();
 
 router.post("/signup", [
-	body("name").isString().withMessage("نام کاربر الزامی است"),
+	body("name").notEmpty().withMessage("نام کاربر الزامی است"),
+	body("name").isString().withMessage("فرمت نام کاربر باید string باشد"),
+	body("email").notEmpty().withMessage("ایمیل کاربر الزامی است"),
 	body("email").isEmail().withMessage("ایمیل وارد شده معتبر نیست"),
-	body("password").isString().withMessage("رمز عبور کاربر الزامی است"),
-	body("passwordConfirmation").isString().withMessage("تایید رمز عبور کاربر الزامی است"),
+	body("password").notEmpty().withMessage("رمز عبور کاربر الزامی است"),
+	body("password").isString().withMessage("فرمت رمز عبور کاربر باید string باشد"),
+	body("password").isLength({ min: 8 }).withMessage("رمز عبور کاربر باید حداقل 8 کاراکتر باشد"),
+	body("passwordConfirmation").notEmpty().withMessage("تایید رمز عبور کاربر الزامی است"),
+	body("passwordConfirmation").isString().withMessage("فرمت تایید رمز عبور کاربر باید string باشد"),
+	body("passwordConfirmation")
+		.custom((value, { req }) => {
+			if (value !== req.body.password) return false;
+			return true;
+		})
+		.withMessage("رمز عبور و تایید رمز عبور باید یکسان باشد"),
 	validateRequest,
 	authController.signup.bind(authController),
 ]);
@@ -71,7 +82,8 @@ router
 	.route("/")
 	.get(userController.findAllUsers.bind(userController))
 	.post([
-		body("name").isString().withMessage("نام کاربر الزامی است"),
+		body("name").notEmpty().withMessage("نام کاربر الزامی است"),
+		body("name").isString().withMessage("فرمت نام کاربر باید string باشد"),
 		body("email").isEmail().withMessage("ایمیل وارد شده معتبر نیست"),
 		body("password").isString().withMessage("رمز عبور کاربر الزامی است"),
 		body("passwordConfirmation").isString().withMessage("تایید رمز عبور کاربر الزامی است"),
