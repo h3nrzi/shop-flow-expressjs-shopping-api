@@ -2,6 +2,8 @@ import express from "express";
 import authMiddleware from "../../middlewares/auth";
 import reviewMiddleware from "../../middlewares/review";
 import { reviewController } from "..";
+import { body, param } from "express-validator";
+import { validateRequest } from "../../middlewares/validate-request";
 
 const router = express.Router({ mergeParams: true });
 
@@ -15,20 +17,42 @@ router.get("/", [
 	reviewController.getAllReviews.bind(reviewController),
 ]);
 
-router.get("/:id", reviewController.getReviewById.bind(reviewController));
+router.get(
+	"/:id",
+	param("id").isMongoId().withMessage("شناسه نظر معتبر نیست"),
+	validateRequest,
+	reviewController.getReviewById.bind(reviewController)
+);
 
 router.post("/", [
-	// TODO: validateRequest
+	body("rating").isInt({ min: 1, max: 5 }).withMessage("امتیاز الزامی است"),
+	body("comment").isString().withMessage("نظر الزامی است"),
+	body("product").isMongoId().withMessage("شناسه محصول الزامی است"),
+	body("user").isMongoId().withMessage("شناسه کاربر الزامی است"),
+	validateRequest,
 	reviewMiddleware.beforeCreate,
 	reviewController.createReview.bind(reviewController),
 ]);
 
 router.patch("/:id", [
-	// TODO: validateRequest
+	param("id").isMongoId().withMessage("شناسه نظر معتبر نیست"),
+	body("rating")
+		.optional()
+		.isInt({ min: 1, max: 5 })
+		.withMessage("امتیاز الزامی است"),
+	body("comment").optional().isString().withMessage("نظر الزامی است"),
+	body("product").optional().isMongoId().withMessage("شناسه محصول الزامی است"),
+	body("user").optional().isMongoId().withMessage("شناسه کاربر الزامی است"),
+	validateRequest,
 	reviewMiddleware.beforeUpdate,
 	reviewController.updateReview.bind(reviewController),
 ]);
 
-router.delete("/:id", reviewController.deleteReview.bind(reviewController));
+router.delete(
+	"/:id",
+	param("id").isMongoId().withMessage("شناسه نظر معتبر نیست"),
+	validateRequest,
+	reviewController.deleteReview.bind(reviewController)
+);
 
 export { router as reviewRouter };
