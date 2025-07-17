@@ -5,7 +5,7 @@ import { userRouter } from "../core/users/user.routes";
 import { NotFoundError } from "../errors/not-found-error";
 import { errorHandler } from "../middlewares/error-handler";
 import { uploadRouter } from "../core/uploads/upload.routes";
-import viewRouter from "../_routers/view";
+import { viewRouter } from "../core/views/view.routes";
 
 module.exports = (app: Express) => {
 	app.get("/", (req, res) => res.send("API is running..."));

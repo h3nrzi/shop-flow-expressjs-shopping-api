@@ -1,6 +1,6 @@
 import { Schema, model, Model, Query } from "mongoose";
 import { IReviewDoc, ReviewModel } from "./review.interface";
-import Product from "../products/product.entity";
+import { ProductModel } from "../products/product.entity";
 
 const reviewSchema = new Schema<IReviewDoc>({
 	comment: {
@@ -46,7 +46,7 @@ reviewSchema.statics.calcAverageRatings = async function (this: Model<IReviewDoc
 		},
 	]);
 
-	await Product.findByIdAndUpdate(productId, {
+	await ProductModel.findByIdAndUpdate(productId, {
 		rating: stats[0]?.rating || 0,
 		numReviews: stats[0]?.numReviews || 0,
 	});

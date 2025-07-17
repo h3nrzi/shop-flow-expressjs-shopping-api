@@ -69,7 +69,7 @@ const productSchema = new Schema<ProductDoc>(
 		toJSON: { virtuals: true },
 		toObject: { virtuals: true },
 		timestamps: true,
-	},
+	}
 );
 
 // ================================
@@ -93,5 +93,5 @@ productSchema.pre("save", function (next) {
 	next();
 });
 
-const Product = model<ProductDoc, ProductModel>("Product", productSchema);
-export default Product;
+const ProductModel = model<ProductDoc, ProductModel>("Product", productSchema);
+export { ProductModel };

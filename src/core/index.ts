@@ -2,7 +2,7 @@ import { OrderController } from "./orders/order.controller";
 import { OrderRepository } from "./orders/order.repository";
 import { OrderService } from "./orders/order.service";
 import Order from "./orders/order.entity";
-import Product from "./products/product.entity";
+import { ProductModel } from "./products/product.entity";
 import ProductRepository from "./products/product.repository";
 import { UserRepository } from "./users/user.repository";
 import User from "./users/user.entity";
@@ -18,10 +18,12 @@ import { AuthService } from "./users/services/auth.service";
 import { AuthController } from "./users/controllers/auth.controller";
 import { UploadService } from "./uploads/upload.service";
 import { UploadController } from "./uploads/upload.controller";
+import { ViewService } from "./views/view.service";
+import { ViewController } from "./views/view.controller";
 
 // Repositories Injection
 export const orderRepository = new OrderRepository(Order);
-export const productRepository = new ProductRepository(Product);
+export const productRepository = new ProductRepository(ProductModel);
 export const userRepository = new UserRepository(User);
 export const reviewRepository = new ReviewRepository(Review);
 
@@ -32,6 +34,7 @@ export const reviewService = new ReviewService(reviewRepository);
 export const userService = new UserService(userRepository);
 export const authService = new AuthService(userRepository);
 export const uploadService = new UploadService();
+export const viewService = new ViewService(ProductModel);
 
 // Controllers Injection
 export const orderController = new OrderController(orderService);
@@ -40,3 +43,4 @@ export const reviewController = new ReviewController(reviewService);
 export const userController = new UserController(userService);
 export const authController = new AuthController(authService);
 export const uploadController = new UploadController(uploadService);
+export const viewController = new ViewController(viewService);
