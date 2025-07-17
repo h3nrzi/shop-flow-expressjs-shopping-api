@@ -10,7 +10,10 @@ const fileFilter = (req: Request, file: Express.Multer.File, callback: multer.Fi
 	const extname = fileTypes.test(path.extname(file.originalname).toLowerCase());
 	const mimetype = fileTypes.test(file.mimetype);
 
-	if (!extname || !mimetype) callback(new BadRequestError("تصویر فقط پشتیبانی میشود!"));
+	if (!extname || !mimetype) {
+		callback(new BadRequestError("تصویر فقط پشتیبانی میشود!"));
+	}
+
 	callback(null, true);
 };
 
