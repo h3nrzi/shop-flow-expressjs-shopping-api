@@ -1,16 +1,41 @@
 import express from "express";
 import { authController, userController } from "..";
 import authMiddleware from "../../middlewares/auth";
-import { body } from "express-validator";
+import { body, param } from "express-validator";
 import { validateRequest } from "../../middlewares/validate-request";
 
 const router = express.Router();
 
-router.post("/signup", authController.signup.bind(authController));
-router.post("/login", authController.login.bind(authController));
+router.post("/signup", [
+	body("name").isString().withMessage("نام کاربر الزامی است"),
+	body("email").isEmail().withMessage("ایمیل وارد شده معتبر نیست"),
+	body("password").isString().withMessage("رمز عبور کاربر الزامی است"),
+	body("passwordConfirmation").isString().withMessage("تایید رمز عبور کاربر الزامی است"),
+	validateRequest,
+	authController.signup.bind(authController),
+]);
+
+router.post("/login", [
+	body("email").isEmail().withMessage("ایمیل وارد شده معتبر نیست"),
+	body("password").isString().withMessage("رمز عبور کاربر الزامی است"),
+	validateRequest,
+	authController.login.bind(authController),
+]);
+
 router.post("/logout", authController.logout.bind(authController));
-router.post("/forgot-password", authController.forgotPassword.bind(authController));
-router.patch("/reset-password", authController.resetPassword.bind(authController));
+
+router.post("/forgot-password", [
+	body("email").isEmail().withMessage("ایمیل وارد شده معتبر نیست"),
+	validateRequest,
+	authController.forgotPassword.bind(authController),
+]);
+
+router.patch("/reset-password", [
+	body("password").isString().withMessage("رمز عبور کاربر الزامی است"),
+	body("passwordConfirmation").isString().withMessage("تایید رمز عبور کاربر الزامی است"),
+	validateRequest,
+	authController.resetPassword.bind(authController),
+]);
 
 /************************************************************************
  *********  @description Protect all routes below to users only *********
@@ -18,8 +43,23 @@ router.patch("/reset-password", authController.resetPassword.bind(authController
 router.use(authMiddleware.protect);
 
 router.get("/get-me", userController.getCurrentUser.bind(userController));
-router.patch("/update-me", userController.updateCurrentUserInfo.bind(userController));
-router.patch("/update-me-password", userController.updateCurrentUserPassword.bind(userController));
+
+router.patch("/update-me", [
+	body("name").optional().isString().withMessage("فرمت نام کاربر معتبر نیست"),
+	body("email").optional().isEmail().withMessage("فرمت ایمیل کاربر معتبر نیست"),
+	body("photo").optional().isString().withMessage("فرمت تصویر کاربر معتبر نیست"),
+	validateRequest,
+	userController.updateCurrentUserInfo.bind(userController),
+]);
+
+router.patch("/update-me-password", [
+	body("passwordCurrent").isString().withMessage("رمز عبور فعلی کاربر الزامی است"),
+	body("password").isString().withMessage("رمز عبور کاربر الزامی است"),
+	body("passwordConfirmation").isString().withMessage("تایید رمز عبور کاربر الزامی است"),
+	validateRequest,
+	userController.updateCurrentUserPassword.bind(userController),
+]);
+
 router.delete("/delete-me", userController.deleteCurrentUser.bind(userController));
 
 /************************************************************************
@@ -30,26 +70,38 @@ router.use(authMiddleware.restrictTo("admin"));
 router
 	.route("/")
 	.get(userController.findAllUsers.bind(userController))
-	.post(
+	.post([
 		body("name").isString().withMessage("نام کاربر الزامی است"),
-		body("email").isEmail().withMessage("ایمیل کاربر الزامی است"),
+		body("email").isEmail().withMessage("ایمیل وارد شده معتبر نیست"),
 		body("password").isString().withMessage("رمز عبور کاربر الزامی است"),
 		body("passwordConfirmation").isString().withMessage("تایید رمز عبور کاربر الزامی است"),
-		body("active").optional().isBoolean().withMessage("وضعیت کاربر الزامی است"),
+		body("active").optional().isBoolean().withMessage("فرمت وضعیت کاربر معتبر نیست"),
 		validateRequest,
 		userController.createUser.bind(userController),
-	);
+	]);
 
 router.route("/get-users-count").get(userController.findUsersCountByDay.bind(userController));
 
 router
 	.route("/:id")
-	.get(userController.findUserById.bind(userController))
-	.delete(userController.deleteUser.bind(userController))
-	.patch(
-		// TODO: Validation rules
-		// TODO: validateRequest
+	.get([
+		param("id").isMongoId().withMessage("شناسه کاربر معتبر نیست"),
+		validateRequest,
+		userController.findUserById.bind(userController),
+	])
+	.delete([
+		param("id").isMongoId().withMessage("شناسه کاربر معتبر نیست"),
+		validateRequest,
+		userController.deleteUser.bind(userController),
+	])
+	.patch([
+		param("id").isMongoId().withMessage("شناسه کاربر معتبر نیست"),
+		body("name").optional().isString().withMessage("فرمت نام کاربر معتبر نیست"),
+		body("email").optional().isEmail().withMessage("فرمت ایمیل کاربر معتبر نیست"),
+		body("photo").optional().isString().withMessage("فرمت تصویر کاربر معتبر نیست"),
+		body("active").optional().isBoolean().withMessage("فرمت وضعیت کاربر معتبر نیست"),
+		validateRequest,
 		userController.updateUser.bind(userController),
-	);
+	]);
 
 export { router as userRouter };
