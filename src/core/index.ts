@@ -24,10 +24,7 @@ export const userRepository = new UserRepository(User);
 export const reviewRepository = new ReviewRepository(Review);
 
 // Services Injection
-export const orderService = new OrderService(
-	orderRepository,
-	productRepository
-);
+export const orderService = new OrderService(orderRepository, productRepository);
 export const productService = new ProductService(productRepository);
 export const reviewService = new ReviewService(reviewRepository);
 export const userService = new UserService(userRepository);

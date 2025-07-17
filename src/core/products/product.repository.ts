@@ -10,7 +10,7 @@ class ProductRepository {
 
 	async getAll(
 		query: any,
-		initialFilter?: any
+		initialFilter?: any,
 	): Promise<{
 		pagination: any;
 		skip: number;
@@ -18,12 +18,7 @@ class ProductRepository {
 		products: ProductDoc[];
 	}> {
 		const features = new APIFeatures(Product as any, query, initialFilter);
-		const { pagination, skip, total } = await features
-			.filter()
-			.search()
-			.sort()
-			.limitFields()
-			.pagination();
+		const { pagination, skip, total } = await features.filter().search().sort().limitFields().pagination();
 
 		const products = await features.dbQuery;
 

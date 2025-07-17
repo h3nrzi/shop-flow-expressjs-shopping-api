@@ -25,9 +25,7 @@ export class UserRepository {
 		return user as IUserDoc;
 	}
 
-	async findByPasswordRestToken(
-		passwordResetToken: string
-	): Promise<IUserDoc | null> {
+	async findByPasswordRestToken(passwordResetToken: string): Promise<IUserDoc | null> {
 		return this.userModel.findOne({
 			passwordResetToken,
 			passwordResetExpires: { $gt: Date.now() },
@@ -38,13 +36,8 @@ export class UserRepository {
 	 ************* @description AGGREGATE OPERATIONS **************
 	 **************************************************************/
 
-	async findCountByDay(
-		endDate: Date,
-		startDate?: Date
-	): Promise<{ count: number; date: Date }[]> {
-		const match = startDate
-			? { createdAt: { $gte: startDate, $lte: endDate } }
-			: {};
+	async findCountByDay(endDate: Date, startDate?: Date): Promise<{ count: number; date: Date }[]> {
+		const match = startDate ? { createdAt: { $gte: startDate, $lte: endDate } } : {};
 
 		const result = await this.userModel.aggregate([
 			{
@@ -87,10 +80,7 @@ export class UserRepository {
 
 	async update(
 		userId: string,
-		payload:
-			| IUpdateUserDto
-			| IUpdateCurrentUserInfoDto
-			| IUpdateCurrentUserPasswordDto
+		payload: IUpdateUserDto | IUpdateCurrentUserInfoDto | IUpdateCurrentUserPasswordDto,
 	): Promise<IUserDoc | null> {
 		return this.userModel.findByIdAndUpdate(userId, payload, {
 			new: true, // return the updated user

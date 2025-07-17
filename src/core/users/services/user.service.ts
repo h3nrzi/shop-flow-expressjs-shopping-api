@@ -19,10 +19,7 @@ export class UserService {
 		return this.userRepository.findAll();
 	}
 
-	async findUserById(
-		userId: string,
-		select?: string
-	): Promise<IUserDoc | null> {
+	async findUserById(userId: string, select?: string): Promise<IUserDoc | null> {
 		// find the user, if not found, throw an error
 		const targetUser = await this.userRepository.findById(userId, select);
 		if (!targetUser) {
@@ -32,9 +29,7 @@ export class UserService {
 		return targetUser;
 	}
 
-	async findUsersCountByDay(
-		period: string
-	): Promise<{ count: number; date: Date }[]> {
+	async findUsersCountByDay(period: string): Promise<{ count: number; date: Date }[]> {
 		let startDate: Date | undefined;
 		const endDate = new Date();
 
@@ -66,9 +61,7 @@ export class UserService {
 
 	async createUser(createUserDto: ICreateUserDto): Promise<IUserDoc> {
 		// check if the email is already in use, if so, throw an error
-		const targetUser = await this.userRepository.findByEmail(
-			createUserDto.email
-		);
+		const targetUser = await this.userRepository.findByEmail(createUserDto.email);
 		if (targetUser) {
 			throw new BadRequestError("این ایمیل قبلا استفاده شده است");
 		}
@@ -80,11 +73,7 @@ export class UserService {
 	 ************* @description PATCH HANDLERS *************
 	 *******************************************************/
 
-	async updateUser(
-		userId: string,
-		updateUserDto: IUpdateUserDto,
-		currentUser: IUserDoc
-	): Promise<IUserDoc | null> {
+	async updateUser(userId: string, updateUserDto: IUpdateUserDto, currentUser: IUserDoc): Promise<IUserDoc | null> {
 		// find the user, if not found, throw an error
 		const targetUser = await this.findUserById(userId);
 
@@ -92,7 +81,7 @@ export class UserService {
 		if (targetUser!.role === "admin") {
 			if (currentUser.email !== "admin@gmail.com") {
 				throw new NotAuthorizedError(
-					"شما نمی توانید حساب ادمین را آپدیت کنید فقط مدیر سیستم می تواند این کار را انجام دهد"
+					"شما نمی توانید حساب ادمین را آپدیت کنید فقط مدیر سیستم می تواند این کار را انجام دهد",
 				);
 			}
 		}
@@ -102,13 +91,11 @@ export class UserService {
 
 	async updateCurrentUserInfo(
 		currentUser: IUserDoc,
-		updateUserDto: IUpdateCurrentUserInfoDto
+		updateUserDto: IUpdateCurrentUserInfoDto,
 	): Promise<IUserDoc | null> {
 		// if password or passwordConfirmation is provided, throw an error
 		if (updateUserDto.password || updateUserDto.passwordConfirmation) {
-			throw new BadRequestError(
-				"با این درخواست نمی توانید رمز عبور را آپدیت کنید"
-			);
+			throw new BadRequestError("با این درخواست نمی توانید رمز عبور را آپدیت کنید");
 		}
 
 		const updatedUser = await this.userRepository.update(currentUser.id, {
@@ -122,15 +109,13 @@ export class UserService {
 
 	async updateCurrentUserPassword(
 		currentUser: IUserDoc,
-		updateCurrentUserPasswordDto: IUpdateCurrentUserPasswordDto
+		updateCurrentUserPasswordDto: IUpdateCurrentUserPasswordDto,
 	): Promise<IUserDoc | null> {
 		// find the user, if not found, throw an error
 		const targetUser = await this.findUserById(currentUser.id, "+password");
 
 		// check if the password current is correct
-		const correct = await targetUser!.correctPassword(
-			updateCurrentUserPasswordDto.passwordCurrent
-		);
+		const correct = await targetUser!.correctPassword(updateCurrentUserPasswordDto.passwordCurrent);
 		if (!correct) {
 			throw new NotAuthorizedError("رمز عبور فعلی شما اشتباه است");
 		}
@@ -160,7 +145,7 @@ export class UserService {
 		if (targetUser!.role === "admin") {
 			if (currentUser.email !== "admin@gmail.com") {
 				throw new NotAuthorizedError(
-					"شما نمی توانید حساب ادمین را حذف کنید فقط مدیر سیستم می تواند این کار را انجام دهد"
+					"شما نمی توانید حساب ادمین را حذف کنید فقط مدیر سیستم می تواند این کار را انجام دهد",
 				);
 			}
 		}

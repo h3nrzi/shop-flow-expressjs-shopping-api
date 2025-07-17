@@ -12,16 +12,13 @@ const router = express.Router({ mergeParams: true });
  ************************************************************************/
 router.use(authMiddleware.protect);
 
-router.get("/", [
-	reviewMiddleware.beforeGetAll,
-	reviewController.getAllReviews.bind(reviewController),
-]);
+router.get("/", [reviewMiddleware.beforeGetAll, reviewController.getAllReviews.bind(reviewController)]);
 
 router.get(
 	"/:id",
 	param("id").isMongoId().withMessage("شناسه نظر معتبر نیست"),
 	validateRequest,
-	reviewController.getReviewById.bind(reviewController)
+	reviewController.getReviewById.bind(reviewController),
 );
 
 router.post("/", [
@@ -36,10 +33,7 @@ router.post("/", [
 
 router.patch("/:id", [
 	param("id").isMongoId().withMessage("شناسه نظر معتبر نیست"),
-	body("rating")
-		.optional()
-		.isInt({ min: 1, max: 5 })
-		.withMessage("امتیاز الزامی است"),
+	body("rating").optional().isInt({ min: 1, max: 5 }).withMessage("امتیاز الزامی است"),
 	body("comment").optional().isString().withMessage("نظر الزامی است"),
 	body("product").optional().isMongoId().withMessage("شناسه محصول الزامی است"),
 	body("user").optional().isMongoId().withMessage("شناسه کاربر الزامی است"),
@@ -52,7 +46,7 @@ router.delete(
 	"/:id",
 	param("id").isMongoId().withMessage("شناسه نظر معتبر نیست"),
 	validateRequest,
-	reviewController.deleteReview.bind(reviewController)
+	reviewController.deleteReview.bind(reviewController),
 );
 
 export { router as reviewRouter };

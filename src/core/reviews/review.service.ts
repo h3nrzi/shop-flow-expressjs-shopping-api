@@ -9,13 +9,12 @@ export class ReviewService {
 
 	async getAllReviews(
 		query: any,
-		initialFilter?: any
+		initialFilter?: any,
 	): Promise<{
 		pagination: any;
 		reviews: IReviewDoc[];
 	}> {
-		const { pagination, skip, total, reviews } =
-			await this.reviewRepository.getAll(query, initialFilter);
+		const { pagination, skip, total, reviews } = await this.reviewRepository.getAll(query, initialFilter);
 
 		if (query.page && skip >= total) {
 			throw new NotFoundError("این صفحه وجود ندارد");
@@ -39,10 +38,7 @@ export class ReviewService {
 		return this.reviewRepository.create(createReviewDto);
 	}
 
-	async updateReview(
-		id: string,
-		updateReviewDto: IUpdateReviewDto
-	): Promise<IReviewDoc | null> {
+	async updateReview(id: string, updateReviewDto: IUpdateReviewDto): Promise<IReviewDoc | null> {
 		// check if review exists, if not throw error
 		await this.getReviewById(id);
 

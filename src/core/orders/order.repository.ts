@@ -67,10 +67,7 @@ export class OrderRepository {
 		});
 	}
 
-	async updateById(
-		orderId: string,
-		payload: UpdateOrderDto
-	): Promise<OrderDoc | null> {
+	async updateById(orderId: string, payload: UpdateOrderDto): Promise<OrderDoc | null> {
 		return this.orderModel.findByIdAndUpdate(orderId, payload, { new: true });
 	}
 

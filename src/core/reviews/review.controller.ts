@@ -5,9 +5,7 @@ export class ReviewController {
 	constructor(private readonly reviewService: ReviewService) {}
 
 	async getAllReviews(req: Request, res: Response): Promise<void> {
-		const { pagination, reviews } = await this.reviewService.getAllReviews(
-			req.query
-		);
+		const { pagination, reviews } = await this.reviewService.getAllReviews(req.query);
 
 		res.status(200).json({
 			status: "success",

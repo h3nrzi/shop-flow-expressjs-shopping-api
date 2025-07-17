@@ -3,11 +3,7 @@ import { IUserDoc } from "../core/users/user.interface";
 import _ from "lodash";
 import ms from "ms";
 
-const createSendTokenAndResponse = (
-	user: IUserDoc,
-	statusCode: number,
-	res: Response
-) => {
+const createSendTokenAndResponse = (user: IUserDoc, statusCode: number, res: Response) => {
 	const token = user.signToken();
 
 	res.cookie("jwt", token, {

@@ -38,19 +38,14 @@ export class AuthService {
 	async login(loginDto: ILoginDto): Promise<IUserDoc> {
 		// check if the email is already in use, if so, throw an error
 		const { email, password } = loginDto;
-		const authenticatedUser = await this.userRepository.findByEmail(
-			email,
-			"+password"
-		);
+		const authenticatedUser = await this.userRepository.findByEmail(email, "+password");
 		if (!authenticatedUser) {
 			throw new NotAuthorizedError("ایمیل یا رمز عبور اشتباه است!");
 		}
 
 		// check if the user is active, if not, throw an error
 		if (!authenticatedUser.active) {
-			throw new NotFoundError(
-				"کاربری که به این ایمیل مرتبط است مسدود شده است! لطفا با پشتیبانی تماس بگیرید."
-			);
+			throw new NotFoundError("کاربری که به این ایمیل مرتبط است مسدود شده است! لطفا با پشتیبانی تماس بگیرید.");
 		}
 
 		// check if the password is correct, if not, throw an error
@@ -69,9 +64,7 @@ export class AuthService {
 
 		// check if the user is active, if not, throw an error
 		if (!user.active) {
-			throw new NotAuthorizedError(
-				"کاربری که به این ایمیل مرتبط است مسدود شده است!"
-			);
+			throw new NotAuthorizedError("کاربری که به این ایمیل مرتبط است مسدود شده است!");
 		}
 
 		// create a password reset token
@@ -92,9 +85,7 @@ export class AuthService {
 			user.passwordResetExpires = undefined;
 			await user.save({ validateBeforeSave: false });
 
-			throw new InternalServerError(
-				"در ارسال ایمیل خطایی روی داد. لطفا بعدا دوباره امتحان کنید!"
-			);
+			throw new InternalServerError("در ارسال ایمیل خطایی روی داد. لطفا بعدا دوباره امتحان کنید!");
 		}
 	}
 
@@ -102,10 +93,7 @@ export class AuthService {
 	 ************* @description PATCH HANDLERS ******************
 	 ************************************************************/
 
-	async resetPassword(
-		resetPasswordDto: IResetPasswordDto,
-		resetToken?: string
-	): Promise<IUserDoc> {
+	async resetPassword(resetPasswordDto: IResetPasswordDto, resetToken?: string): Promise<IUserDoc> {
 		// check if the reset token is provided, if not, throw an error
 		if (!resetToken) {
 			throw new BadRequestError("لطفا ریست توکن را ارائه دهید");

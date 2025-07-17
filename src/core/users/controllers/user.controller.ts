@@ -24,9 +24,7 @@ export class UserController {
 
 	async findUsersCountByDay(req: Request, res: Response): Promise<void> {
 		const period = req.query.period as string | undefined;
-		const usersCountByDay = await this.userService.findUsersCountByDay(
-			period ?? "all"
-		);
+		const usersCountByDay = await this.userService.findUsersCountByDay(period ?? "all");
 
 		res.status(200).json({
 			status: "success",
@@ -68,11 +66,7 @@ export class UserController {
 	 *******************************************************/
 
 	async updateUser(req: Request, res: Response): Promise<void> {
-		const user = await this.userService.updateUser(
-			req.params.id,
-			req.body as IUpdateUserDto,
-			req.user
-		);
+		const user = await this.userService.updateUser(req.params.id, req.body as IUpdateUserDto, req.user);
 		res.status(200).json({
 			status: "success",
 			data: { user },
@@ -80,10 +74,7 @@ export class UserController {
 	}
 
 	async updateCurrentUserInfo(req: Request, res: Response): Promise<void> {
-		const updatedUser = await this.userService.updateCurrentUserInfo(
-			req.user,
-			req.body as IUpdateCurrentUserInfoDto
-		);
+		const updatedUser = await this.userService.updateCurrentUserInfo(req.user, req.body as IUpdateCurrentUserInfoDto);
 		res.status(200).json({
 			status: "success",
 			data: { updatedUser },
@@ -94,7 +85,7 @@ export class UserController {
 		// update the password
 		const updatedUser = await this.userService.updateCurrentUserPassword(
 			req.user,
-			req.body as IUpdateCurrentUserPasswordDto
+			req.body as IUpdateCurrentUserPasswordDto,
 		);
 
 		// send the response

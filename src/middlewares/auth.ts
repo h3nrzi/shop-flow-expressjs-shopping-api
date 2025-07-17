@@ -7,15 +7,12 @@ const protect: RequestHandler = async (req, res, next) => {
 	// get token from headers or cookies
 	const { authorization } = req.headers;
 	let token: string | undefined = undefined;
-	if (authorization && authorization.startsWith("Bearer"))
-		token = authorization.split(" ")[1];
+	if (authorization && authorization.startsWith("Bearer")) token = authorization.split(" ")[1];
 	else if (req.cookies.jwt) token = req.cookies.jwt;
 
 	// if no token, throw an error
 	if (!token) {
-		throw new NotAuthorizedError(
-			"شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
-		);
+		throw new NotAuthorizedError("شما وارد نشده اید! لطفا برای دسترسی وارد شوید");
 	}
 
 	// check if token is valid, if not throw an NotAuthorizedError
@@ -38,8 +35,7 @@ const protect: RequestHandler = async (req, res, next) => {
 	}
 
 	if (user.changePasswordAfter(decoded.iat)) {
-		const msg =
-			"کاربر اخیرا رمز عبور را تغییر داده است! لطفا دوباره وارد شوید.";
+		const msg = "کاربر اخیرا رمز عبور را تغییر داده است! لطفا دوباره وارد شوید.";
 		throw new NotAuthorizedError(msg);
 	}
 

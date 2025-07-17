@@ -1,20 +1,16 @@
 import express from "express";
 import { authController, userController } from "..";
 import authMiddleware from "../../middlewares/auth";
+import { body } from "express-validator";
+import { validateRequest } from "../../middlewares/validate-request";
 
 const router = express.Router();
 
 router.post("/signup", authController.signup.bind(authController));
 router.post("/login", authController.login.bind(authController));
 router.post("/logout", authController.logout.bind(authController));
-router.post(
-	"/forgot-password",
-	authController.forgotPassword.bind(authController)
-);
-router.patch(
-	"/reset-password",
-	authController.resetPassword.bind(authController)
-);
+router.post("/forgot-password", authController.forgotPassword.bind(authController));
+router.patch("/reset-password", authController.resetPassword.bind(authController));
 
 /************************************************************************
  *********  @description Protect all routes below to users only *********
@@ -22,33 +18,29 @@ router.patch(
 router.use(authMiddleware.protect);
 
 router.get("/get-me", userController.getCurrentUser.bind(userController));
-router.patch(
-	"/update-me",
-	userController.updateCurrentUserInfo.bind(userController)
-);
-router.patch(
-	"/update-me-password",
-	userController.updateCurrentUserPassword.bind(userController)
-);
-router.delete(
-	"/delete-me",
-	userController.deleteCurrentUser.bind(userController)
-);
+router.patch("/update-me", userController.updateCurrentUserInfo.bind(userController));
+router.patch("/update-me-password", userController.updateCurrentUserPassword.bind(userController));
+router.delete("/delete-me", userController.deleteCurrentUser.bind(userController));
 
 /************************************************************************
  *********  @description Restrict all routes below to admin only *********
  ************************************************************************/
 router.use(authMiddleware.restrictTo("admin"));
 
-router.route("/").get(userController.findAllUsers.bind(userController)).post(
-	// TODO: Validation rules
-	// TODO: validateRequest
-	userController.createUser.bind(userController)
-);
-
 router
-	.route("/get-users-count")
-	.get(userController.findUsersCountByDay.bind(userController));
+	.route("/")
+	.get(userController.findAllUsers.bind(userController))
+	.post(
+		body("name").isString().withMessage("نام کاربر الزامی است"),
+		body("email").isEmail().withMessage("ایمیل کاربر الزامی است"),
+		body("password").isString().withMessage("رمز عبور کاربر الزامی است"),
+		body("passwordConfirmation").isString().withMessage("تایید رمز عبور کاربر الزامی است"),
+		body("active").optional().isBoolean().withMessage("وضعیت کاربر الزامی است"),
+		validateRequest,
+		userController.createUser.bind(userController),
+	);
+
+router.route("/get-users-count").get(userController.findUsersCountByDay.bind(userController));
 
 router
 	.route("/:id")
@@ -57,7 +49,7 @@ router
 	.patch(
 		// TODO: Validation rules
 		// TODO: validateRequest
-		userController.updateUser.bind(userController)
+		userController.updateUser.bind(userController),
 	);
 
 export { router as userRouter };

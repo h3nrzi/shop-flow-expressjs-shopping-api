@@ -10,7 +10,7 @@ import { OrderRepository } from "./order.repository";
 export class OrderService {
 	constructor(
 		private readonly orderRepository: OrderRepository,
-		private readonly productRepository: ProductRepository
+		private readonly productRepository: ProductRepository,
 	) {}
 
 	/*******************************************************
@@ -25,11 +25,7 @@ export class OrderService {
 		return this.orderRepository.findAll({ user: userId });
 	}
 
-	async getOrderById(
-		orderId: string,
-		userId: string,
-		role: "admin" | "user"
-	): Promise<OrderDoc | null> {
+	async getOrderById(orderId: string, userId: string, role: "admin" | "user"): Promise<OrderDoc | null> {
 		// check if order exists, if not throw error
 		const order = await this.orderRepository.findById(orderId);
 		if (!order) {
@@ -38,9 +34,7 @@ export class OrderService {
 
 		// check if order belongs to user and role is user, if true throw error
 		if (order.user.toString() !== userId && role === "user") {
-			throw new ForbiddenError(
-				"شما اجازه دسترسی و ویرایش یا حذف این سفارش را ندارید"
-			);
+			throw new ForbiddenError("شما اجازه دسترسی و ویرایش یا حذف این سفارش را ندارید");
 		}
 
 		return order;
@@ -54,10 +48,7 @@ export class OrderService {
 	 ****************** POST HANDLERS ************************
 	 ******************************************************** */
 
-	async createOrder(
-		createOrderDto: CreateOrderDto,
-		userId: string
-	): Promise<OrderDoc> {
+	async createOrder(createOrderDto: CreateOrderDto, userId: string): Promise<OrderDoc> {
 		return this.orderRepository.create(createOrderDto, userId);
 	}
 
@@ -69,7 +60,7 @@ export class OrderService {
 		orderId: string,
 		updateOrderDto: UpdateOrderDto,
 		userId: string,
-		role: "admin" | "user"
+		role: "admin" | "user",
 	): Promise<OrderDoc | null> {
 		// check if order exists, if not throw error
 		// check if order belongs to user, if not throw error
@@ -79,11 +70,7 @@ export class OrderService {
 		return this.orderRepository.updateById(orderId, updateOrderDto);
 	}
 
-	async updateOrderToPaid(
-		orderId: string,
-		userId: string,
-		role: "admin" | "user"
-	) {
+	async updateOrderToPaid(orderId: string, userId: string, role: "admin" | "user") {
 		// check if order exists, if not throw error
 		// check if order belongs to user, if not throw error
 		const order = await this.getOrderById(orderId, userId, role);
@@ -115,11 +102,7 @@ export class OrderService {
 		return order!.save();
 	}
 
-	async updateOrderToDeliver(
-		orderId: string,
-		userId: string,
-		role: "admin" | "user"
-	) {
+	async updateOrderToDeliver(orderId: string, userId: string, role: "admin" | "user") {
 		// check if order exists, if not throw error
 		// check if order belongs to user, if not throw error
 		const order = await this.getOrderById(orderId, userId, role);
@@ -136,11 +119,7 @@ export class OrderService {
 	 ****************** DELETE HANDLERS **********************
 	 ******************************************************** */
 
-	async deleteOrder(
-		orderId: string,
-		userId: string,
-		role: "admin" | "user"
-	): Promise<OrderDoc | null> {
+	async deleteOrder(orderId: string, userId: string, role: "admin" | "user"): Promise<OrderDoc | null> {
 		// check if order exists, if not throw error
 		// check if order belongs to user, if not throw error
 		await this.getOrderById(orderId, userId, role);

@@ -17,10 +17,8 @@
 	src:
 		url("../fonts/eot/IRANSansWeb_Bold.eot?#iefix") format("embedded-opentype"),
 		/* IE6-8 */ url("../fonts/woff2/IRANSansWeb_Bold.woff2") format("woff2"),
-		/* FF39+,Chrome36+, Opera24+*/ url("../fonts/woff/IRANSansWeb_Bold.woff")
-			format("woff"),
-		/* FF3.6+, IE9, Chrome6+, Saf5.1+*/ url("../fonts/ttf/IRANSansWeb_Bold.ttf")
-			format("truetype");
+		/* FF39+,Chrome36+, Opera24+*/ url("../fonts/woff/IRANSansWeb_Bold.woff") format("woff"),
+		/* FF3.6+, IE9, Chrome6+, Saf5.1+*/ url("../fonts/ttf/IRANSansWeb_Bold.ttf") format("truetype");
 }
 
 /*@font-face {*/

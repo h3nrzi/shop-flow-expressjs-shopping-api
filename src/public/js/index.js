@@ -11,14 +11,7 @@ import {
 	loginForm,
 	logoutButton,
 } from "./domElements.js";
-import {
-	createProduct,
-	deleteProduct,
-	editProduct,
-	login,
-	logout,
-	uploadImage,
-} from "./api.js";
+import { createProduct, deleteProduct, editProduct, login, logout, uploadImage } from "./api.js";
 
 if (createProductForm) {
 	createProductForm.addEventListener("submit", async e => {
