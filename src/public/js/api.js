@@ -5,7 +5,7 @@ export const deleteProduct = async id => {
 		const res = await axios.delete(`/api/products/${id}`);
 		if (res.status === 204) window.location.reload();
 	} catch (err) {
-		alert(err.response.data.message);
+		alert(err.response?.data?.errors[0].message);
 	}
 };
 
@@ -20,7 +20,7 @@ export const createProduct = async data => {
 
 		if (res.data.status === "success") window.location.href = "/admin";
 	} catch (err) {
-		alert(err.response.data.message);
+		alert(err.response?.data?.errors[0].message);
 	}
 };
 
@@ -33,35 +33,37 @@ export const editProduct = async (data, productId) => {
 
 		if (res.data.status === "success") window.location.href = "/admin";
 	} catch (err) {
-		alert(err.response.data.message);
+		alert(err.response?.data?.message || err.message || "An error occurred");
 	}
 };
 
 export const login = async data => {
 	try {
-		const response = await axios.post("/api/users/login", data, {
+		const res = await axios.post("/api/users/login", data, {
 			headers: {
 				"Content-Type": "application/json",
 			},
+			withCredentials: true,
 		});
 
-		// if (response.status === 200) window.location.href = "/";
+		if (res.data.status === "success") window.location.href = "/admin";
 	} catch (err) {
-		alert(err.response.data.message);
+		alert(err.response?.data?.errors[0].message);
 	}
 };
 
 export const logout = async () => {
 	try {
-		const res = await axios.post("/api/users/logout");
+		const res = await axios.post("/api/users/logout", {}, { withCredentials: true });
 		if (res.status === 204) window.location.reload();
 	} catch (err) {
-		alert(err.response.data.message);
+		alert(err.response?.data?.errors[0].message);
 	}
 };
 
 export const uploadImage = formData => {
-	return axios.post("/api/upload", formData, {
+	return axios.post("/api/uploads", formData, {
 		headers: { "Content-Type": "multipart/form-data" },
+		withCredentials: true,
 	});
 };

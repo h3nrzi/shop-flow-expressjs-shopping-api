@@ -7,10 +7,10 @@ const createSendTokenAndResponse = (user: IUserDoc, statusCode: number, res: Res
 	const token = user.signToken();
 
 	res.cookie("jwt", token, {
-		expires: new Date(Date.now() + ms(process.env.JWT_COOKIE_EXPIRES_IN!)),
-		secure: process.env.NODE_ENV === "production",
 		httpOnly: true,
-		sameSite: "none",
+		secure: process.env.NODE_ENV === "production",
+		sameSite: "strict",
+		maxAge: ms(process.env.JWT_COOKIE_EXPIRES_IN!),
 	});
 
 	return res
