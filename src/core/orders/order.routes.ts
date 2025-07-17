@@ -14,7 +14,7 @@ router.use(authMiddleware.protect);
 
 router
 	.route("/")
-	.post(
+	.post([
 		body("orderItems[*].productId").isMongoId().withMessage("شناسه محصول معتبر نیست"),
 		body("orderItems[*].qty").isInt({ min: 1 }).withMessage("تعداد محصولات الزامی است"),
 		body("shippingAddress.province").isString().withMessage("استان الزامی است"),
@@ -27,7 +27,7 @@ router
 		body("totalPrice").isNumeric().withMessage("قیمت کل الزامی است"),
 		validateRequest,
 		orderController.createOrder.bind(orderController),
-	);
+	]);
 
 router
 	.route("/get-myorders")
@@ -37,19 +37,19 @@ router.route("/top-selling-products").get(orderController.getAllTopsOrders.bind(
 
 router
 	.route("/:id")
-	.get(
+	.get([
 		param("id").isMongoId().withMessage("شناسه سفارش معتبر نیست"),
 		validateRequest,
 		orderController.getOrderById.bind(orderController),
-	);
+	]);
 
 router
 	.route("/:id/pay")
-	.patch(
+	.patch([
 		param("id").isMongoId().withMessage("شناسه سفارش معتبر نیست"),
 		validateRequest,
 		orderController.updateOrderToPaid.bind(orderController),
-	);
+	]);
 
 /************************************************************************
  *********  @description Protect all routes below to admin only *********
@@ -60,33 +60,33 @@ router.route("/").get(orderController.getAllOrders.bind(orderController));
 
 router
 	.route("/:id")
-	.patch(
+	.patch([
 		param("id").isMongoId().withMessage("شناسه سفارش معتبر نیست"),
-		body("orderItems[*].productId").optional().isMongoId().withMessage("شناسه محصول معتبر نیست"),
-		body("orderItems[*].qty").optional().isInt({ min: 1 }).withMessage("تعداد محصولات الزامی است"),
-		body("shippingAddress.province").optional().isString().withMessage("استان الزامی است"),
-		body("shippingAddress.city").optional().isString().withMessage("شهر الزامی است"),
-		body("shippingAddress.street").optional().isString().withMessage("خیابان الزامی است"),
-		body("paymentMethod").optional().isString().withMessage("روش پرداخت الزامی است"),
-		body("itemsPrice").optional().isNumeric().withMessage("قیمت محصولات الزامی است"),
-		body("shippingPrice").optional().isNumeric().withMessage("قیمت حمل و نقل الزامی است"),
-		body("taxPrice").optional().isNumeric().withMessage("مالیات الزامی است"),
-		body("totalPrice").optional().isNumeric().withMessage("قیمت کل الزامی است"),
+		body("orderItems[*].productId").optional().isMongoId().withMessage("فرمت شناسه محصول معتبر نیست"),
+		body("orderItems[*].qty").optional().isInt({ min: 1 }).withMessage("فرمت تعداد محصولات معتبر نیست"),
+		body("shippingAddress.province").optional().isString().withMessage("فرمت استان معتبر نیست"),
+		body("shippingAddress.city").optional().isString().withMessage("فرمت شهر معتبر نیست"),
+		body("shippingAddress.street").optional().isString().withMessage("فرمت خیابان معتبر نیست"),
+		body("paymentMethod").optional().isString().withMessage("فرمت روش پرداخت معتبر نیست"),
+		body("itemsPrice").optional().isNumeric().withMessage("فرمت قیمت محصولات معتبر نیست"),
+		body("shippingPrice").optional().isNumeric().withMessage("فرمت قیمت حمل و نقل معتبر نیست"),
+		body("taxPrice").optional().isNumeric().withMessage("فرمت مالیات معتبر نیست"),
+		body("totalPrice").optional().isNumeric().withMessage("فرمت قیمت کل معتبر نیست"),
 		validateRequest,
 		orderController.updateOrder.bind(orderController),
-	)
-	.delete(
+	])
+	.delete([
 		param("id").isMongoId().withMessage("شناسه سفارش معتبر نیست"),
 		validateRequest,
 		orderController.deleteOrder.bind(orderController),
-	);
+	]);
 
 router
 	.route("/:id/deliver")
-	.patch(
+	.patch([
 		param("id").isMongoId().withMessage("شناسه سفارش معتبر نیست"),
 		validateRequest,
 		orderController.updateOrderToDeliver.bind(orderController),
-	);
+	]);
 
 export { router as orderRouter };
