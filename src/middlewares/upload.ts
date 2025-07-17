@@ -14,7 +14,6 @@ const fileFilter = (req: Request, file: Express.Multer.File, callback: multer.Fi
 	callback(null, true);
 };
 
-export const upload = multer({ storage, fileFilter });
+const upload = multer({ storage, fileFilter });
 
-const uploadMiddleware = { upload };
-export default uploadMiddleware;
+export { upload as uploadMiddleware };

@@ -4,7 +4,7 @@ import { productRouter } from "../core/products/product.routes";
 import { userRouter } from "../core/users/user.routes";
 import { NotFoundError } from "../errors/not-found-error";
 import { errorHandler } from "../middlewares/error-handler";
-import uploadRouter from "../_routers/upload";
+import { uploadRouter } from "../core/uploads/upload.routes";
 import viewRouter from "../_routers/view";
 
 module.exports = (app: Express) => {
@@ -13,7 +13,7 @@ module.exports = (app: Express) => {
 
 	app.use("/api/products", productRouter);
 	app.use("/api/users", userRouter);
-	app.use("/api/upload", uploadRouter);
+	app.use("/api/uploads", uploadRouter);
 	app.use("/api/orders", orderRouter);
 
 	app.all("*", () => {

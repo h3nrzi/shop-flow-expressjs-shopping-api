@@ -1,14 +1,18 @@
 import express from "express";
 import { uploadController } from "..";
-import uploadMiddleware from "../../middlewares/upload";
+import { uploadMiddleware } from "../../middlewares/upload";
+import authMiddleware from "../../middlewares/auth";
+import { body } from "express-validator";
+import { validateRequest } from "../../middlewares/validate-request";
 
-const uploadRouter = express.Router();
+const router = express.Router();
 
-uploadRouter.post(
-	//
-	"/",
-	uploadMiddleware.upload.single("image"),
-	uploadController.uploadImage.bind(uploadController)
-);
+router.post("/", [
+	authMiddleware.protect,
+	body("image").notEmpty().withMessage("تصویر الزامی است"),
+	validateRequest,
+	uploadMiddleware.single("image"),
+	uploadController.uploadImage.bind(uploadController),
+]);
 
-export default uploadRouter;
+export { router as uploadRouter };
