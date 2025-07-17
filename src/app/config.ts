@@ -44,7 +44,7 @@ module.exports = (app: Express) => {
 					imgSrc: ["'self'", "data:", "https://res.cloudinary.com"],
 				},
 			},
-		}),
+		})
 	);
 
 	// CORS Configuration
@@ -81,7 +81,7 @@ module.exports = (app: Express) => {
 	app.use(
 		hpp({
 			whitelist: ["countInStock", "brand", "category", "rating", "numReviews", "price", "discount", "discountedPrice"],
-		}),
+		})
 	);
 
 	// Swagger UI route

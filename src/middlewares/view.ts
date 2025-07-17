@@ -4,10 +4,16 @@ import { userRepository } from "../core";
 
 // Only for rendered pages
 const isLoggedIn: RequestHandler = async (req, res, next) => {
-	if (req.cookies.jwt) {
+	// get token from headers or cookies
+	const { authorization } = req.headers;
+	let token: string | undefined = undefined;
+	if (authorization && authorization.startsWith("Bearer")) token = authorization.split(" ")[1];
+	else if (req.cookies.jwt) token = req.cookies.jwt;
+
+	if (token) {
 		try {
 			// Verify token
-			const decoded = (await verifyToken(req.cookies.jwt)) as {
+			const decoded = (await verifyToken(token)) as {
 				id: string;
 				iat: number;
 				exp: number;

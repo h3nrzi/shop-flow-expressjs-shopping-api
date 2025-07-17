@@ -1,12 +1,12 @@
 import express from "express";
-import viewMiddleware from "../../middlewares/view";
 import { viewController } from "..";
+import viewMiddleware from "../../middlewares/view";
 
 const router = express.Router();
 
-router.use(viewMiddleware.isLoggedIn);
-
 router.get("/login", viewController.getLoginPage.bind(viewController));
+
+router.use(viewMiddleware.isLoggedIn);
 
 router.get("/", viewController.getHomePage.bind(viewController));
 

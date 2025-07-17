@@ -45,7 +45,7 @@ export const login = async data => {
 			},
 		});
 
-		if (response.status === 200) window.location.href = "/admin";
+		// if (response.status === 200) window.location.href = "/";
 	} catch (err) {
 		alert(err.response.data.message);
 	}
