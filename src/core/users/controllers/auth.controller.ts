@@ -29,7 +29,7 @@ export class AuthController {
 			expires: new Date(Date.now() + ms(process.env.JWT_COOKIE_EXPIRES_IN!)),
 			secure: process.env.NODE_ENV === "production",
 			httpOnly: true,
-			sameSite: "none",
+			sameSite: "lax",
 		});
 		res.status(204).header("x-auth-token", "").json({});
 	}
