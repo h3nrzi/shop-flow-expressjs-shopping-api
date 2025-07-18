@@ -47,7 +47,7 @@ const validUser = {
 };
 
 describe("POST /api/users/signup", () => {
-	describe("validation", () => {
+	describe("validation dto", () => {
 		validationCases.forEach(({ testCaseName, user }) => {
 			it(testCaseName, async () => {
 				const res = await signup(user);
@@ -59,9 +59,10 @@ describe("POST /api/users/signup", () => {
 	});
 
 	describe("success", () => {
-		it("should return 201 if signup is successful", async () => {
+		it("should return 201 and a cookie if signup is successful", async () => {
 			const res = await signup(validUser);
 			expect(res.status).toBe(201);
+			expect(res.headers["set-cookie"]).toBeDefined();
 		});
 	});
 

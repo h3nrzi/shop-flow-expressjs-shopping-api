@@ -27,8 +27,10 @@ router.post("/signup", [
 ]);
 
 router.post("/login", [
+	body("email").notEmpty().withMessage("ایمیل کاربر الزامی است"),
 	body("email").isEmail().withMessage("ایمیل وارد شده معتبر نیست"),
-	body("password").isString().withMessage("رمز عبور کاربر الزامی است"),
+	body("password").notEmpty().withMessage("رمز عبور کاربر الزامی است"),
+	body("password").isString().withMessage("فرمت رمز عبور کاربر باید string باشد"),
 	validateRequest,
 	authController.login.bind(authController),
 ]);
