@@ -18,7 +18,7 @@ router.get(
 	"/:id",
 	param("id").isMongoId().withMessage("شناسه نظر معتبر نیست"),
 	validateRequest,
-	reviewController.getReviewById.bind(reviewController)
+	reviewController.getReviewById.bind(reviewController),
 );
 
 router.post("/", [
@@ -45,7 +45,7 @@ router.delete(
 	"/:id",
 	param("id").isMongoId().withMessage("شناسه نظر معتبر نیست"),
 	validateRequest,
-	reviewController.deleteReview.bind(reviewController)
+	reviewController.deleteReview.bind(reviewController),
 );
 
 export { router as reviewRouter };

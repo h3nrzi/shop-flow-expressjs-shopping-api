@@ -16,7 +16,7 @@ router.use(
 	"/:productId/reviews",
 	param("productId").isMongoId().withMessage("شناسه محصول معتبر نیست"),
 	validateRequest,
-	reviewRouter
+	reviewRouter,
 );
 
 router.get("/", productController.getAllProducts.bind(productController));
@@ -25,7 +25,7 @@ router.get(
 	"/:id",
 	param("id").isMongoId().withMessage("شناسه محصول معتبر نیست"),
 	validateRequest,
-	productController.getProductById.bind(productController)
+	productController.getProductById.bind(productController),
 );
 
 /************************************************************************
@@ -48,7 +48,7 @@ router.post(
 	body("price").isNumeric().withMessage("قیمت محصول الزامی است"),
 	body("discount").isNumeric().withMessage("تخفیف محصول الزامی است"),
 	validateRequest,
-	productController.createProduct.bind(productController)
+	productController.createProduct.bind(productController),
 );
 
 router.patch(
@@ -67,14 +67,14 @@ router.patch(
 	body("price").optional().isNumeric().withMessage("قیمت محصول الزامی است"),
 	body("discount").optional().isNumeric().withMessage("تخفیف محصول الزامی است"),
 	validateRequest,
-	productController.updateProduct.bind(productController)
+	productController.updateProduct.bind(productController),
 );
 
 router.delete(
 	"/:id",
 	param("id").isMongoId().withMessage("شناسه محصول معتبر نیست"),
 	validateRequest,
-	productController.deleteProduct.bind(productController)
+	productController.deleteProduct.bind(productController),
 );
 
 export { router as productRouter };

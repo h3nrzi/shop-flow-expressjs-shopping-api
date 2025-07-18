@@ -73,7 +73,11 @@ export class UserService {
 	 ************* @description PATCH HANDLERS *************
 	 *******************************************************/
 
-	async updateUser(userId: string, updateUserDto: IUpdateUserDto, currentUser: IUserDoc): Promise<IUserDoc | null> {
+	async updateUser(
+		userId: string,
+		updateUserDto: IUpdateUserDto,
+		currentUser: IUserDoc,
+	): Promise<IUserDoc | null> {
 		// find the user, if not found, throw an error
 		const targetUser = await this.findUserById(userId);
 

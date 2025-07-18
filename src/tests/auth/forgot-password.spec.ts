@@ -54,7 +54,7 @@ describe("POST /api/users/forgot-password", () => {
 			expect(sendEmail).toHaveBeenCalledWith(
 				validUser.email,
 				expect.any(String),
-				"درخواست برای ریست کردن رمز عبور"
+				"درخواست برای ریست کردن رمز عبور",
 			);
 
 			// check if the user has a passwordResetToken and passwordResetExpires

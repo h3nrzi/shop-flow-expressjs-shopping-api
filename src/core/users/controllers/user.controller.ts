@@ -74,7 +74,10 @@ export class UserController {
 	}
 
 	async updateCurrentUserInfo(req: Request, res: Response): Promise<void> {
-		const updatedUser = await this.userService.updateCurrentUserInfo(req.user, req.body as IUpdateCurrentUserInfoDto);
+		const updatedUser = await this.userService.updateCurrentUserInfo(
+			req.user,
+			req.body as IUpdateCurrentUserInfoDto,
+		);
 		res.status(200).json({
 			status: "success",
 			data: { updatedUser },

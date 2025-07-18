@@ -5,7 +5,10 @@ export class ProductController {
 	constructor(private readonly productService: ProductService) {}
 
 	async getAllProducts(req: Request, res: Response) {
-		const { pagination, products } = await this.productService.getAllProducts(req.query, req.body.initialFilter);
+		const { pagination, products } = await this.productService.getAllProducts(
+			req.query,
+			req.body.initialFilter,
+		);
 
 		res.status(200).json({
 			status: "success",

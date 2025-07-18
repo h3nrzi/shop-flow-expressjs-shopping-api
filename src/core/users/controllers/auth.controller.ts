@@ -50,7 +50,10 @@ export class AuthController {
 	 ************************************************************/
 
 	async resetPassword(req: Request, res: Response): Promise<void> {
-		const user = await this.authService.resetPassword(req.body as IResetPasswordDto, req.query.resetToken as string);
+		const user = await this.authService.resetPassword(
+			req.body as IResetPasswordDto,
+			req.query.resetToken as string,
+		);
 		createSendTokenAndResponse(user, 200, res);
 	}
 }

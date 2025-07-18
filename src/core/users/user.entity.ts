@@ -40,7 +40,7 @@ const userSchema = new Schema<IUserDoc>(
 		},
 		toObject: { virtuals: true },
 		timestamps: true,
-	}
+	},
 );
 
 //////////// Instance Methods ////////////

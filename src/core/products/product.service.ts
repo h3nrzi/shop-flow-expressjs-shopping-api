@@ -8,8 +8,14 @@ import { NotFoundError } from "../../errors/not-found-error";
 export class ProductService {
 	constructor(private readonly productRepository: ProductRepository) {}
 
-	async getAllProducts(query: any, initialFilter?: any): Promise<{ pagination: any; products: ProductDoc[] }> {
-		const { pagination, skip, total, products } = await this.productRepository.getAll(query, initialFilter);
+	async getAllProducts(
+		query: any,
+		initialFilter?: any,
+	): Promise<{ pagination: any; products: ProductDoc[] }> {
+		const { pagination, skip, total, products } = await this.productRepository.getAll(
+			query,
+			initialFilter,
+		);
 
 		if (query.page && skip >= total) {
 			throw new NotFoundError("این صفحه وجود ندارد");

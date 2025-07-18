@@ -14,7 +14,10 @@ export class ReviewService {
 		pagination: any;
 		reviews: IReviewDoc[];
 	}> {
-		const { pagination, skip, total, reviews } = await this.reviewRepository.getAll(query, initialFilter);
+		const { pagination, skip, total, reviews } = await this.reviewRepository.getAll(
+			query,
+			initialFilter,
+		);
 
 		if (query.page && skip >= total) {
 			throw new NotFoundError("این صفحه وجود ندارد");

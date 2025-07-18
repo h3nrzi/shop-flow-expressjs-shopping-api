@@ -16,7 +16,10 @@ export default class APIFeatures {
 		const excludedFields = ["sort", "fields", "search", "page", "limit"];
 		excludedFields.forEach(field => delete queryObject[field]);
 
-		const queryString = JSON.stringify(queryObject).replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`);
+		const queryString = JSON.stringify(queryObject).replace(
+			/\b(gte|gt|lte|lt)\b/g,
+			match => `$${match}`,
+		);
 
 		this.dbQuery = this.dbQuery.find(JSON.parse(queryString));
 

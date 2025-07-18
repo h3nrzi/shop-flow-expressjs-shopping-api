@@ -7,7 +7,7 @@ export class ReviewRepository {
 	constructor(private readonly reviewModel: ReviewModel) {}
 	async getAll(
 		query: any,
-		initialFilter?: any
+		initialFilter?: any,
 	): Promise<{
 		pagination: any;
 		skip: number;
@@ -15,7 +15,12 @@ export class ReviewRepository {
 		reviews: IReviewDoc[];
 	}> {
 		const features = new APIFeatures(this.reviewModel as any, query, initialFilter);
-		const { pagination, skip, total } = await features.filter().search().sort().limitFields().pagination();
+		const { pagination, skip, total } = await features
+			.filter()
+			.search()
+			.sort()
+			.limitFields()
+			.pagination();
 
 		const reviews = await features.dbQuery;
 
