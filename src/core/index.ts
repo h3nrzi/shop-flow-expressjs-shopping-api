@@ -1,29 +1,32 @@
 import { OrderController } from "./orders/order.controller";
+import { Order } from "./orders/order.entity";
 import { OrderRepository } from "./orders/order.repository";
 import { OrderService } from "./orders/order.service";
-import Order from "./orders/order.entity";
-import { ProductModel } from "./products/product.entity";
-import ProductRepository from "./products/product.repository";
-import { UserRepository } from "./users/user.repository";
-import User from "./users/user.entity";
-import { ProductService } from "./products/product.service";
 import { ProductController } from "./products/product.controller";
-import { ReviewService } from "./reviews/review.service";
-import { ReviewRepository } from "./reviews/review.repository";
+import { Product } from "./products/product.entity";
+import ProductRepository from "./products/product.repository";
+import { ProductService } from "./products/product.service";
 import { ReviewController } from "./reviews/review.controller";
-import Review from "./reviews/review.model";
-import { UserService } from "./users/services/user.service";
+import { Review } from "./reviews/review.entity";
+import { ReviewRepository } from "./reviews/review.repository";
+import { ReviewService } from "./reviews/review.service";
+import { UploadController } from "./uploads/upload.controller";
+import { UploadService } from "./uploads/upload.service";
+import { AuthController } from "./users/controllers/auth.controller";
 import { UserController } from "./users/controllers/user.controller";
 import { AuthService } from "./users/services/auth.service";
-import { AuthController } from "./users/controllers/auth.controller";
-import { UploadService } from "./uploads/upload.service";
-import { UploadController } from "./uploads/upload.controller";
-import { ViewService } from "./views/view.service";
+import { UserService } from "./users/services/user.service";
+import { User } from "./users/user.entity";
+import { UserRepository } from "./users/user.repository";
 import { ViewController } from "./views/view.controller";
+import { ViewService } from "./views/view.service";
+
+// Entities
+export { Order, Product, Review, User };
 
 // Repositories Injection
 export const orderRepository = new OrderRepository(Order);
-export const productRepository = new ProductRepository(ProductModel);
+export const productRepository = new ProductRepository(Product);
 export const userRepository = new UserRepository(User);
 export const reviewRepository = new ReviewRepository(Review);
 
@@ -34,7 +37,7 @@ export const reviewService = new ReviewService(reviewRepository);
 export const userService = new UserService(userRepository);
 export const authService = new AuthService(userRepository);
 export const uploadService = new UploadService();
-export const viewService = new ViewService(ProductModel);
+export const viewService = new ViewService(Product);
 
 // Controllers Injection
 export const orderController = new OrderController(orderService);

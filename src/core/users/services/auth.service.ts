@@ -3,7 +3,7 @@ import { BadRequestError } from "../../../errors/bad-request-error";
 import { InternalServerError } from "../../../errors/internal-server-error";
 import { NotAuthorizedError } from "../../../errors/not-authorized-error";
 import { NotFoundError } from "../../../errors/not-found-error";
-import sendEmail from "../../../utils/email";
+import { sendEmail } from "../../../utils/email";
 import { IForgotPasswordDto } from "../dtos/forgot.password.dto";
 import { ILoginDto } from "../dtos/login.dto";
 import { IResetPasswordDto } from "../dtos/reset.password.dto";

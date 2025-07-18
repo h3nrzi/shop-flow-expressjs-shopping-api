@@ -17,7 +17,7 @@ const orderItemSchema = new mongoose.Schema<IOrderItem>(
 				delete ret._id;
 			},
 		},
-	},
+	}
 );
 
 const shippingAddressSchema = new mongoose.Schema<IShippingAddress>(
@@ -33,7 +33,7 @@ const shippingAddressSchema = new mongoose.Schema<IShippingAddress>(
 				delete ret._id;
 			},
 		},
-	},
+	}
 );
 
 const orderSchema = new mongoose.Schema<OrderDoc>(
@@ -65,8 +65,8 @@ const orderSchema = new mongoose.Schema<OrderDoc>(
 				delete ret.__v;
 			},
 		},
-	},
+	}
 );
 
 const Order = mongoose.model<OrderDoc, OrderModel>("Order", orderSchema);
-export default Order;
+export { Order };

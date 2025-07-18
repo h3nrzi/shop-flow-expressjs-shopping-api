@@ -52,3 +52,24 @@ global.signup = (): string => {
 
 	return JSON.stringify(cookie);
 };
+
+// ===============================================
+// ============ Helper Variables =================
+// ===============================================
+
+export const validUser = {
+	name: "test",
+	email: "test@test.com",
+	password: "password",
+	passwordConfirmation: "password",
+};
+
+// ===============================================
+// ============ Mocks ============================
+// ===============================================
+
+jest.mock("../../utils/email", () => {
+	return {
+		sendEmail: jest.fn().mockResolvedValue(undefined),
+	};
+});

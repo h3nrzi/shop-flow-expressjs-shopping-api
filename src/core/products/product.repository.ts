@@ -1,12 +1,11 @@
 import { PopulateOptions } from "mongoose";
-import { ProductDoc } from "./product.interface";
+import APIFeatures from "../../utils/apiFeatures";
 import { CreateProductDto } from "./dtos/create-product.dto";
 import { UpdateProductDto } from "./dtos/update-product.dto";
-import APIFeatures from "../../utils/apiFeatures";
-import { ProductModel } from "./product.entity";
+import { ProductDoc, ProductModel } from "./product.interface";
 
 class ProductRepository {
-	constructor(private readonly Model: typeof ProductModel) {}
+	constructor(private readonly productModel: ProductModel) {}
 
 	async getAll(
 		query: any,
@@ -17,7 +16,7 @@ class ProductRepository {
 		total: number;
 		products: ProductDoc[];
 	}> {
-		const features = new APIFeatures(this.Model as any, query, initialFilter);
+		const features = new APIFeatures(this.productModel as any, query, initialFilter);
 		const { pagination, skip, total } = await features.filter().search().sort().limitFields().pagination();
 
 		const products = await features.dbQuery;
@@ -26,19 +25,19 @@ class ProductRepository {
 	}
 
 	getOne(id: string, populate?: PopulateOptions): Promise<ProductDoc | null> {
-		return this.Model.findById(id).populate(populate as PopulateOptions);
+		return this.productModel.findById(id).populate(populate as PopulateOptions);
 	}
 
 	createOne(data: CreateProductDto): Promise<ProductDoc> {
-		return this.Model.create(data);
+		return this.productModel.create(data);
 	}
 
 	updateOne(id: string, data: UpdateProductDto): Promise<ProductDoc | null> {
-		return this.Model.findByIdAndUpdate(id, data, { new: true });
+		return this.productModel.findByIdAndUpdate(id, data, { new: true });
 	}
 
 	deleteOne(id: string): Promise<ProductDoc | null> {
-		return this.Model.findByIdAndDelete(id);
+		return this.productModel.findByIdAndDelete(id);
 	}
 }
 

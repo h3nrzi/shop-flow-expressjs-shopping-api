@@ -95,4 +95,4 @@ userSchema.pre("save", async function (next) {
 });
 
 const User = model<IUserDoc, IUserModel>("User", userSchema);
-export default User;
+export { User };

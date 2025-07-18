@@ -1,11 +1,10 @@
 import { FilterQuery } from "mongoose";
 import { CreateOrderDto } from "./dtos/create-order.dto";
 import { UpdateOrderDto } from "./dtos/update-order.dto";
-import Order from "./order.entity";
 import { OrderDoc, OrderModel } from "./order.interface";
 
 export class OrderRepository {
-	constructor(private readonly orderModel: OrderModel = Order) {}
+	constructor(private readonly orderModel: OrderModel) {}
 
 	/* ********************************************************
 	 ****************** QUERIES OPERATIONS ********************

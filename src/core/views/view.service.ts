@@ -1,9 +1,8 @@
 import { NotFoundError } from "../../errors/not-found-error";
-import { ProductModel } from "../products/product.entity";
-import { ProductDoc } from "../products/product.interface";
+import { ProductDoc, ProductModel } from "../products/product.interface";
 
 export class ViewService {
-	constructor(readonly productModel: typeof ProductModel) {}
+	constructor(private readonly productModel: ProductModel) {}
 
 	async getProducts(): Promise<ProductDoc[]> {
 		return await this.productModel.find();

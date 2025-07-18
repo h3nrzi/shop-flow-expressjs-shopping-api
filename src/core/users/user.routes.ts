@@ -38,6 +38,7 @@ router.post("/login", [
 router.post("/logout", authController.logout.bind(authController));
 
 router.post("/forgot-password", [
+	body("email").notEmpty().withMessage("ایمیل کاربر الزامی است"),
 	body("email").isEmail().withMessage("ایمیل وارد شده معتبر نیست"),
 	validateRequest,
 	authController.forgotPassword.bind(authController),
