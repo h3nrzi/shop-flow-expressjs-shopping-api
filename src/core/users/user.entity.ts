@@ -40,7 +40,7 @@ const userSchema = new Schema<IUserDoc>(
 		},
 		toObject: { virtuals: true },
 		timestamps: true,
-	},
+	}
 );
 
 //////////// Instance Methods ////////////
@@ -62,7 +62,7 @@ userSchema.methods.changePasswordAfter = function (this: IUserDoc, jwtTimeStamp:
 userSchema.methods.createPasswordResetToken = function (this: IUserDoc) {
 	const resetToken = crypto.randomBytes(32).toString("hex");
 	this.passwordResetToken = crypto.createHash("sha256").update(resetToken).digest("hex");
-	this.passwordResetExpires = Date.now() + ms("10m");
+	this.passwordResetExpires = Date.now() + ms(process.env.PASSWORD_RESET_EXPIRES_IN!);
 	return resetToken;
 };
 
