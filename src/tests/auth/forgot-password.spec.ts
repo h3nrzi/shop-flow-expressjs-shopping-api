@@ -1,6 +1,6 @@
 import { User } from "../../core";
 import { sendEmail } from "../../utils/email";
-import { forgotPassword, signup } from "../helpers/auth.requests";
+import { forgotPassword, signup } from "../helpers/auth-requests";
 import { validUser } from "../helpers/setup";
 
 const validationCases = [

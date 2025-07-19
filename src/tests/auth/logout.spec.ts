@@ -1,4 +1,4 @@
-import { logout, signup } from "../helpers/auth.requests";
+import { logout, signup } from "../helpers/auth-requests";
 
 describe("POST /api/users/logout", () => {
 	describe("success", () => {

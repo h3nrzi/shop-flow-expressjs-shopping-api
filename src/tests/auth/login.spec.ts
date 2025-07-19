@@ -1,4 +1,4 @@
-import { login, signup } from "../helpers/auth.requests";
+import { login, signup } from "../helpers/auth-requests";
 
 const validationCases = [
 	{

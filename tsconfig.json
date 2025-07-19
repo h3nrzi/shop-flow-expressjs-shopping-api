@@ -23,6 +23,10 @@
 		"noImplicitOverride": true /* Ensure overriding members in derived classes are marked with an override modifier. */,
 		"allowUnreachableCode": false /* Disable error reporting for unreachable code. */,
 		"skipLibCheck": true /* Skip type checking all .d.ts files. */,
-		"types": ["jest", "supertest"]
+		"types": ["jest", "supertest"],
+		"baseUrl": "./",
+		"paths": {
+			"@/*": ["src/*"]
+		}
 	}
 }

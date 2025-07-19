@@ -10,8 +10,6 @@ const protect: RequestHandler = async (req, res, next) => {
 	if (authorization && authorization.startsWith("Bearer")) token = authorization.split(" ")[1];
 	else if (req.cookies.jwt) token = req.cookies.jwt;
 
-	console.log(req.cookies);
-
 	// if no token, throw an error
 	if (!token) {
 		throw new NotAuthorizedError("شما وارد نشده اید! لطفا برای دسترسی وارد شوید");
