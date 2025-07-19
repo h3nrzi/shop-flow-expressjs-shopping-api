@@ -21,20 +21,30 @@ export class OrderService {
 		return this.orderRepository.findAll({});
 	}
 
-	async getCurrentUserOrders(userId: string): Promise<OrderDoc[]> {
+	async getCurrentUserOrders(
+		userId: string,
+	): Promise<OrderDoc[]> {
 		return this.orderRepository.findAll({ user: userId });
 	}
 
-	async getOrderById(orderId: string, userId: string, role: "admin" | "user"): Promise<OrderDoc | null> {
+	async getOrderById(
+		orderId: string,
+		userId: string,
+		role: "admin" | "user",
+	): Promise<OrderDoc | null> {
 		// check if order exists, if not throw error
 		const order = await this.orderRepository.findById(orderId);
 		if (!order) {
-			throw new NotFoundError("هیچ سفارشی با این شناسه یافت نشد");
+			throw new NotFoundError(
+				"هیچ سفارشی با این شناسه یافت نشد",
+			);
 		}
 
 		// check if order belongs to user and role is user, if true throw error
 		if (order.user.toString() !== userId && role === "user") {
-			throw new ForbiddenError("شما اجازه دسترسی و ویرایش یا حذف این سفارش را ندارید");
+			throw new ForbiddenError(
+				"شما اجازه دسترسی و ویرایش یا حذف این سفارش را ندارید",
+			);
 		}
 
 		return order;
@@ -48,7 +58,10 @@ export class OrderService {
 	 ****************** POST HANDLERS ************************
 	 ******************************************************** */
 
-	async createOrder(createOrderDto: CreateOrderDto, userId: string): Promise<OrderDoc> {
+	async createOrder(
+		createOrderDto: CreateOrderDto,
+		userId: string,
+	): Promise<OrderDoc> {
 		return this.orderRepository.create(createOrderDto, userId);
 	}
 
@@ -67,10 +80,17 @@ export class OrderService {
 		await this.getOrderById(orderId, userId, role);
 
 		// update order
-		return this.orderRepository.updateById(orderId, updateOrderDto);
+		return this.orderRepository.updateById(
+			orderId,
+			updateOrderDto,
+		);
 	}
 
-	async updateOrderToPaid(orderId: string, userId: string, role: "admin" | "user") {
+	async updateOrderToPaid(
+		orderId: string,
+		userId: string,
+		role: "admin" | "user",
+	) {
 		// check if order exists, if not throw error
 		// check if order belongs to user, if not throw error
 		const order = await this.getOrderById(orderId, userId, role);
@@ -83,13 +103,17 @@ export class OrderService {
 		for (const item of order!.orderItems) {
 			// check if product exists, if not throw error
 			const productId = item.product.toString();
-			const product = await this.productRepository.getOne(productId);
+			const product =
+				await this.productRepository.getOne(productId);
 			if (!product) {
 				throw new NotFoundError("محصولی با این شناسه یافت نشد");
 			}
 
 			// check if product has enough stock, if not throw error
-			if (product.countInStock <= 0 || product.countInStock < item.qty) {
+			if (
+				product.countInStock <= 0 ||
+				product.countInStock < item.qty
+			) {
 				throw new BadRequestError("موجودی محصول کافی نیست");
 			}
 
@@ -102,7 +126,11 @@ export class OrderService {
 		return order!.save();
 	}
 
-	async updateOrderToDeliver(orderId: string, userId: string, role: "admin" | "user") {
+	async updateOrderToDeliver(
+		orderId: string,
+		userId: string,
+		role: "admin" | "user",
+	) {
 		// check if order exists, if not throw error
 		// check if order belongs to user, if not throw error
 		const order = await this.getOrderById(orderId, userId, role);
@@ -119,7 +147,11 @@ export class OrderService {
 	 ****************** DELETE HANDLERS **********************
 	 ******************************************************** */
 
-	async deleteOrder(orderId: string, userId: string, role: "admin" | "user"): Promise<OrderDoc | null> {
+	async deleteOrder(
+		orderId: string,
+		userId: string,
+		role: "admin" | "user",
+	): Promise<OrderDoc | null> {
 		// check if order exists, if not throw error
 		// check if order belongs to user, if not throw error
 		await this.getOrderById(orderId, userId, role);

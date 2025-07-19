@@ -2,7 +2,11 @@ import { RequestHandler } from "express";
 import { validationResult } from "express-validator";
 import { RequestValidationError } from "../errors/request-validation-error";
 
-export const validateRequest: RequestHandler = (req, res, next) => {
+export const validateRequest: RequestHandler = (
+	req,
+	res,
+	next,
+) => {
 	// check for validation errors
 	const errors = validationResult(req);
 

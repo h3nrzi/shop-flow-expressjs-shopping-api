@@ -132,10 +132,7 @@
 					},
 					"role": {
 						"type": "string",
-						"enum": [
-							"user",
-							"admin"
-						],
+						"enum": ["user", "admin"],
 						"example": "user"
 					},
 					"active": {

@@ -20,7 +20,9 @@ describe("GET /api/users/get-me", () => {
 			const res = await getMe(johnToken);
 			expect(res.status).toBe(200);
 			expect(res.body.data.currentUser.name).toBe("John");
-			expect(res.body.data.currentUser.email).toBe("john@test.com");
+			expect(res.body.data.currentUser.email).toBe(
+				"john@test.com",
+			);
 		});
 	});
 });

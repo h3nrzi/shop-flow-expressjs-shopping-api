@@ -1,6 +1,9 @@
 import { User } from "../../core";
 import { sendEmail } from "../../utils/email";
-import { forgotPassword, signup } from "../helpers/auth-requests";
+import {
+	forgotPassword,
+	signup,
+} from "../helpers/auth-requests";
 import { validUser } from "../helpers/setup";
 
 const validationCases = [
@@ -27,15 +30,22 @@ describe("POST /api/users/forgot-password", () => {
 
 	describe("business logic", () => {
 		it("should return 404 if user is not found", async () => {
-			const res = await forgotPassword({ email: "test@test.com" });
+			const res = await forgotPassword({
+				email: "test@test.com",
+			});
 			expect(res.status).toBe(404);
 			expect(res.body.errors[0].message).toBeDefined();
 		});
 
 		it("should return 401 if user is not active", async () => {
 			await signup(validUser);
-			await User.updateOne({ email: validUser.email }, { active: false });
-			const res = await forgotPassword({ email: validUser.email });
+			await User.updateOne(
+				{ email: validUser.email },
+				{ active: false },
+			);
+			const res = await forgotPassword({
+				email: validUser.email,
+			});
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].message).toBeDefined();
 		});
@@ -44,7 +54,9 @@ describe("POST /api/users/forgot-password", () => {
 	describe("success", () => {
 		it("should send email and set passwordResetToken and passwordResetExpires", async () => {
 			await signup(validUser);
-			const res = await forgotPassword({ email: validUser.email });
+			const res = await forgotPassword({
+				email: validUser.email,
+			});
 
 			// check if the response is 200
 			expect(res.status).toBe(200);
@@ -54,11 +66,13 @@ describe("POST /api/users/forgot-password", () => {
 			expect(sendEmail).toHaveBeenCalledWith(
 				validUser.email,
 				expect.any(String),
-				"درخواست برای ریست کردن رمز عبور"
+				"درخواست برای ریست کردن رمز عبور",
 			);
 
 			// check if the user has a passwordResetToken and passwordResetExpires
-			const user = await User.findOne({ email: validUser.email });
+			const user = await User.findOne({
+				email: validUser.email,
+			});
 			expect(user!.passwordResetToken).toBeDefined();
 			expect(user!.passwordResetExpires).toBeDefined();
 		});

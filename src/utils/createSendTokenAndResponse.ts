@@ -3,7 +3,11 @@ import { IUserDoc } from "../core/users/user.interface";
 import _ from "lodash";
 import ms from "ms";
 
-const createSendTokenAndResponse = (user: IUserDoc, statusCode: number, res: Response) => {
+const createSendTokenAndResponse = (
+	user: IUserDoc,
+	statusCode: number,
+	res: Response,
+) => {
 	const token = user.signToken();
 
 	res.cookie("jwt", token, {
@@ -18,7 +22,15 @@ const createSendTokenAndResponse = (user: IUserDoc, statusCode: number, res: Res
 		.header("x-auth-token", token)
 		.json({
 			status: "success",
-			data: { user: _.pick(user, ["id", "name", "email", "role", "photo"]) },
+			data: {
+				user: _.pick(user, [
+					"id",
+					"name",
+					"email",
+					"role",
+					"photo",
+				]),
+			},
 		});
 };
 

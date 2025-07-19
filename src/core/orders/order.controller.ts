@@ -10,7 +10,10 @@ export class OrderController {
 	 ****************** GET HANDLERS ************************
 	 ******************************************************** */
 
-	getAllOrders = async (req: Request, res: Response): Promise<void> => {
+	getAllOrders = async (
+		req: Request,
+		res: Response,
+	): Promise<void> => {
 		const orders = await this.orderService.getAllOrders();
 		res.status(200).json({
 			status: "success",
@@ -19,8 +22,13 @@ export class OrderController {
 		});
 	};
 
-	getCurrentUserOrders = async (req: Request, res: Response): Promise<void> => {
-		const orders = await this.orderService.getCurrentUserOrders(req.user.id);
+	getCurrentUserOrders = async (
+		req: Request,
+		res: Response,
+	): Promise<void> => {
+		const orders = await this.orderService.getCurrentUserOrders(
+			req.user.id,
+		);
 		res.status(200).json({
 			status: "success",
 			length: orders.length,
@@ -28,15 +36,25 @@ export class OrderController {
 		});
 	};
 
-	getOrderById = async (req: Request, res: Response): Promise<void> => {
-		const order = await this.orderService.getOrderById(req.params.id, req.user.id, req.user.role);
+	getOrderById = async (
+		req: Request,
+		res: Response,
+	): Promise<void> => {
+		const order = await this.orderService.getOrderById(
+			req.params.id,
+			req.user.id,
+			req.user.role,
+		);
 		res.status(200).json({
 			status: "success",
 			data: { order },
 		});
 	};
 
-	getAllTopsOrders = async (req: Request, res: Response): Promise<void> => {
+	getAllTopsOrders = async (
+		req: Request,
+		res: Response,
+	): Promise<void> => {
 		const orders = await this.orderService.getAllTopsOrders(10);
 		res.status(200).json({
 			status: "success",
@@ -49,10 +67,16 @@ export class OrderController {
 	 ****************** POST HANDLERS ***********************
 	 ******************************************************** */
 
-	createOrder = async (req: Request, res: Response): Promise<void> => {
+	createOrder = async (
+		req: Request,
+		res: Response,
+	): Promise<void> => {
 		const createOrderDto = req.body as CreateOrderDto;
 		const userId = req.user.id;
-		const order = await this.orderService.createOrder(createOrderDto, userId);
+		const order = await this.orderService.createOrder(
+			createOrderDto,
+			userId,
+		);
 		res.status(201).json({
 			status: "success",
 			data: { order },
@@ -63,7 +87,10 @@ export class OrderController {
 	 ****************** PATCH HANDLERS **********************
 	 ******************************************************** */
 
-	updateOrder = async (req: Request, res: Response): Promise<void> => {
+	updateOrder = async (
+		req: Request,
+		res: Response,
+	): Promise<void> => {
 		const order = await this.orderService.updateOrder(
 			req.params.id,
 			req.body as UpdateOrderDto,
@@ -76,20 +103,34 @@ export class OrderController {
 		});
 	};
 
-	updateOrderToPaid = async (req: Request, res: Response): Promise<void> => {
+	updateOrderToPaid = async (
+		req: Request,
+		res: Response,
+	): Promise<void> => {
 		const orderId = req.params.id;
 		const userId = req.user.id;
-		const order = await this.orderService.updateOrderToPaid(orderId, userId, req.user.role);
+		const order = await this.orderService.updateOrderToPaid(
+			orderId,
+			userId,
+			req.user.role,
+		);
 		res.status(200).json({
 			status: "success",
 			data: { order },
 		});
 	};
 
-	updateOrderToDeliver = async (req: Request, res: Response): Promise<void> => {
+	updateOrderToDeliver = async (
+		req: Request,
+		res: Response,
+	): Promise<void> => {
 		const orderId = req.params.id;
 		const userId = req.user.id;
-		const order = await this.orderService.updateOrderToDeliver(orderId, userId, req.user.role);
+		const order = await this.orderService.updateOrderToDeliver(
+			orderId,
+			userId,
+			req.user.role,
+		);
 		res.status(200).json({
 			status: "success",
 			data: { order },
@@ -100,8 +141,15 @@ export class OrderController {
 	 ****************** DELETE HANDLERS *********************
 	 ******************************************************** */
 
-	deleteOrder = async (req: Request, res: Response): Promise<void> => {
-		await this.orderService.deleteOrder(req.params.id, req.user.id, req.user.role);
+	deleteOrder = async (
+		req: Request,
+		res: Response,
+	): Promise<void> => {
+		await this.orderService.deleteOrder(
+			req.params.id,
+			req.user.id,
+			req.user.role,
+		);
 		res.status(204).json({
 			status: "success",
 		});

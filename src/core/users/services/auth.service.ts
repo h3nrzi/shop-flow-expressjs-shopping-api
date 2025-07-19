@@ -20,10 +20,14 @@ export class AuthService {
 
 	async signup(signupDto: ISignupDto): Promise<IUserDoc> {
 		// check if the email is already in use, if so, throw an error
-		const { name, email, password, passwordConfirmation } = signupDto;
-		const existingUser = await this.userRepository.findByEmail(email);
+		const { name, email, password, passwordConfirmation } =
+			signupDto;
+		const existingUser =
+			await this.userRepository.findByEmail(email);
 		if (existingUser) {
-			throw new BadRequestError("این ایمیل قبلا استفاده شده است");
+			throw new BadRequestError(
+				"این ایمیل قبلا استفاده شده است",
+			);
 		}
 
 		// create the user and return it
@@ -38,9 +42,12 @@ export class AuthService {
 	async login(loginDto: ILoginDto): Promise<IUserDoc> {
 		// check if the email is already in use, if so, throw an error
 		const { email, password } = loginDto;
-		const authenticatedUser = await this.userRepository.findByEmail(email, "+password");
+		const authenticatedUser =
+			await this.userRepository.findByEmail(email, "+password");
 		if (!authenticatedUser) {
-			throw new NotAuthorizedError("ایمیل یا رمز عبور اشتباه است!");
+			throw new NotAuthorizedError(
+				"ایمیل یا رمز عبور اشتباه است!",
+			);
 		}
 
 		// check if the user is active, if not, throw an error
@@ -51,22 +58,34 @@ export class AuthService {
 		}
 
 		// check if the password is correct, if not, throw an error
-		const correct = await authenticatedUser.correctPassword(password);
-		if (!correct) throw new NotAuthorizedError("ایمیل یا رمز عبور اشتباه است!");
+		const correct =
+			await authenticatedUser.correctPassword(password);
+		if (!correct)
+			throw new NotAuthorizedError(
+				"ایمیل یا رمز عبور اشتباه است!",
+			);
 
 		return authenticatedUser;
 	}
 
-	async forgotPassword(forgotPasswordDto: IForgotPasswordDto): Promise<void> {
+	async forgotPassword(
+		forgotPasswordDto: IForgotPasswordDto,
+	): Promise<void> {
 		// check if user exists, if not, throw an error
-		const user = await this.userRepository.findByEmail(forgotPasswordDto.email);
+		const user = await this.userRepository.findByEmail(
+			forgotPasswordDto.email,
+		);
 		if (!user) {
-			throw new NotFoundError("هیچ کاربری با این آدرس ایمیل وجود ندارد.");
+			throw new NotFoundError(
+				"هیچ کاربری با این آدرس ایمیل وجود ندارد.",
+			);
 		}
 
 		// check if the user is active, if not, throw an error
 		if (!user.active) {
-			throw new NotAuthorizedError("کاربری که به این ایمیل مرتبط است مسدود شده است!");
+			throw new NotAuthorizedError(
+				"کاربری که به این ایمیل مرتبط است مسدود شده است!",
+			);
 		}
 
 		// create a password reset token
@@ -81,13 +100,19 @@ export class AuthService {
 
 		// send email with the password reset token, if not successful, throw error
 		try {
-			await sendEmail(user.email, url, "درخواست برای ریست کردن رمز عبور");
+			await sendEmail(
+				user.email,
+				url,
+				"درخواست برای ریست کردن رمز عبور",
+			);
 		} catch (err) {
 			user.passwordResetToken = undefined;
 			user.passwordResetExpires = undefined;
 			await user.save({ validateBeforeSave: false });
 
-			throw new InternalServerError("در ارسال ایمیل خطایی روی داد. لطفا بعدا دوباره امتحان کنید!");
+			throw new InternalServerError(
+				"در ارسال ایمیل خطایی روی داد. لطفا بعدا دوباره امتحان کنید!",
+			);
 		}
 	}
 
@@ -95,17 +120,27 @@ export class AuthService {
 	 ************* @description PATCH HANDLERS ******************
 	 ************************************************************/
 
-	async resetPassword(resetPasswordDto: IResetPasswordDto, resetToken: string): Promise<IUserDoc> {
+	async resetPassword(
+		resetPasswordDto: IResetPasswordDto,
+		resetToken: string,
+	): Promise<IUserDoc> {
 		// check if the reset token is valid, if not, throw an error
-		const token = crypto.createHash("sha256").update(resetToken).digest("hex");
-		const user = await this.userRepository.findByPasswordRestToken(token);
+		const token = crypto
+			.createHash("sha256")
+			.update(resetToken)
+			.digest("hex");
+		const user =
+			await this.userRepository.findByPasswordRestToken(token);
 		if (!user) {
-			throw new NotAuthorizedError("توکن نامعتبر است یا منقضی شده است!");
+			throw new NotAuthorizedError(
+				"توکن نامعتبر است یا منقضی شده است!",
+			);
 		}
 
 		// update the user password and reset the password reset token
 		user.password = resetPasswordDto.password;
-		user.passwordConfirmation = resetPasswordDto.passwordConfirmation;
+		user.passwordConfirmation =
+			resetPasswordDto.passwordConfirmation;
 		user.passwordResetToken = undefined;
 		user.passwordResetExpires = undefined;
 		const updatedUser = await user.save();

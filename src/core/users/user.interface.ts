@@ -14,7 +14,9 @@ export interface IUserDoc extends mongoose.Document {
 	passwordResetExpires?: Number;
 
 	// Instance methods
-	correctPassword: (candidate_password: string) => Promise<boolean>;
+	correctPassword: (
+		candidate_password: string,
+	) => Promise<boolean>;
 	signToken: () => string;
 	changePasswordAfter: (jwtTimeStamp: number) => boolean;
 	createPasswordResetToken: () => string;

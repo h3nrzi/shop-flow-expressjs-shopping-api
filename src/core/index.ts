@@ -31,8 +31,13 @@ export const userRepository = new UserRepository(User);
 export const reviewRepository = new ReviewRepository(Review);
 
 // Services Injection
-export const orderService = new OrderService(orderRepository, productRepository);
-export const productService = new ProductService(productRepository);
+export const orderService = new OrderService(
+	orderRepository,
+	productRepository,
+);
+export const productService = new ProductService(
+	productRepository,
+);
 export const reviewService = new ReviewService(reviewRepository);
 export const userService = new UserService(userRepository);
 export const authService = new AuthService(userRepository);
@@ -41,9 +46,15 @@ export const viewService = new ViewService(Product);
 
 // Controllers Injection
 export const orderController = new OrderController(orderService);
-export const productController = new ProductController(productService);
-export const reviewController = new ReviewController(reviewService);
+export const productController = new ProductController(
+	productService,
+);
+export const reviewController = new ReviewController(
+	reviewService,
+);
 export const userController = new UserController(userService);
 export const authController = new AuthController(authService);
-export const uploadController = new UploadController(uploadService);
+export const uploadController = new UploadController(
+	uploadService,
+);
 export const viewController = new ViewController(viewService);

@@ -2,13 +2,17 @@ import { RequestHandler } from "express";
 import xss from "xss";
 
 const sanitizeObject = (data: any): any => {
-	if (typeof data === "string") return xss(data, { whiteList: {} });
+	if (typeof data === "string")
+		return xss(data, { whiteList: {} });
 
-	if (Array.isArray(data)) return data.map(item => sanitizeObject(item));
+	if (Array.isArray(data))
+		return data.map(item => sanitizeObject(item));
 
 	if (typeof data === "object" && data !== null) {
 		const sanitizedObj: any = {};
-		for (const key in data) if (data.hasOwnProperty(key)) sanitizedObj[key] = sanitizeObject(data[key]);
+		for (const key in data)
+			if (data.hasOwnProperty(key))
+				sanitizedObj[key] = sanitizeObject(data[key]);
 		return sanitizedObj;
 	}
 

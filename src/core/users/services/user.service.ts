@@ -19,9 +19,15 @@ export class UserService {
 		return this.userRepository.findAll();
 	}
 
-	async findUserById(userId: string, select?: string): Promise<IUserDoc | null> {
+	async findUserById(
+		userId: string,
+		select?: string,
+	): Promise<IUserDoc | null> {
 		// find the user, if not found, throw an error
-		const targetUser = await this.userRepository.findById(userId, select);
+		const targetUser = await this.userRepository.findById(
+			userId,
+			select,
+		);
 		if (!targetUser) {
 			throw new NotFoundError("هیچ موردی با این شناسه یافت نشد");
 		}
@@ -29,13 +35,17 @@ export class UserService {
 		return targetUser;
 	}
 
-	async findUsersCountByDay(period: string): Promise<{ count: number; date: Date }[]> {
+	async findUsersCountByDay(
+		period: string,
+	): Promise<{ count: number; date: Date }[]> {
 		let startDate: Date | undefined;
 		const endDate = new Date();
 
 		switch (period) {
 			case "week":
-				startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+				startDate = new Date(
+					Date.now() - 7 * 24 * 60 * 60 * 1000,
+				);
 				break;
 			case "month":
 				startDate = new Date();
@@ -52,18 +62,27 @@ export class UserService {
 				throw new BadRequestError("زمان وارد شده نامعتبر است");
 		}
 
-		return this.userRepository.findCountByDay(endDate, startDate);
+		return this.userRepository.findCountByDay(
+			endDate,
+			startDate,
+		);
 	}
 
 	/******************************************************
 	 ************* @description POST HANDLERS *************
 	 ******************************************************/
 
-	async createUser(createUserDto: ICreateUserDto): Promise<IUserDoc> {
+	async createUser(
+		createUserDto: ICreateUserDto,
+	): Promise<IUserDoc> {
 		// check if the email is already in use, if so, throw an error
-		const targetUser = await this.userRepository.findByEmail(createUserDto.email);
+		const targetUser = await this.userRepository.findByEmail(
+			createUserDto.email,
+		);
 		if (targetUser) {
-			throw new BadRequestError("این ایمیل قبلا استفاده شده است");
+			throw new BadRequestError(
+				"این ایمیل قبلا استفاده شده است",
+			);
 		}
 
 		return this.userRepository.create(createUserDto);
@@ -98,15 +117,23 @@ export class UserService {
 		updateUserDto: IUpdateCurrentUserInfoDto,
 	): Promise<IUserDoc | null> {
 		// if password or passwordConfirmation is provided, throw an error
-		if (updateUserDto.password || updateUserDto.passwordConfirmation) {
-			throw new BadRequestError("با این درخواست نمی توانید رمز عبور را آپدیت کنید");
+		if (
+			updateUserDto.password ||
+			updateUserDto.passwordConfirmation
+		) {
+			throw new BadRequestError(
+				"با این درخواست نمی توانید رمز عبور را آپدیت کنید",
+			);
 		}
 
-		const updatedUser = await this.userRepository.update(currentUser.id, {
-			name: updateUserDto.name,
-			email: updateUserDto.email,
-			photo: updateUserDto.photo,
-		});
+		const updatedUser = await this.userRepository.update(
+			currentUser.id,
+			{
+				name: updateUserDto.name,
+				email: updateUserDto.email,
+				photo: updateUserDto.photo,
+			},
+		);
 
 		return updatedUser;
 	}
@@ -116,12 +143,19 @@ export class UserService {
 		updateCurrentUserPasswordDto: IUpdateCurrentUserPasswordDto,
 	): Promise<IUserDoc | null> {
 		// find the user, if not found, throw an error
-		const targetUser = await this.findUserById(currentUser.id, "+password");
+		const targetUser = await this.findUserById(
+			currentUser.id,
+			"+password",
+		);
 
 		// check if the password current is correct
-		const correct = await targetUser!.correctPassword(updateCurrentUserPasswordDto.passwordCurrent);
+		const correct = await targetUser!.correctPassword(
+			updateCurrentUserPasswordDto.passwordCurrent,
+		);
 		if (!correct) {
-			throw new NotAuthorizedError("رمز عبور فعلی شما اشتباه است");
+			throw new NotAuthorizedError(
+				"رمز عبور فعلی شما اشتباه است",
+			);
 		}
 
 		// ---- UPDATE PASSWORD MANUALLY ----
@@ -129,7 +163,8 @@ export class UserService {
 		// because userRepository.update() use findByIdAndUpdate() method
 		// which does not access the password field in validate function for passwordConfirmation
 		// so we need to update the password manually
-		const { password, passwordConfirmation } = updateCurrentUserPasswordDto;
+		const { password, passwordConfirmation } =
+			updateCurrentUserPasswordDto;
 		targetUser!.password = password;
 		targetUser!.passwordConfirmation = passwordConfirmation;
 		await targetUser!.save();
@@ -141,7 +176,10 @@ export class UserService {
 	 ************* @description DELETE HANDLERS ************
 	 *******************************************************/
 
-	async deleteUser(userId: string, currentUser: IUserDoc): Promise<void> {
+	async deleteUser(
+		userId: string,
+		currentUser: IUserDoc,
+	): Promise<void> {
 		// find the user, if not found, throw an error
 		const targetUser = await this.findUserById(userId);
 

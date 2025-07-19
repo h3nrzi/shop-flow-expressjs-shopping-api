@@ -10,7 +10,9 @@ export class OrderRepository {
 	 ****************** QUERIES OPERATIONS ********************
 	 ******************************************************** */
 
-	async findAll(query: FilterQuery<OrderDoc>): Promise<OrderDoc[]> {
+	async findAll(
+		query: FilterQuery<OrderDoc>,
+	): Promise<OrderDoc[]> {
 		return this.orderModel.find(query);
 	}
 
@@ -55,7 +57,10 @@ export class OrderRepository {
 	 ****************** MUTATIONS OPERATIONS ******************
 	 ******************************************************** */
 
-	async create(payload: CreateOrderDto, userId: string): Promise<OrderDoc> {
+	async create(
+		payload: CreateOrderDto,
+		userId: string,
+	): Promise<OrderDoc> {
 		return this.orderModel.create({
 			...payload,
 			user: userId,
@@ -66,8 +71,13 @@ export class OrderRepository {
 		});
 	}
 
-	async updateById(orderId: string, payload: UpdateOrderDto): Promise<OrderDoc | null> {
-		return this.orderModel.findByIdAndUpdate(orderId, payload, { new: true });
+	async updateById(
+		orderId: string,
+		payload: UpdateOrderDto,
+	): Promise<OrderDoc | null> {
+		return this.orderModel.findByIdAndUpdate(orderId, payload, {
+			new: true,
+		});
 	}
 
 	async deleteById(orderId: string): Promise<OrderDoc | null> {

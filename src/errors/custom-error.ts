@@ -7,5 +7,8 @@ export abstract class CustomError extends Error {
 	}
 
 	abstract statusCode: number;
-	abstract serializeErrors: () => { field: string | null; message: string }[];
+	abstract serializeErrors: () => {
+		field: string | null;
+		message: string;
+	}[];
 }

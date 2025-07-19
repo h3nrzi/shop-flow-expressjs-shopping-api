@@ -9,7 +9,8 @@ const validationCases = [
 		},
 	},
 	{
-		testCaseName: "should return 400 if password is not provided",
+		testCaseName:
+			"should return 400 if password is not provided",
 		user: {
 			email: "test@test.com",
 			password: "",

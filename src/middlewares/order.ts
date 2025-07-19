@@ -32,5 +32,9 @@ const beforeUpdate: RequestHandler = (req, res, next) => {
 	next();
 };
 
-const orderMiddleware = { beforeCreate, beforeUpdate, getMyOrders };
+const orderMiddleware = {
+	beforeCreate,
+	beforeUpdate,
+	getMyOrders,
+};
 export default orderMiddleware;

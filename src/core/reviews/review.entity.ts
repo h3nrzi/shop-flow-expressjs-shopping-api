@@ -32,7 +32,10 @@ const reviewSchema = new Schema<IReviewDoc>({
 //////////// Static Methods ////////////
 
 // Static method for calculating Average Ratings
-reviewSchema.statics.calcAverageRatings = async function (this: Model<IReviewDoc>, productId: string) {
+reviewSchema.statics.calcAverageRatings = async function (
+	this: Model<IReviewDoc>,
+	productId: string,
+) {
 	const stats = await this.aggregate([
 		{
 			$match: { product: productId },
@@ -56,22 +59,33 @@ reviewSchema.statics.calcAverageRatings = async function (this: Model<IReviewDoc
 
 // Calculating Average Ratings based on Creating a New Review
 reviewSchema.post("save", function (doc, next) {
-	(doc.constructor as ReviewModel).calcAverageRatings(doc.product as any);
+	(doc.constructor as ReviewModel).calcAverageRatings(
+		doc.product as any,
+	);
 	next();
 });
 
 //////////// Query Middleware ////////////
 
 // Populating (product and user) field on Review
-reviewSchema.pre(/^find/, async function (this: Query<any, IReviewDoc>, next) {
-	this.populate("user product");
-	next();
-});
+reviewSchema.pre(
+	/^find/,
+	async function (this: Query<any, IReviewDoc>, next) {
+		this.populate("user product");
+		next();
+	},
+);
 
 // Calculating Average Ratings based on update and delete review
 reviewSchema.post(/^findOneAnd/, async function (doc) {
-	if (doc) (doc.constructor as ReviewModel).calcAverageRatings(doc.product._id);
+	if (doc)
+		(doc.constructor as ReviewModel).calcAverageRatings(
+			doc.product._id,
+		);
 });
 
-const Review = model<IReviewDoc, ReviewModel>("Review", reviewSchema);
+const Review = model<IReviewDoc, ReviewModel>(
+	"Review",
+	reviewSchema,
+);
 export { Review };

@@ -18,7 +18,8 @@ export const createProduct = async data => {
 			},
 		});
 
-		if (res.data.status === "success") window.location.href = "/admin";
+		if (res.data.status === "success")
+			window.location.href = "/admin";
 	} catch (err) {
 		alert(err.response?.data?.errors[0].message);
 	}
@@ -26,14 +27,23 @@ export const createProduct = async data => {
 
 export const editProduct = async (data, productId) => {
 	try {
-		const res = await axios.patch(`/api/products/${productId}`, data, {
-			withCredentials: true,
-			headers: { "Content-Type": "application/json" },
-		});
+		const res = await axios.patch(
+			`/api/products/${productId}`,
+			data,
+			{
+				withCredentials: true,
+				headers: { "Content-Type": "application/json" },
+			},
+		);
 
-		if (res.data.status === "success") window.location.href = "/admin";
+		if (res.data.status === "success")
+			window.location.href = "/admin";
 	} catch (err) {
-		alert(err.response?.data?.message || err.message || "An error occurred");
+		alert(
+			err.response?.data?.message ||
+				err.message ||
+				"An error occurred",
+		);
 	}
 };
 
@@ -46,7 +56,8 @@ export const login = async data => {
 			withCredentials: true,
 		});
 
-		if (res.data.status === "success") window.location.href = "/admin";
+		if (res.data.status === "success")
+			window.location.href = "/admin";
 	} catch (err) {
 		alert(err.response?.data?.errors[0].message);
 	}
@@ -54,7 +65,11 @@ export const login = async data => {
 
 export const logout = async () => {
 	try {
-		const res = await axios.post("/api/users/logout", {}, { withCredentials: true });
+		const res = await axios.post(
+			"/api/users/logout",
+			{},
+			{ withCredentials: true },
+		);
 		if (res.status === 204) window.location.reload();
 	} catch (err) {
 		alert(err.response?.data?.errors[0].message);

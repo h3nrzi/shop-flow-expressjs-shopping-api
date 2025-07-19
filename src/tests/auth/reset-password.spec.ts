@@ -1,6 +1,11 @@
 import { userRepository } from "../../core";
 import { sendEmail } from "../../utils/email";
-import { forgotPassword, login, resetPassword, signup } from "../helpers/auth-requests";
+import {
+	forgotPassword,
+	login,
+	resetPassword,
+	signup,
+} from "../helpers/auth-requests";
 import { validUser } from "../helpers/setup";
 
 const getUniqueUser = (suffix: string): typeof validUser => ({
@@ -10,7 +15,9 @@ const getUniqueUser = (suffix: string): typeof validUser => ({
 	passwordConfirmation: "test123456",
 });
 
-const signupAndRequestForgotPassword = async (user: typeof validUser): Promise<string> => {
+const signupAndRequestForgotPassword = async (
+	user: typeof validUser,
+): Promise<string> => {
 	// Make the request to signup
 	await signup(user);
 
@@ -18,7 +25,9 @@ const signupAndRequestForgotPassword = async (user: typeof validUser): Promise<s
 	await forgotPassword({ email: user.email });
 
 	// Get the reset token from the mocked email
-	const mockSendEmail = sendEmail as jest.MockedFunction<typeof sendEmail>;
+	const mockSendEmail = sendEmail as jest.MockedFunction<
+		typeof sendEmail
+	>;
 	const emailCall = mockSendEmail.mock.calls[0];
 	const url = emailCall[1] as string;
 
@@ -28,22 +37,29 @@ const signupAndRequestForgotPassword = async (user: typeof validUser): Promise<s
 
 const validationCases = [
 	{
-		testCaseName: "should return 400 if the password is not provided",
+		testCaseName:
+			"should return 400 if the password is not provided",
 		body: { password: "", passwordConfirmation: "123456" },
 		query: { resetToken: "123456" },
 	},
 	{
-		testCaseName: "should return 400 if the password confirmation is not provided",
+		testCaseName:
+			"should return 400 if the password confirmation is not provided",
 		body: { password: "123456", passwordConfirmation: "" },
 		query: { resetToken: "123456" },
 	},
 	{
-		testCaseName: "should return 400 if the password and password confirmation are not the same",
-		body: { password: "123456", passwordConfirmation: "1234567" },
+		testCaseName:
+			"should return 400 if the password and password confirmation are not the same",
+		body: {
+			password: "123456",
+			passwordConfirmation: "1234567",
+		},
 		query: { resetToken: "123456" },
 	},
 	{
-		testCaseName: "should return 400 if the reset token is not provided",
+		testCaseName:
+			"should return 400 if the reset token is not provided",
 		body: { password: "123456", passwordConfirmation: "123456" },
 		query: { resetToken: "" },
 	},
@@ -51,7 +67,9 @@ const validationCases = [
 
 describe("PATCH /api/users/reset-password", () => {
 	beforeEach(() => {
-		(sendEmail as jest.MockedFunction<typeof sendEmail>).mockClear();
+		(
+			sendEmail as jest.MockedFunction<typeof sendEmail>
+		).mockClear();
 	});
 
 	describe("Validation DTO", () => {
@@ -74,8 +92,11 @@ describe("PATCH /api/users/reset-password", () => {
 
 			// Make the request to reset password with an invalid token
 			const res = await resetPassword(
-				{ password: "test123456", passwordConfirmation: "test123456" },
-				{ resetToken: "invalid-token" }
+				{
+					password: "test123456",
+					passwordConfirmation: "test123456",
+				},
+				{ resetToken: "invalid-token" },
 			);
 
 			// Due to the reset token is invalid, the request should return 401
@@ -88,17 +109,23 @@ describe("PATCH /api/users/reset-password", () => {
 			const user = getUniqueUser("test2");
 
 			// Make the request to signup and forgot password
-			const resetToken = await signupAndRequestForgotPassword(user);
+			const resetToken =
+				await signupAndRequestForgotPassword(user);
 
 			// Get the user from the database and update the reset token expiration time to 1 second ago
-			const dbUser = await userRepository.findByEmail(user.email);
+			const dbUser = await userRepository.findByEmail(
+				user.email,
+			);
 			dbUser!.passwordResetExpires = Date.now() - 1000;
 			await dbUser!.save({ validateBeforeSave: false });
 
 			// Make the request to reset password with the expired token
 			const res = await resetPassword(
-				{ password: "test123456", passwordConfirmation: "test123456" },
-				{ resetToken }
+				{
+					password: "test123456",
+					passwordConfirmation: "test123456",
+				},
+				{ resetToken },
 			);
 
 			// Due to the reset token is expired, the request should return 401
@@ -113,13 +140,17 @@ describe("PATCH /api/users/reset-password", () => {
 			const user = getUniqueUser("test3");
 
 			// Make the request to signup and forgot password
-			const resetToken = await signupAndRequestForgotPassword(user);
+			const resetToken =
+				await signupAndRequestForgotPassword(user);
 
 			// Make the request to reset password with the reset token
 			const newPassword = "newpassword123";
 			const resetPasswordRes = await resetPassword(
-				{ password: newPassword, passwordConfirmation: newPassword },
-				{ resetToken }
+				{
+					password: newPassword,
+					passwordConfirmation: newPassword,
+				},
+				{ resetToken },
 			);
 
 			// Due to the reset password is successful, the request should return 200
@@ -131,7 +162,8 @@ describe("PATCH /api/users/reset-password", () => {
 			const user = getUniqueUser("test2");
 
 			// Make the request to signup and forgot password
-			const resetToken = await signupAndRequestForgotPassword(user);
+			const resetToken =
+				await signupAndRequestForgotPassword(user);
 
 			// Make the request to reset password with the reset token
 			const newPassword = "newpassword123";
@@ -140,11 +172,14 @@ describe("PATCH /api/users/reset-password", () => {
 					password: newPassword,
 					passwordConfirmation: newPassword,
 				},
-				{ resetToken }
+				{ resetToken },
 			);
 
 			// Make the request to login with the new password
-			const loginRes = await login({ email: user.email, password: newPassword });
+			const loginRes = await login({
+				email: user.email,
+				password: newPassword,
+			});
 
 			// Due to the login with the new password is successful, the request should return 200
 			expect(loginRes.status).toBe(200);
@@ -155,7 +190,8 @@ describe("PATCH /api/users/reset-password", () => {
 			const user = getUniqueUser("test4");
 
 			// Make the request to signup and forgot password
-			const resetToken = await signupAndRequestForgotPassword(user);
+			const resetToken =
+				await signupAndRequestForgotPassword(user);
 
 			// Make the request to reset password with the reset token
 			const newPassword = "newpassword123";
@@ -164,11 +200,14 @@ describe("PATCH /api/users/reset-password", () => {
 					password: newPassword,
 					passwordConfirmation: newPassword,
 				},
-				{ resetToken }
+				{ resetToken },
 			);
 
 			// Make the request to login with the old password
-			const oldLoginRes = await login({ email: user.email, password: user.password });
+			const oldLoginRes = await login({
+				email: user.email,
+				password: user.password,
+			});
 
 			// Due to the old password no longer works, the request should return 401
 			expect(oldLoginRes.status).toBe(401);

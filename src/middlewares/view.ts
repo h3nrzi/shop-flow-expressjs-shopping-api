@@ -7,7 +7,8 @@ const isLoggedIn: RequestHandler = async (req, res, next) => {
 	// get token from headers or cookies
 	const { authorization } = req.headers;
 	let token: string | undefined = undefined;
-	if (authorization && authorization.startsWith("Bearer")) token = authorization.split(" ")[1];
+	if (authorization && authorization.startsWith("Bearer"))
+		token = authorization.split(" ")[1];
 	else if (req.cookies.jwt) token = req.cookies.jwt;
 
 	if (token) {
@@ -20,7 +21,9 @@ const isLoggedIn: RequestHandler = async (req, res, next) => {
 			};
 
 			// Check if user still exists
-			const currentUser = await userRepository.findById(decoded.id);
+			const currentUser = await userRepository.findById(
+				decoded.id,
+			);
 			if (!currentUser) {
 				return res.redirect("/admin/login");
 			}

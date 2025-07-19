@@ -9,7 +9,9 @@ describe("POST /api/users/logout", () => {
 				password: "password",
 				passwordConfirmation: "password",
 			});
-			const logoutResponse = await logout(signupResponse.headers["set-cookie"]);
+			const logoutResponse = await logout(
+				signupResponse.headers["set-cookie"],
+			);
 			expect(logoutResponse.status).toBe(204);
 			const cookie = logoutResponse.headers["set-cookie"];
 			const result = cookie?.[0].split(";")[0];

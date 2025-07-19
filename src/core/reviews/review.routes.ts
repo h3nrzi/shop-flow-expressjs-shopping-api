@@ -12,7 +12,10 @@ const router = express.Router({ mergeParams: true });
  ************************************************************************/
 router.use(authMiddleware.protect);
 
-router.get("/", [reviewMiddleware.beforeGetAll, reviewController.getAllReviews.bind(reviewController)]);
+router.get("/", [
+	reviewMiddleware.beforeGetAll,
+	reviewController.getAllReviews.bind(reviewController),
+]);
 
 router.get(
 	"/:id",
@@ -22,9 +25,13 @@ router.get(
 );
 
 router.post("/", [
-	body("rating").isInt({ min: 1, max: 5 }).withMessage("امتیاز الزامی است"),
+	body("rating")
+		.isInt({ min: 1, max: 5 })
+		.withMessage("امتیاز الزامی است"),
 	body("comment").isString().withMessage("نظر الزامی است"),
-	body("product").isMongoId().withMessage("شناسه محصول الزامی است"),
+	body("product")
+		.isMongoId()
+		.withMessage("شناسه محصول الزامی است"),
 	body("user").isMongoId().withMessage("شناسه کاربر الزامی است"),
 	validateRequest,
 	reviewMiddleware.beforeCreate,
@@ -33,9 +40,18 @@ router.post("/", [
 
 router.patch("/:id", [
 	param("id").isMongoId().withMessage("شناسه نظر معتبر نیست"),
-	body("rating").optional().isInt({ min: 1, max: 5 }).withMessage("امتیاز باید بین 1 و 5 باشد"),
-	body("comment").optional().isString().withMessage("فرمت نظر معتبر نیست"),
-	body("product").optional().isMongoId().withMessage("فرمت شناسه محصول معتبر نیست"),
+	body("rating")
+		.optional()
+		.isInt({ min: 1, max: 5 })
+		.withMessage("امتیاز باید بین 1 و 5 باشد"),
+	body("comment")
+		.optional()
+		.isString()
+		.withMessage("فرمت نظر معتبر نیست"),
+	body("product")
+		.optional()
+		.isMongoId()
+		.withMessage("فرمت شناسه محصول معتبر نیست"),
 	validateRequest,
 	reviewMiddleware.beforeUpdate,
 	reviewController.updateReview.bind(reviewController),

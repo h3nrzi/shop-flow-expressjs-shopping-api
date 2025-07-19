@@ -93,5 +93,8 @@ productSchema.pre("save", function (next) {
 	next();
 });
 
-const Product = model<ProductDoc, ProductModel>("Product", productSchema);
+const Product = model<ProductDoc, ProductModel>(
+	"Product",
+	productSchema,
+);
 export { Product };

@@ -13,14 +13,22 @@ export class ViewController {
 		});
 	}
 
-	async getLoginPage(req: Request, res: Response): Promise<void> {
+	async getLoginPage(
+		req: Request,
+		res: Response,
+	): Promise<void> {
 		res.status(200).render("loginPage", {
 			title: "Shop Flow - Login",
 		});
 	}
 
-	async getEditProductPage(req: Request, res: Response): Promise<void> {
-		const product = await this.viewService.getProductById(req.params.id);
+	async getEditProductPage(
+		req: Request,
+		res: Response,
+	): Promise<void> {
+		const product = await this.viewService.getProductById(
+			req.params.id,
+		);
 
 		res.status(200).render("editProductPage", {
 			title: "Shop Flow - Edit Product",
@@ -28,7 +36,10 @@ export class ViewController {
 		});
 	}
 
-	async getCreateProductPage(req: Request, res: Response): Promise<void> {
+	async getCreateProductPage(
+		req: Request,
+		res: Response,
+	): Promise<void> {
 		res.status(200).render("createProductPage", {
 			title: "Shop Flow - Create Product",
 		});

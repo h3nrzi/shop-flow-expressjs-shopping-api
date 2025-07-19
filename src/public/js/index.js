@@ -11,7 +11,14 @@ import {
 	loginForm,
 	logoutButton,
 } from "./domElements.js";
-import { createProduct, deleteProduct, editProduct, login, logout, uploadImage } from "./api.js";
+import {
+	createProduct,
+	deleteProduct,
+	editProduct,
+	login,
+	logout,
+	uploadImage,
+} from "./api.js";
 
 if (createProductForm) {
 	createProductForm.addEventListener("submit", async e => {
@@ -85,64 +92,77 @@ if (loginForm) {
 }
 
 if (logoutButton) {
-	logoutButton.addEventListener("click", async () => await logout());
+	logoutButton.addEventListener(
+		"click",
+		async () => await logout(),
+	);
 }
 
 if (imageUploader)
-	imageUploader.addEventListener("change", async function (event) {
-		const previewContainer = document.getElementById("imagePreviewContainer1");
-		previewContainer.innerHTML = "";
-		const file = event.target.files[0];
+	imageUploader.addEventListener(
+		"change",
+		async function (event) {
+			const previewContainer = document.getElementById(
+				"imagePreviewContainer1",
+			);
+			previewContainer.innerHTML = "";
+			const file = event.target.files[0];
 
-		if (file) {
-			const formData = new FormData();
-			formData.append("image", file);
-
-			try {
-				// Mutation
-				const res = await uploadImage(formData);
-
-				// Show uploaded image and set the value of require input
-				const img = document.createElement("img");
-				img.src = res.data.data.image;
-				img.style.maxWidth = "60px";
-				img.style.margin = "10px";
-				imageInput.value = res.data.data.image;
-				previewContainer.appendChild(img);
-
-				alert("تصویر با موفقیت آپلود شد!");
-			} catch (err) {
-				console.log(err);
-				alert(err.response.data.message);
-			}
-		}
-	});
-
-if (imagesUploader)
-	imagesUploader.addEventListener("change", async function (event) {
-		const previewContainer = document.getElementById("imagePreviewContainer2");
-		previewContainer.innerHTML = "";
-		const files = Array.from(event.target.files);
-
-		try {
-			for (const file of files) {
+			if (file) {
 				const formData = new FormData();
 				formData.append("image", file);
 
-				// Mutation
-				const res = await uploadImage(formData);
+				try {
+					// Mutation
+					const res = await uploadImage(formData);
 
-				// Show uploaded image and set the value of require input
-				const img = document.createElement("img");
-				img.src = res.data.data.image;
-				img.style.maxWidth = "60px";
-				img.style.margin = "10px";
-				imagesInput.value += res.data.data.image + ",";
-				previewContainer.appendChild(img);
+					// Show uploaded image and set the value of require input
+					const img = document.createElement("img");
+					img.src = res.data.data.image;
+					img.style.maxWidth = "60px";
+					img.style.margin = "10px";
+					imageInput.value = res.data.data.image;
+					previewContainer.appendChild(img);
+
+					alert("تصویر با موفقیت آپلود شد!");
+				} catch (err) {
+					console.log(err);
+					alert(err.response.data.message);
+				}
 			}
+		},
+	);
 
-			alert("تصاویر با موفقیت آپلود شد!");
-		} catch (err) {
-			alert(err.response.data.message);
-		}
-	});
+if (imagesUploader)
+	imagesUploader.addEventListener(
+		"change",
+		async function (event) {
+			const previewContainer = document.getElementById(
+				"imagePreviewContainer2",
+			);
+			previewContainer.innerHTML = "";
+			const files = Array.from(event.target.files);
+
+			try {
+				for (const file of files) {
+					const formData = new FormData();
+					formData.append("image", file);
+
+					// Mutation
+					const res = await uploadImage(formData);
+
+					// Show uploaded image and set the value of require input
+					const img = document.createElement("img");
+					img.src = res.data.data.image;
+					img.style.maxWidth = "60px";
+					img.style.margin = "10px";
+					imagesInput.value += res.data.data.image + ",";
+					previewContainer.appendChild(img);
+				}
+
+				alert("تصاویر با موفقیت آپلود شد!");
+			} catch (err) {
+				alert(err.response.data.message);
+			}
+		},
+	);

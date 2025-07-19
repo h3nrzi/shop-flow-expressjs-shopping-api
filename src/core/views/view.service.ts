@@ -1,5 +1,8 @@
 import { NotFoundError } from "../../errors/not-found-error";
-import { ProductDoc, ProductModel } from "../products/product.interface";
+import {
+	ProductDoc,
+	ProductModel,
+} from "../products/product.interface";
 
 export class ViewService {
 	constructor(private readonly productModel: ProductModel) {}

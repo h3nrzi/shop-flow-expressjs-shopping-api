@@ -15,17 +15,29 @@ export class UserRepository {
 		return this.userModel.find();
 	}
 
-	async findById(userId: string, select?: string): Promise<IUserDoc | null> {
-		const user = await this.userModel.findById(userId).select(select ?? "");
+	async findById(
+		userId: string,
+		select?: string,
+	): Promise<IUserDoc | null> {
+		const user = await this.userModel
+			.findById(userId)
+			.select(select ?? "");
 		return user as IUserDoc;
 	}
 
-	async findByEmail(email: string, select?: string): Promise<IUserDoc | null> {
-		const user = await this.userModel.findOne({ email }).select(select ?? "");
+	async findByEmail(
+		email: string,
+		select?: string,
+	): Promise<IUserDoc | null> {
+		const user = await this.userModel
+			.findOne({ email })
+			.select(select ?? "");
 		return user as IUserDoc;
 	}
 
-	async findByPasswordRestToken(passwordResetToken: string): Promise<IUserDoc | null> {
+	async findByPasswordRestToken(
+		passwordResetToken: string,
+	): Promise<IUserDoc | null> {
 		return this.userModel.findOne({
 			passwordResetToken,
 			passwordResetExpires: { $gt: Date.now() },
@@ -36,8 +48,13 @@ export class UserRepository {
 	 ************* @description AGGREGATE OPERATIONS **************
 	 **************************************************************/
 
-	async findCountByDay(endDate: Date, startDate?: Date): Promise<{ count: number; date: Date }[]> {
-		const match = startDate ? { createdAt: { $gte: startDate, $lte: endDate } } : {};
+	async findCountByDay(
+		endDate: Date,
+		startDate?: Date,
+	): Promise<{ count: number; date: Date }[]> {
+		const match = startDate
+			? { createdAt: { $gte: startDate, $lte: endDate } }
+			: {};
 
 		const result = await this.userModel.aggregate([
 			{
@@ -45,7 +62,12 @@ export class UserRepository {
 			},
 			{
 				$group: {
-					_id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } }, // group the users by the day
+					_id: {
+						$dateToString: {
+							format: "%Y-%m-%d",
+							date: "$createdAt",
+						},
+					}, // group the users by the day
 					count: { $sum: 1 }, // count the number of users by the day
 				},
 			},
@@ -70,7 +92,9 @@ export class UserRepository {
 	 ************* @description CREATE OPERATIONS ****************
 	 *************************************************************/
 
-	async create(createUserDto: ICreateUserDto): Promise<IUserDoc> {
+	async create(
+		createUserDto: ICreateUserDto,
+	): Promise<IUserDoc> {
 		return this.userModel.create(createUserDto);
 	}
 
@@ -80,7 +104,10 @@ export class UserRepository {
 
 	async update(
 		userId: string,
-		payload: IUpdateUserDto | IUpdateCurrentUserInfoDto | IUpdateCurrentUserPasswordDto,
+		payload:
+			| IUpdateUserDto
+			| IUpdateCurrentUserInfoDto
+			| IUpdateCurrentUserPasswordDto,
 	): Promise<IUserDoc | null> {
 		return this.userModel.findByIdAndUpdate(userId, payload, {
 			new: true, // return the updated user
