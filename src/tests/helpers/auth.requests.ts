@@ -1,12 +1,12 @@
 import request, { Response } from "supertest";
-import app from "../../app";
+import app from "@/app";
 import { IForgotPasswordDto } from "../../core/users/dtos/forgot.password.dto";
 import { ILoginDto } from "../../core/users/dtos/login.dto";
 import { IResetPasswordDto } from "../../core/users/dtos/reset.password.dto";
 import { ISignupDto } from "../../core/users/dtos/signup.dto";
 
 export const signup = async (
-	body: ISignupDto,
+	body: ISignupDto
 ): Promise<Response> => {
 	return await request(app).post("/api/users/signup").send({
 		name: body.name,
@@ -17,7 +17,7 @@ export const signup = async (
 };
 
 export const login = async (
-	body: ILoginDto,
+	body: ILoginDto
 ): Promise<Response> => {
 	return await request(app).post("/api/users/login").send({
 		email: body.email,
@@ -26,15 +26,23 @@ export const login = async (
 };
 
 export const logout = async (
-	cookie: string,
+	cookie: string
 ): Promise<Response> => {
 	return await request(app)
 		.post("/api/users/logout")
 		.set("Cookie", cookie);
 };
 
+export const getMe = async (
+	cookie: string
+): Promise<Response> => {
+	return await request(app)
+		.get("/api/users/get-me")
+		.set("Cookie", cookie);
+};
+
 export const forgotPassword = async (
-	body: IForgotPasswordDto,
+	body: IForgotPasswordDto
 ): Promise<Response> => {
 	return await request(app)
 		.post("/api/users/forgot-password")
@@ -43,11 +51,11 @@ export const forgotPassword = async (
 
 export const resetPassword = async (
 	body: IResetPasswordDto,
-	query: { resetToken: string },
+	query: { resetToken: string }
 ): Promise<Response> => {
 	return await request(app)
 		.patch(
-			`/api/users/reset-password?resetToken=${query.resetToken}`,
+			`/api/users/reset-password?resetToken=${query.resetToken}`
 		)
 		.send({
 			password: body.password,

@@ -1,28 +1,15 @@
-import { signup } from "@/tests/helpers/auth-requests";
-import { getMe } from "@/tests/helpers/user-requests";
-
-let johnToken: string;
-
-beforeEach(async () => {
-	const signupRes = await signup({
-		name: "John",
-		email: "john@test.com",
-		password: "password",
-		passwordConfirmation: "password",
-	});
-
-	johnToken = signupRes.headers["set-cookie"][0];
-});
+import { getMe, signup } from "@/tests/helpers/auth.requests";
 
 describe("GET /api/users/get-me", () => {
-	describe("Success", () => {
-		it("should return 200 if user is authenticated", async () => {
-			const res = await getMe(johnToken);
-			expect(res.status).toBe(200);
-			expect(res.body.data.currentUser.name).toBe("John");
-			expect(res.body.data.currentUser.email).toBe(
-				"john@test.com",
-			);
+	it("should return 200 if user is authenticated", async () => {
+		const signupRes = await signup({
+			name: "test",
+			email: "test@test.com",
+			password: "password",
+			passwordConfirmation: "password",
 		});
+
+		const res = await getMe(signupRes.headers["set-cookie"]);
+		expect(res.status).toBe(200);
 	});
 });

@@ -57,7 +57,7 @@ router.post("/login", [
 
 router.post(
 	"/logout",
-	authController.logout.bind(authController),
+	authController.logout.bind(authController)
 );
 
 router.post("/forgot-password", [
@@ -101,20 +101,26 @@ router.use(authMiddleware.protect);
 
 router.get(
 	"/get-me",
-	userController.getCurrentUser.bind(userController),
+	userController.getCurrentUser.bind(userController)
 );
 
 router.patch("/update-me", [
 	body("name")
 		.optional()
+		.notEmpty()
+		.withMessage("نام کاربر الزامی است")
 		.isString()
 		.withMessage("فرمت نام کاربر معتبر نیست"),
 	body("email")
 		.optional()
+		.notEmpty()
+		.withMessage("ایمیل کاربر الزامی است")
 		.isEmail()
 		.withMessage("فرمت ایمیل کاربر معتبر نیست"),
 	body("photo")
 		.optional()
+		.notEmpty()
+		.withMessage("تصویر کاربر الزامی است")
 		.isString()
 		.withMessage("فرمت تصویر کاربر معتبر نیست"),
 	validateRequest,
@@ -137,7 +143,7 @@ router.patch("/update-me-password", [
 
 router.delete(
 	"/delete-me",
-	userController.deleteCurrentUser.bind(userController),
+	userController.deleteCurrentUser.bind(userController)
 );
 
 /************************************************************************

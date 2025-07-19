@@ -9,8 +9,8 @@ import mongoose from "mongoose";
 let mongo: MongoMemoryServer;
 
 beforeAll(async () => {
-	// Set JWT key for testing
-	process.env.JWT_KEY = "asdf";
+	// Set JWT secret for testing
+	process.env.JWT_SECRET = "asdf";
 	process.env.NODE_ENV = "test";
 
 	// Close existing mongoose connection if open
@@ -31,9 +31,8 @@ beforeEach(async () => {
 });
 
 afterAll(async () => {
-	if (mongo) await mongo.stop();
-	if (mongoose.connection.readyState !== 0)
-		await mongoose.connection.close();
+	await mongoose.connection.close();
+	await mongo.stop();
 });
 
 // ===============================================
@@ -50,7 +49,7 @@ global.signup = (): string => {
 		email: "test@test.com",
 	};
 
-	const token = sign(payload, process.env.JWT_KEY!);
+	const token = sign(payload, process.env.JWT_SECRET!);
 	const cookie = { jwt: token };
 
 	return JSON.stringify(cookie);
