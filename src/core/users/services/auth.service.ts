@@ -46,7 +46,7 @@ export class AuthService {
 		// check if the user is active, if not, throw an error
 		if (!authenticatedUser.active) {
 			throw new NotFoundError(
-				"کاربری که به این ایمیل مرتبط است مسدود شده است! لطفا با پشتیبانی تماس بگیرید.",
+				"کاربری که به این ایمیل مرتبط است مسدود شده است! لطفا با پشتیبانی تماس بگیرید."
 			);
 		}
 
@@ -95,12 +95,7 @@ export class AuthService {
 	 ************* @description PATCH HANDLERS ******************
 	 ************************************************************/
 
-	async resetPassword(resetPasswordDto: IResetPasswordDto, resetToken?: string): Promise<IUserDoc> {
-		// check if the reset token is provided, if not, throw an error
-		if (!resetToken) {
-			throw new BadRequestError("لطفا ریست توکن را ارائه دهید");
-		}
-
+	async resetPassword(resetPasswordDto: IResetPasswordDto, resetToken: string): Promise<IUserDoc> {
 		// check if the reset token is valid, if not, throw an error
 		const token = crypto.createHash("sha256").update(resetToken).digest("hex");
 		const user = await this.userRepository.findByPasswordRestToken(token);

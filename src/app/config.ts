@@ -31,7 +31,9 @@ module.exports = (app: Express) => {
 	// app.use(express.static(path.join(path.resolve(), "client", "dist")))
 
 	// Development Logging
-	app.use(morgan("dev"));
+	if (process.env.NODE_ENV === "development") {
+		app.use(morgan("dev"));
+	}
 
 	// Set security HTTP headers
 	app.use(
@@ -44,7 +46,7 @@ module.exports = (app: Express) => {
 					imgSrc: ["'self'", "data:", "https://res.cloudinary.com"],
 				},
 			},
-		}),
+		})
 	);
 
 	// CORS Configuration
@@ -90,7 +92,7 @@ module.exports = (app: Express) => {
 				"discount",
 				"discountedPrice",
 			],
-		}),
+		})
 	);
 
 	// Swagger UI route

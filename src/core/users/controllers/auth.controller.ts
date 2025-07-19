@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import { AuthService } from "../services/auth.service";
-import { ISignupDto } from "../dtos/signup.dto";
-import createSendTokenAndResponse from "../../../utils/createSendTokenAndResponse";
-import { ILoginDto } from "../dtos/login.dto";
 import ms from "ms";
+import createSendTokenAndResponse from "../../../utils/createSendTokenAndResponse";
 import { IForgotPasswordDto } from "../dtos/forgot.password.dto";
+import { ILoginDto } from "../dtos/login.dto";
 import { IResetPasswordDto } from "../dtos/reset.password.dto";
+import { ISignupDto } from "../dtos/signup.dto";
+import { AuthService } from "../services/auth.service";
 
 export class AuthController {
 	constructor(private readonly authService: AuthService) {}
@@ -52,7 +52,7 @@ export class AuthController {
 	async resetPassword(req: Request, res: Response): Promise<void> {
 		const user = await this.authService.resetPassword(
 			req.body as IResetPasswordDto,
-			req.query.resetToken as string,
+			req.query.resetToken as string
 		);
 		createSendTokenAndResponse(user, 200, res);
 	}

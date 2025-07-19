@@ -11,6 +11,7 @@ let mongo: MongoMemoryServer;
 beforeAll(async () => {
 	// Set JWT key for testing
 	process.env.JWT_KEY = "asdf";
+	process.env.NODE_ENV = "test";
 
 	// Close existing mongoose connection if open
 	if (mongoose.connection.readyState !== 0) {

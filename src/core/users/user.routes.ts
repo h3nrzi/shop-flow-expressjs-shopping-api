@@ -1,7 +1,7 @@
 import express from "express";
 import { authController, userController } from "..";
 import authMiddleware from "../../middlewares/auth";
-import { body, param } from "express-validator";
+import { body, param, query } from "express-validator";
 import { validateRequest } from "../../middlewares/validate-request";
 
 const router = express.Router();
@@ -45,8 +45,26 @@ router.post("/forgot-password", [
 ]);
 
 router.patch("/reset-password", [
-	body("password").isString().withMessage("رمز عبور کاربر الزامی است"),
-	body("passwordConfirmation").isString().withMessage("تایید رمز عبور کاربر الزامی است"),
+	body("password")
+		.notEmpty()
+		.withMessage("رمز عبور کاربر الزامی است")
+		.isString()
+		.withMessage("فرمت رمز عبور کاربر باید string باشد"),
+	body("passwordConfirmation")
+		.notEmpty()
+		.withMessage("تایید رمز عبور کاربر الزامی است")
+		.isString()
+		.withMessage("فرمت تایید رمز عبور کاربر باید string باشد")
+		.custom((value, { req }) => {
+			if (value !== req.body.password) return false;
+			return true;
+		})
+		.withMessage("رمز عبور و تایید رمز عبور باید یکسان باشد"),
+	query("resetToken")
+		.notEmpty()
+		.withMessage("ریست توکن کاربر الزامی است")
+		.isString()
+		.withMessage("ریست توکن کاربر باید string باشد"),
 	validateRequest,
 	authController.resetPassword.bind(authController),
 ]);
