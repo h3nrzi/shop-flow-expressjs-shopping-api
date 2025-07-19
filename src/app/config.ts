@@ -1,17 +1,15 @@
-import path from "node:path";
+import cors from "cors";
 import express, { Express } from "express";
-import morgan from "morgan";
-import ms from "ms";
+import mongoSanitize from "express-mongo-sanitize";
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
-import mongoSanitize from "express-mongo-sanitize";
 import hpp from "hpp";
-const cookieParser = require("cookie-parser");
-import cors from "cors";
-import swaggerUi from "swagger-ui-express";
-import swaggerSpec from "../swagger/config";
-import securityMiddleware from "../middlewares/security";
+import morgan from "morgan";
+import ms from "ms";
+import path from "node:path";
 import { IUserDoc } from "../core/users/user.interface";
+import securityMiddleware from "../middlewares/security";
+const cookieParser = require("cookie-parser");
 
 declare global {
 	namespace Express {
@@ -46,7 +44,7 @@ module.exports = (app: Express) => {
 					imgSrc: ["'self'", "data:", "https://res.cloudinary.com"],
 				},
 			},
-		})
+		}),
 	);
 
 	// CORS Configuration
@@ -92,9 +90,6 @@ module.exports = (app: Express) => {
 				"discount",
 				"discountedPrice",
 			],
-		})
+		}),
 	);
-
-	// Swagger UI route
-	app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 };

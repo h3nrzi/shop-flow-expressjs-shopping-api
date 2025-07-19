@@ -1,15 +1,11 @@
-import swaggerJSDoc = require("swagger-jsdoc");
+import fs from "fs";
+import path from "path";
+import swaggerJSDoc from "swagger-jsdoc";
+
+const base = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./base.json"), "utf8"));
 
 const options: swaggerJSDoc.Options = {
-	definition: {
-		openapi: "3.0.0",
-		info: {
-			title: "Azooghe",
-			version: "1.0.0",
-			description: "This is the API documentation for Azooghe project",
-		},
-		// servers: [{ url: "http://localhost:3000" }],
-	},
+	definition: base,
 	apis: ["./src/swagger/*.yaml"],
 };
 

@@ -75,7 +75,7 @@ describe("PATCH /api/users/reset-password", () => {
 			// Make the request to reset password with an invalid token
 			const res = await resetPassword(
 				{ password: "test123456", passwordConfirmation: "test123456" },
-				{ resetToken: "invalid-token" }
+				{ resetToken: "invalid-token" },
 			);
 
 			// Due to the reset token is invalid, the request should return 401
@@ -98,7 +98,7 @@ describe("PATCH /api/users/reset-password", () => {
 			// Make the request to reset password with the expired token
 			const res = await resetPassword(
 				{ password: "test123456", passwordConfirmation: "test123456" },
-				{ resetToken }
+				{ resetToken },
 			);
 
 			// Due to the reset token is expired, the request should return 401
@@ -119,7 +119,7 @@ describe("PATCH /api/users/reset-password", () => {
 			const newPassword = "newpassword123";
 			const resetPasswordRes = await resetPassword(
 				{ password: newPassword, passwordConfirmation: newPassword },
-				{ resetToken }
+				{ resetToken },
 			);
 
 			// Due to the reset password is successful, the request should return 200
@@ -140,7 +140,7 @@ describe("PATCH /api/users/reset-password", () => {
 					password: newPassword,
 					passwordConfirmation: newPassword,
 				},
-				{ resetToken }
+				{ resetToken },
 			);
 
 			// Make the request to login with the new password
@@ -164,7 +164,7 @@ describe("PATCH /api/users/reset-password", () => {
 					password: newPassword,
 					passwordConfirmation: newPassword,
 				},
-				{ resetToken }
+				{ resetToken },
 			);
 
 			// Make the request to login with the old password

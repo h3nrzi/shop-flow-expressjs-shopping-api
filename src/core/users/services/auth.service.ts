@@ -46,7 +46,7 @@ export class AuthService {
 		// check if the user is active, if not, throw an error
 		if (!authenticatedUser.active) {
 			throw new NotFoundError(
-				"کاربری که به این ایمیل مرتبط است مسدود شده است! لطفا با پشتیبانی تماس بگیرید."
+				"کاربری که به این ایمیل مرتبط است مسدود شده است! لطفا با پشتیبانی تماس بگیرید.",
 			);
 		}
 

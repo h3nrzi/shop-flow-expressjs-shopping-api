@@ -31,7 +31,7 @@ export const forgotPassword = async (body: IForgotPasswordDto): Promise<Response
 
 export const resetPassword = async (
 	body: IResetPasswordDto,
-	query: { resetToken: string }
+	query: { resetToken: string },
 ): Promise<Response> => {
 	return await request(app).patch(`/api/users/reset-password?resetToken=${query.resetToken}`).send({
 		password: body.password,
