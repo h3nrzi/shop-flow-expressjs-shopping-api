@@ -8,7 +8,7 @@ const swaggerDefinition = JSON.parse(baseFile);
 
 const options: swaggerJSDoc.Options = {
 	definition: swaggerDefinition,
-	apis: ["./src/swagger/**/*.yaml"],
+	apis: ["./src/swagger/apis/*.yaml"],
 };
 
 const swaggerSpec = swaggerJSDoc(options);

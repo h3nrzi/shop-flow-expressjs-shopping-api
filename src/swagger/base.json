@@ -3,7 +3,11 @@
 	"info": {
 		"title": "API Documentation",
 		"description": "API for managing products, users, orders, and reviews",
-		"version": "1.0.0"
+		"version": "1.0.0",
+		"contact": {
+			"name": "Hossein Rezaei",
+			"email": "rezaeig22@gmail.com"
+		}
 	},
 	"servers": [
 		{
@@ -17,12 +21,16 @@
 	],
 	"tags": [
 		{
-			"name": "Products",
-			"description": "Products endpoint"
+			"name": "Auth",
+			"description": "Authentication related endpoints"
 		},
 		{
 			"name": "Users",
 			"description": "Users endpoint"
+		},
+		{
+			"name": "Products",
+			"description": "Products endpoint"
 		},
 		{
 			"name": "Orders",
@@ -260,6 +268,13 @@
 						"$ref": "#/components/schemas/Product"
 					}
 				}
+			}
+		},
+		"securitySchemes": {
+			"bearerAuth": {
+				"type": "http",
+				"scheme": "bearer",
+				"bearerFormat": "JWT"
 			}
 		}
 	}

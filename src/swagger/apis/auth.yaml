@@ -1,0 +1,337 @@
+paths:
+  /api/users/signup:
+    post:
+      tags:
+        - Auth
+      summary: Register a new user
+      description: Creates a new user and returns a JWT token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - password
+                - passwordConfirmation
+              properties:
+                name:
+                  type: string
+                  example: Hossein Rezaei
+                email:
+                  type: string
+                  example: hossein@example.com
+                password:
+                  type: string
+                  format: password
+                  example: StrongPass123!
+                passwordConfirmation:
+                  type: string
+                  format: password
+                  example: StrongPass123!
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: '#/components/schemas/User'
+        '400':
+          description: Validation error or user already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        message:
+                          type: string
+                          example: 'Email is already in use.'
+
+  /api/users/login:
+    post:
+      tags:
+        - Auth
+      summary: Login user
+      description: Authenticates a user and returns a JWT token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  example: hossein@example.com
+                password:
+                  type: string
+                  format: password
+                  example: StrongPass123!
+      responses:
+        '200':
+          description: User logged in successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: '#/components/schemas/User'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        message:
+                          type: string
+                          example: 'Email is required.'
+        '401':
+          description: Invalid credentials or user not active
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        message:
+                          type: string
+                          example: 'Invalid email or password.'
+
+  /api/users/logout:
+    post:
+      tags:
+        - Auth
+      summary: Logout user
+      description: Logs out the user and removes the authentication cookie
+      responses:
+        '204':
+          description: User logged out successfully, cookie removed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+
+  /api/users/forgot-password:
+    post:
+      tags:
+        - Auth
+      summary: Forgot password
+      description: Sends a password reset email to the user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  example: hossein@example.com
+      responses:
+        '200':
+          description: Password reset email sent
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: 'Password reset email sent.'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        message:
+                          type: string
+                          example: 'Email is required.'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        message:
+                          type: string
+                          example: 'User not found.'
+        '401':
+          description: User is not active
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        message:
+                          type: string
+                          example: 'User is not active.'
+
+  /api/users/reset-password:
+    patch:
+      tags:
+        - Auth
+      summary: Reset password
+      description: Resets the user's password using a reset token
+      parameters:
+        - in: query
+          name: resetToken
+          required: true
+          schema:
+            type: string
+          description: The password reset token sent to the user's email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - password
+                - passwordConfirmation
+              properties:
+                password:
+                  type: string
+                  format: password
+                  example: NewStrongPass123!
+                passwordConfirmation:
+                  type: string
+                  format: password
+                  example: NewStrongPass123!
+      responses:
+        '200':
+          description: Password reset successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: 'Password has been reset.'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        message:
+                          type: string
+                          example: 'Password confirmation does not match.'
+        '401':
+          description: Invalid or expired reset token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        message:
+                          type: string
+                          example: 'Reset token is invalid or has expired.'
+
+tags:
+  - name: Auth
+    description: Authentication related endpoints
