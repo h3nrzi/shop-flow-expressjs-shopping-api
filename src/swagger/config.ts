@@ -2,11 +2,13 @@ import fs from "fs";
 import path from "path";
 import swaggerJSDoc from "swagger-jsdoc";
 
-const base = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./base.json"), "utf8"));
+const basePath = path.resolve(__dirname, "./base.json");
+const baseFile = fs.readFileSync(basePath, "utf8");
+const swaggerDefinition = JSON.parse(baseFile);
 
 const options: swaggerJSDoc.Options = {
-	definition: base,
-	apis: ["./src/swagger/*.yaml"],
+	definition: swaggerDefinition,
+	apis: ["./src/swagger/**/*.yaml"],
 };
 
 const swaggerSpec = swaggerJSDoc(options);
