@@ -22,11 +22,12 @@ export class AuthService {
 		// check if the email is already in use, if so, throw an error
 		const { name, email, password, passwordConfirmation } =
 			signupDto;
-		const existingUser =
-			await this.userRepository.findByEmail(email);
+		const existingUser = await this.userRepository.findByEmail(
+			email
+		);
 		if (existingUser) {
 			throw new BadRequestError(
-				"این ایمیل قبلا استفاده شده است",
+				"این ایمیل قبلا استفاده شده است"
 			);
 		}
 
@@ -46,45 +47,46 @@ export class AuthService {
 			await this.userRepository.findByEmail(email, "+password");
 		if (!authenticatedUser) {
 			throw new NotAuthorizedError(
-				"ایمیل یا رمز عبور اشتباه است!",
+				"ایمیل یا رمز عبور اشتباه است!"
 			);
 		}
 
 		// check if the user is active, if not, throw an error
 		if (!authenticatedUser.active) {
-			throw new NotFoundError(
-				"کاربری که به این ایمیل مرتبط است مسدود شده است! لطفا با پشتیبانی تماس بگیرید.",
+			throw new NotAuthorizedError(
+				"کاربری که به این ایمیل مرتبط است مسدود شده است! لطفا با پشتیبانی تماس بگیرید."
 			);
 		}
 
 		// check if the password is correct, if not, throw an error
-		const correct =
-			await authenticatedUser.correctPassword(password);
+		const correct = await authenticatedUser.correctPassword(
+			password
+		);
 		if (!correct)
 			throw new NotAuthorizedError(
-				"ایمیل یا رمز عبور اشتباه است!",
+				"ایمیل یا رمز عبور اشتباه است!"
 			);
 
 		return authenticatedUser;
 	}
 
 	async forgotPassword(
-		forgotPasswordDto: IForgotPasswordDto,
+		forgotPasswordDto: IForgotPasswordDto
 	): Promise<void> {
 		// check if user exists, if not, throw an error
 		const user = await this.userRepository.findByEmail(
-			forgotPasswordDto.email,
+			forgotPasswordDto.email
 		);
 		if (!user) {
 			throw new NotFoundError(
-				"هیچ کاربری با این آدرس ایمیل وجود ندارد.",
+				"هیچ کاربری با این آدرس ایمیل وجود ندارد."
 			);
 		}
 
 		// check if the user is active, if not, throw an error
 		if (!user.active) {
 			throw new NotAuthorizedError(
-				"کاربری که به این ایمیل مرتبط است مسدود شده است!",
+				"کاربری که به این ایمیل مرتبط است مسدود شده است!"
 			);
 		}
 
@@ -103,7 +105,7 @@ export class AuthService {
 			await sendEmail(
 				user.email,
 				url,
-				"درخواست برای ریست کردن رمز عبور",
+				"درخواست برای ریست کردن رمز عبور"
 			);
 		} catch (err) {
 			user.passwordResetToken = undefined;
@@ -111,7 +113,7 @@ export class AuthService {
 			await user.save({ validateBeforeSave: false });
 
 			throw new InternalServerError(
-				"در ارسال ایمیل خطایی روی داد. لطفا بعدا دوباره امتحان کنید!",
+				"در ارسال ایمیل خطایی روی داد. لطفا بعدا دوباره امتحان کنید!"
 			);
 		}
 	}
@@ -122,7 +124,7 @@ export class AuthService {
 
 	async resetPassword(
 		resetPasswordDto: IResetPasswordDto,
-		resetToken: string,
+		resetToken: string
 	): Promise<IUserDoc> {
 		// check if the reset token is valid, if not, throw an error
 		const token = crypto
@@ -133,7 +135,7 @@ export class AuthService {
 			await this.userRepository.findByPasswordRestToken(token);
 		if (!user) {
 			throw new NotAuthorizedError(
-				"توکن نامعتبر است یا منقضی شده است!",
+				"توکن نامعتبر است یا منقضی شده است!"
 			);
 		}
 

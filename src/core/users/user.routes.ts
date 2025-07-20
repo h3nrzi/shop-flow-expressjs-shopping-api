@@ -41,14 +41,14 @@ router.post("/signup", [
 ]);
 
 router.post("/login", [
-	body("email").notEmpty().withMessage("ایمیل کاربر الزامی است"),
 	body("email")
+		.notEmpty()
+		.withMessage("ایمیل کاربر الزامی است")
 		.isEmail()
-		.withMessage("ایمیل وارد شده معتبر نیست"),
+		.withMessage("فرمت ایمیل وارد شده معتبر نیست"),
 	body("password")
 		.notEmpty()
-		.withMessage("رمز عبور کاربر الزامی است"),
-	body("password")
+		.withMessage("رمز عبور کاربر الزامی است")
 		.isString()
 		.withMessage("فرمت رمز عبور کاربر باید string باشد"),
 	validateRequest,
