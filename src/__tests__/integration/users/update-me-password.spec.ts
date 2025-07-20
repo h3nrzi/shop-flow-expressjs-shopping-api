@@ -1,5 +1,8 @@
 import { updateMePasswordRequest } from "@/__tests__/helpers/users.helper";
-import { signupRequest } from "@/__tests__/helpers/auth.helper";
+import {
+	signupRequest,
+	validUser,
+} from "@/__tests__/helpers/auth.helper";
 
 const validationCases = [
 	{
@@ -42,12 +45,7 @@ const validationCases = [
 let token: string;
 
 beforeEach(async () => {
-	const signupRes = await signupRequest({
-		name: "John",
-		email: "john@test.com",
-		password: "password",
-		passwordConfirmation: "password",
-	});
+	const signupRes = await signupRequest(validUser);
 
 	token = signupRes.headers["set-cookie"][0];
 });

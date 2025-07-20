@@ -1,4 +1,7 @@
-import { signupRequest } from "@/__tests__/helpers/auth.helper";
+import {
+	signupRequest,
+	validUser,
+} from "@/__tests__/helpers/auth.helper";
 import { updateMeRequest } from "@/__tests__/helpers/users.helper";
 
 let token: string;
@@ -21,12 +24,7 @@ const validationCases = [
 ];
 
 beforeEach(async () => {
-	const signupRes = await signupRequest({
-		name: "John",
-		email: "john@test.com",
-		password: "password",
-		passwordConfirmation: "password",
-	});
+	const signupRes = await signupRequest(validUser);
 
 	token = signupRes.headers["set-cookie"][0];
 });
@@ -35,8 +33,8 @@ describe("PUT /api/users/update-me", () => {
 	describe("Authorization", () => {
 		it("should return 401 if user is not authenticated", async () => {
 			const res = await updateMeRequest("invalid-token", {
-				name: "John Doe",
-				email: "john.doe@test.com",
+				name: validUser.name,
+				email: validUser.email,
 				photo: "https://pic.com",
 			});
 			expect(res.status).toBe(401);
@@ -67,12 +65,12 @@ describe("PUT /api/users/update-me", () => {
 	describe("Success", () => {
 		it("should update the user's name, email and photo", async () => {
 			const res = await updateMeRequest(token, {
-				email: "john.doe@test.com",
+				email: validUser.email,
 				photo: "https://pic.com",
 			});
 			expect(res.status).toBe(200);
 			expect(res.body.data.updatedUser.email).toBe(
-				"john.doe@test.com"
+				validUser.email
 			);
 			expect(res.body.data.updatedUser.photo).toBe(
 				"https://pic.com"
