@@ -1,13 +1,14 @@
 import {
 	logoutRequest,
 	signupRequest,
-	validUser,
+	getUniqueUser,
 } from "@/__tests__/helpers/auth.helper";
 
 describe("POST /api/users/logout", () => {
 	describe("success", () => {
 		it("should return 204 and remove the cookie if logout is successful", async () => {
-			const signupResponse = await signupRequest(validUser);
+			const user = getUniqueUser("user");
+			const signupResponse = await signupRequest(user);
 			const logoutResponse = await logoutRequest(
 				signupResponse.headers["set-cookie"]
 			);

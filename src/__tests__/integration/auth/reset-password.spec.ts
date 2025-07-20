@@ -13,12 +13,14 @@ const validationCases = [
 			"should return 400 if the password is not provided",
 		body: { password: "", passwordConfirmation: "123456" },
 		query: { resetToken: "123456" },
+		error: "رمز عبور کاربر الزامی است",
 	},
 	{
 		testCaseName:
 			"should return 400 if the password confirmation is not provided",
 		body: { password: "123456", passwordConfirmation: "" },
 		query: { resetToken: "123456" },
+		error: "تایید رمز عبور کاربر الزامی است",
 	},
 	{
 		testCaseName:
@@ -28,12 +30,14 @@ const validationCases = [
 			passwordConfirmation: "1234567",
 		},
 		query: { resetToken: "123456" },
+		error: "رمز عبور و تایید رمز عبور باید یکسان باشد",
 	},
 	{
 		testCaseName:
 			"should return 400 if the reset token is not provided",
 		body: { password: "123456", passwordConfirmation: "123456" },
 		query: { resetToken: "" },
+		error: "ریست توکن کاربر الزامی است",
 	},
 ];
 
@@ -45,13 +49,15 @@ describe("PATCH /api/users/reset-password", () => {
 	});
 
 	describe("Validation DTO", () => {
-		validationCases.forEach(({ testCaseName, body, query }) => {
-			it(testCaseName, async () => {
-				const res = await resetPasswordRequest(body, query);
-				expect(res.status).toBe(400);
-				expect(res.body.errors[0].message).toBeDefined();
-			});
-		});
+		validationCases.forEach(
+			({ testCaseName, body, query, error }) => {
+				it(testCaseName, async () => {
+					const res = await resetPasswordRequest(body, query);
+					expect(res.status).toBe(400);
+					expect(res.body.errors[0].message).toBe(error);
+				});
+			}
+		);
 	});
 
 	describe("Business Logic", () => {
@@ -73,7 +79,9 @@ describe("PATCH /api/users/reset-password", () => {
 
 			// Due to the reset token is invalid, the request should return 401
 			expect(res.status).toBe(401);
-			expect(res.body.errors[0].message).toBeDefined();
+			expect(res.body.errors[0].message).toBe(
+				"توکن نامعتبر است یا منقضی شده است!"
+			);
 		});
 
 		it("should return 401 if the reset token is expired", async () => {
@@ -103,7 +111,9 @@ describe("PATCH /api/users/reset-password", () => {
 
 			// Due to the reset token is expired, the request should return 401
 			expect(res.status).toBe(401);
-			expect(res.body.errors[0].message).toBeDefined();
+			expect(res.body.errors[0].message).toBe(
+				"توکن نامعتبر است یا منقضی شده است!"
+			);
 		});
 	});
 
@@ -187,6 +197,9 @@ describe("PATCH /api/users/reset-password", () => {
 
 			// Due to the old password no longer works, the request should return 401
 			expect(oldLoginRes.status).toBe(401);
+			expect(oldLoginRes.body.errors[0].message).toBe(
+				"ایمیل یا رمز عبور اشتباه است!"
+			);
 		});
 	});
 });
