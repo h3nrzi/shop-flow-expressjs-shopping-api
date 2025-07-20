@@ -129,14 +129,6 @@ paths:
       responses:
         "204":
           description: User logged out successfully, cookie removed
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: success
 
   /api/users/forgot-password:
     post:
