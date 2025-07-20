@@ -18,6 +18,13 @@ describe("DELETE /api/users/delete-me", () => {
 			const res = await deleteMeRequest("invalid-token");
 			expect(res.status).toBe(401);
 		});
+
+		it("should return 401 if the token is provided belongs to user that is not exist", async () => {
+			await deleteMeRequest(token);
+			const res = await deleteMeRequest(token);
+			expect(res.status).toBe(401);
+			expect(res.body.errors).toBeDefined();
+		});
 	});
 
 	describe("Success", () => {

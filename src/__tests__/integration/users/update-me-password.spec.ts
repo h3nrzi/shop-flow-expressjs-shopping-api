@@ -76,13 +76,13 @@ describe("PUT /api/users/update-me-password", () => {
 	});
 
 	describe("Business Logics", () => {
-		it("should return 401 if passwordCurrent is incorrect", async () => {
+		it("should return 403 if passwordCurrent is incorrect", async () => {
 			const res = await updateMePasswordRequest(token, {
 				passwordCurrent: "incorrectpassword",
 				password: "newpassword",
 				passwordConfirmation: "newpassword",
 			});
-			expect(res.status).toBe(401);
+			expect(res.status).toBe(403);
 			expect(res.body.errors).toBeDefined();
 		});
 	});

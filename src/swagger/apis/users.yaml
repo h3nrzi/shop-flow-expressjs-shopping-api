@@ -1,0 +1,297 @@
+paths:
+  /api/users/get-me:
+    get:
+      tags:
+        - Users
+      summary: Retrieve current user information
+      description: Gets the data for the currently authenticated user
+      responses:
+        "200":
+          description: User information retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      currentUser:
+                        $ref: "#/components/schemas/User"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: null
+                        message:
+                          type: string
+                          example: "شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
+
+  /api/users/update-me:
+    patch:
+      tags:
+        - Users
+      summary: Update current user information
+      description: Updates the information of the currently authenticated user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateCurrentUserInfo"
+      responses:
+        "200":
+          description: User information updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      updatedUser:
+                        $ref: "#/components/schemas/User"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: "email"
+                        message:
+                          type: string
+                          example: "فرمت ایمیل کاربر معتبر نیست"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: null
+                        message:
+                          type: string
+                          example: "شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
+
+  /api/users/update-me-password:
+    patch:
+      tags:
+        - Users
+      summary: Update current user's password
+      description: Updates the password of the currently authenticated user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateCurrentUserPassword"
+      responses:
+        "200":
+          description: Password updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "Password updated successfully."
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: "passwordConfirmation"
+                        message:
+                          type: string
+                          example: "رمز عبور و تایید رمز عبور مطابقت ندارند"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: null
+                        message:
+                          type: string
+                          example: "شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
+        "403":
+          description: Current password is incorrect
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: null
+                        message:
+                          type: string
+                          example: "رمز عبور فعلی معتبر نیست"
+
+  /api/users/delete-me:
+    delete:
+      tags:
+        - Users
+      summary: Delete current user
+      description: Deletes the currently authenticated user account
+      responses:
+        "204":
+          description: User deleted successfully
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: null
+                        message:
+                          type: string
+                          example: "شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
+        "401-alt":
+          description: if the token is provided belongs to user that is not exist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: null
+                        message:
+                          type: string
+                          example: "کاربر متعلق به این توکن دیگر وجود ندارد!"
+
+components:
+  schemas:
+    UpdateCurrentUserInfo:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "John Doe"
+        email:
+          type: string
+          format: email
+          example: "john.doe@example.com"
+        photo:
+          type: string
+          format: uri
+          example: "https://example.com/avatar.jpg"
+    UpdateCurrentUserPassword:
+      type: object
+      required:
+        - passwordCurrent
+        - password
+        - passwordConfirmation
+      properties:
+        passwordCurrent:
+          type: string
+          format: password
+          example: "currentPassword123"
+        password:
+          type: string
+          format: password
+          minLength: 8
+          example: "newStrongPass123!"
+        passwordConfirmation:
+          type: string
+          format: password
+          example: "newStrongPass123!"

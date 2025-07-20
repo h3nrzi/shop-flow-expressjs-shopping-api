@@ -132,7 +132,10 @@
 					},
 					"role": {
 						"type": "string",
-						"enum": ["user", "admin"],
+						"enum": [
+							"user",
+							"admin"
+						],
 						"example": "user"
 					},
 					"active": {
@@ -272,6 +275,11 @@
 				"type": "http",
 				"scheme": "bearer",
 				"bearerFormat": "JWT"
+			},
+			"cookieAuth": {
+				"type": "apiKey",
+				"in": "cookie",
+				"name": "jwt"
 			}
 		}
 	}

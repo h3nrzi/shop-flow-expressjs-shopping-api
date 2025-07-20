@@ -15,7 +15,7 @@ export class UserController {
 
 	async findAllUsers(
 		req: Request,
-		res: Response,
+		res: Response
 	): Promise<void> {
 		const users = await this.userService.findAllUsers();
 		res.status(200).json({
@@ -27,12 +27,12 @@ export class UserController {
 
 	async findUsersCountByDay(
 		req: Request,
-		res: Response,
+		res: Response
 	): Promise<void> {
 		const period = req.query.period as string | undefined;
 		const usersCountByDay =
 			await this.userService.findUsersCountByDay(
-				period ?? "all",
+				period ?? "all"
 			);
 
 		res.status(200).json({
@@ -44,10 +44,10 @@ export class UserController {
 
 	async findUserById(
 		req: Request,
-		res: Response,
+		res: Response
 	): Promise<void> {
 		const user = await this.userService.findUserById(
-			req.params.id,
+			req.params.id
 		);
 		res.status(200).json({
 			status: "success",
@@ -57,7 +57,7 @@ export class UserController {
 
 	async getCurrentUser(
 		req: Request,
-		res: Response,
+		res: Response
 	): Promise<void> {
 		const currentUser = req.user;
 		res.status(200).json({
@@ -72,7 +72,7 @@ export class UserController {
 
 	async createUser(req: Request, res: Response): Promise<void> {
 		const user = await this.userService.createUser(
-			req.body as ICreateUserDto,
+			req.body as ICreateUserDto
 		);
 		res.status(201).json({
 			status: "success",
@@ -88,7 +88,7 @@ export class UserController {
 		const user = await this.userService.updateUser(
 			req.params.id,
 			req.body as IUpdateUserDto,
-			req.user,
+			req.user
 		);
 		res.status(200).json({
 			status: "success",
@@ -98,12 +98,12 @@ export class UserController {
 
 	async updateCurrentUserInfo(
 		req: Request,
-		res: Response,
+		res: Response
 	): Promise<void> {
 		const updatedUser =
 			await this.userService.updateCurrentUserInfo(
 				req.user,
-				req.body as IUpdateCurrentUserInfoDto,
+				req.body as IUpdateCurrentUserInfoDto
 			);
 		res.status(200).json({
 			status: "success",
@@ -113,13 +113,13 @@ export class UserController {
 
 	async updateCurrentUserPassword(
 		req: Request,
-		res: Response,
+		res: Response
 	): Promise<void> {
 		// update the password
 		const updatedUser =
 			await this.userService.updateCurrentUserPassword(
 				req.user,
-				req.body as IUpdateCurrentUserPasswordDto,
+				req.body as IUpdateCurrentUserPasswordDto
 			);
 
 		// send the response
@@ -140,7 +140,7 @@ export class UserController {
 
 	async deleteCurrentUser(
 		req: Request,
-		res: Response,
+		res: Response
 	): Promise<void> {
 		await this.userService.deleteCurrentUser(req.user);
 		res.status(204).json({

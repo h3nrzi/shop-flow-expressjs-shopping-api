@@ -1,3 +1,4 @@
+import { ForbiddenError } from "../../../errors/forbidden-error";
 import { BadRequestError } from "../../../errors/bad-request-error";
 import { NotAuthorizedError } from "../../../errors/not-authorized-error";
 import { NotFoundError } from "../../../errors/not-found-error";
@@ -153,9 +154,7 @@ export class UserService {
 			updateCurrentUserPasswordDto.passwordCurrent
 		);
 		if (!correct) {
-			throw new NotAuthorizedError(
-				"رمز عبور فعلی شما اشتباه است"
-			);
+			throw new ForbiddenError("رمز عبور فعلی شما اشتباه است");
 		}
 
 		// ---- UPDATE PASSWORD MANUALLY ----
