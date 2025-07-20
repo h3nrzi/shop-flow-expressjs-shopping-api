@@ -167,19 +167,32 @@ router
 	.route("/")
 	.get(userController.findAllUsers.bind(userController))
 	.post([
-		body("name").notEmpty().withMessage("نام کاربر الزامی است"),
 		body("name")
+			.notEmpty()
+			.withMessage("نام کاربر الزامی است")
 			.isString()
 			.withMessage("فرمت نام کاربر باید string باشد"),
 		body("email")
+			.notEmpty()
+			.withMessage("ایمیل کاربر الزامی است")
 			.isEmail()
 			.withMessage("ایمیل وارد شده معتبر نیست"),
 		body("password")
+			.notEmpty()
+			.withMessage("رمز عبور کاربر الزامی است")
 			.isString()
-			.withMessage("رمز عبور کاربر الزامی است"),
+			.withMessage("فرمت رمز عبور کاربر باید string باشد"),
 		body("passwordConfirmation")
+			.notEmpty()
+			.withMessage("تایید رمز عبور کاربر الزامی است")
 			.isString()
-			.withMessage("تایید رمز عبور کاربر الزامی است"),
+			.withMessage("فرمت تایید رمز عبور کاربر باید string باشد"),
+		body("passwordConfirmation")
+			.custom((value, { req }) => {
+				if (value !== req.body.password) return false;
+				return true;
+			})
+			.withMessage("رمز عبور و تایید رمز عبور باید یکسان باشد"),
 		body("active")
 			.optional()
 			.isBoolean()

@@ -1,33 +1,28 @@
 import { allUsersRequest } from "@/__tests__/helpers/admin.helper";
-import { signupRequest } from "@/__tests__/helpers/auth.helper";
+import {
+	getUniqueUser,
+	signupRequest,
+} from "@/__tests__/helpers/auth.helper";
 import { userRepository } from "@/core";
 
-let cookie: string;
+let userCookie: string;
 let adminCookie: string;
 
 beforeEach(async () => {
-	// Regular user cookie building
-	const res = await signupRequest({
-		name: "user",
-		email: "user@example.com",
-		password: "password",
-		passwordConfirmation: "password",
-	});
-	cookie = res.headers["set-cookie"][0];
+	// User cookie building
+	const user = getUniqueUser("user");
+	const res = await signupRequest(user);
+	userCookie = res.headers["set-cookie"][0];
 
 	// Admin cookie building
-	const adminRes = await signupRequest({
-		name: "admin",
-		email: "admin@example.com",
-		password: "password",
-		passwordConfirmation: "password",
-	});
+	const admin = getUniqueUser("admin");
+	const adminRes = await signupRequest(admin);
 	adminCookie = adminRes.headers["set-cookie"][0];
-	const user = await userRepository.findByEmail(
-		"admin@example.com"
+	const adminUser = await userRepository.findByEmail(
+		admin.email
 	);
-	user!.role = "admin";
-	await user!.save({ validateBeforeSave: false });
+	adminUser!.role = "admin";
+	await adminUser!.save({ validateBeforeSave: false });
 });
 
 describe("GET /api/users", () => {
@@ -41,7 +36,7 @@ describe("GET /api/users", () => {
 		});
 
 		it("should return 401 if user's role is not admin", async () => {
-			const res = await allUsersRequest(cookie);
+			const res = await allUsersRequest(userCookie);
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].message).toBe(
 				"شما اجازه انجام این عمل را ندارید!"
