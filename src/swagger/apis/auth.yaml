@@ -10,27 +10,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - name
-                - email
-                - password
-                - passwordConfirmation
-              properties:
-                name:
-                  type: string
-                  example: Hossein Rezaei
-                email:
-                  type: string
-                  example: hossein@example.com
-                password:
-                  type: string
-                  format: password
-                  example: StrongPass123!
-                passwordConfirmation:
-                  type: string
-                  format: password
-                  example: StrongPass123!
+              $ref: "#/components/schemas/SignupDto"
       responses:
         "201":
           description: User registered successfully
@@ -62,9 +42,12 @@ paths:
                     items:
                       type: object
                       properties:
+                        field:
+                          type: string
+                          example: email
                         message:
                           type: string
-                          example: "Email is already in use."
+                          example: "ایمیل قبلا استفاده شده است"
 
   /api/users/login:
     post:
@@ -77,18 +60,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - email
-                - password
-              properties:
-                email:
-                  type: string
-                  example: hossein@example.com
-                password:
-                  type: string
-                  format: password
-                  example: StrongPass123!
+              $ref: "#/components/schemas/LoginDto"
       responses:
         "200":
           description: User logged in successfully
@@ -120,9 +92,12 @@ paths:
                     items:
                       type: object
                       properties:
+                        field:
+                          type: string
+                          example: email
                         message:
                           type: string
-                          example: "Email is required."
+                          example: "ایمیل الزامی است"
         "401":
           description: Invalid credentials or user not active
           content:
@@ -138,9 +113,12 @@ paths:
                     items:
                       type: object
                       properties:
+                        field:
+                          type: string
+                          example: email
                         message:
                           type: string
-                          example: "Invalid email or password."
+                          example: "ایمیل یا رمز عبور معتبر نیست"
 
   /api/users/logout:
     post:
@@ -171,13 +149,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - email
-              properties:
-                email:
-                  type: string
-                  example: hossein@example.com
+              $ref: "#/components/schemas/ForgotPasswordDto"
       responses:
         "200":
           description: Password reset email sent
@@ -191,7 +163,7 @@ paths:
                     example: success
                   message:
                     type: string
-                    example: "Password reset email sent."
+                    example: "ایمیل بازیابی رمز عبور ارسال شد"
         "400":
           description: Validation error
           content:
@@ -207,9 +179,12 @@ paths:
                     items:
                       type: object
                       properties:
+                        field:
+                          type: string
+                          example: email
                         message:
                           type: string
-                          example: "Email is required."
+                          example: "ایمیل الزامی است"
         "404":
           description: User not found
           content:
@@ -227,7 +202,7 @@ paths:
                       properties:
                         message:
                           type: string
-                          example: "User not found."
+                          example: "کاربر یافت نشد"
         "401":
           description: User is not active
           content:
@@ -245,7 +220,7 @@ paths:
                       properties:
                         message:
                           type: string
-                          example: "User is not active."
+                          example: "کاربر فعال نیست"
 
   /api/users/reset-password:
     patch:
@@ -265,19 +240,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - password
-                - passwordConfirmation
-              properties:
-                password:
-                  type: string
-                  format: password
-                  example: NewStrongPass123!
-                passwordConfirmation:
-                  type: string
-                  format: password
-                  example: NewStrongPass123!
+              $ref: "#/components/schemas/ResetPasswordDto"
       responses:
         "200":
           description: Password reset successfully
@@ -294,7 +257,7 @@ paths:
                     properties:
                       message:
                         type: string
-                        example: "Password has been reset."
+                        example: "رمز عبور با موفقیت تغییر کرد"
         "400":
           description: Validation error
           content:
@@ -310,9 +273,12 @@ paths:
                     items:
                       type: object
                       properties:
+                        field:
+                          type: string
+                          example: password
                         message:
                           type: string
-                          example: "Password confirmation does not match."
+                          example: "تایید رمز عبور مطابقت ندارد"
         "401":
           description: Invalid or expired reset token
           content:
@@ -328,10 +294,73 @@ paths:
                     items:
                       type: object
                       properties:
+                        field:
+                          type: string
+                          example: password
                         message:
                           type: string
-                          example: "Reset token is invalid or has expired."
+                          example: "توکن بازیابی معتبر نیست یا منقضی شده است"
 
 tags:
   - name: Auth
     description: Authentication related endpoints
+
+components:
+  schemas:
+    SignupDto:
+      type: object
+      required:
+        - name
+        - email
+        - password
+        - passwordConfirmation
+      properties:
+        name:
+          type: string
+          example: Hossein Rezaei
+        email:
+          type: string
+          example: hossein@example.com
+        password:
+          type: string
+          format: password
+          example: StrongPass123!
+        passwordConfirmation:
+          type: string
+          format: password
+          example: StrongPass123!
+    LoginDto:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          example: hossein@example.com
+        password:
+          type: string
+          format: password
+          example: StrongPass123!
+    ForgotPasswordDto:
+      type: object
+      required:
+        - email
+      properties:
+        email:
+          type: string
+          example: hossein@example.com
+    ResetPasswordDto:
+      type: object
+      required:
+        - password
+        - passwordConfirmation
+      properties:
+        password:
+          type: string
+          format: password
+          example: NewStrongPass123!
+        passwordConfirmation:
+          type: string
+          format: password
+          example: NewStrongPass123!
