@@ -47,9 +47,9 @@ paths:
                           example: email
                         message:
                           type: string
-                          example: "ایمیل قبلا استفاده شده است"
+                          example: "ایمیل کاربر الزامی است"
 
-  /api/users/login:
+  /api/users/signin:
     post:
       tags:
         - Auth
@@ -97,7 +97,7 @@ paths:
                           example: email
                         message:
                           type: string
-                          example: "ایمیل الزامی است"
+                          example: "فرمت ایمیل وارد شده معتبر نیست"
         "401":
           description: Invalid credentials or user not active
           content:
@@ -118,7 +118,25 @@ paths:
                           example: email
                         message:
                           type: string
-                          example: "ایمیل یا رمز عبور معتبر نیست"
+                          example: "ایمیل یا رمز عبور اشتباه است!"
+        "403":
+          description: User is blocked
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        message:
+                          type: string
+                          example: "کاربری که به این ایمیل مرتبط است مسدود شده است! لطفا با پشتیبانی تماس بگیرید."
 
   /api/users/logout:
     post:
@@ -155,7 +173,7 @@ paths:
                     example: success
                   message:
                     type: string
-                    example: "ایمیل بازیابی رمز عبور ارسال شد"
+                    example: "ایمیل بازیابی رمز عبور با موفقیت ارسال شد"
         "400":
           description: Validation error
           content:
@@ -176,7 +194,7 @@ paths:
                           example: email
                         message:
                           type: string
-                          example: "ایمیل الزامی است"
+                          example: "فرمت ایمیل وارد شده معتبر نیست"
         "404":
           description: User not found
           content:
@@ -194,7 +212,7 @@ paths:
                       properties:
                         message:
                           type: string
-                          example: "کاربر یافت نشد"
+                          example: "هیچ کاربری با این آدرس ایمیل وجود ندارد."
         "401":
           description: User is not active
           content:
@@ -212,7 +230,7 @@ paths:
                       properties:
                         message:
                           type: string
-                          example: "کاربر فعال نیست"
+                          example: "کاربری که به این ایمیل مرتبط است مسدود شده است!"
 
   /api/users/reset-password:
     patch:
@@ -270,7 +288,7 @@ paths:
                           example: password
                         message:
                           type: string
-                          example: "تایید رمز عبور مطابقت ندارد"
+                          example: "رمز عبور و تایید رمز عبور باید یکسان باشد"
         "401":
           description: Invalid or expired reset token
           content:
@@ -291,7 +309,7 @@ paths:
                           example: password
                         message:
                           type: string
-                          example: "توکن بازیابی معتبر نیست یا منقضی شده است"
+                          example: "توکن نامعتبر است یا منقضی شده است!"
 
 tags:
   - name: Auth
