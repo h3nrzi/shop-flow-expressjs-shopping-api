@@ -38,7 +38,7 @@ afterAll(async () => {
 // ============ Mocks ============================
 // ===============================================
 
-jest.mock("../../utils/email", () => {
+jest.mock("@/utils/email", () => {
 	return {
 		sendEmail: jest.fn().mockResolvedValue(undefined),
 	};

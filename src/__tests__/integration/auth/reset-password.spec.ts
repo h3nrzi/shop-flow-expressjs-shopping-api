@@ -3,9 +3,9 @@ import {
 	loginRequest,
 	resetPasswordRequest,
 	signupAndRequestForgotPassword,
-} from "@/tests/helpers/auth.helper";
-import { userRepository } from "../../core";
-import { sendEmail } from "../../utils/email";
+} from "@/__tests__/helpers/auth.helper";
+import { userRepository } from "@/core";
+import { sendEmail } from "@/utils/email";
 
 const validationCases = [
 	{

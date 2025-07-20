@@ -2,7 +2,7 @@ module.exports = {
 	preset: "ts-jest",
 	testEnvironment: "node",
 	roots: ["<rootDir>/src"],
-	testMatch: ["**/tests/**/*.spec.ts"],
+	testMatch: ["**/__tests__/**/*.spec.ts"],
 	transform: {
 		"^.+\\.tsx?$": "ts-jest",
 	},
@@ -14,7 +14,7 @@ module.exports = {
 		"json",
 		"node",
 	],
-	setupFilesAfterEnv: ["<rootDir>/src/tests/helpers/setup.ts"],
+	setupFilesAfterEnv: ["<rootDir>/src/__tests__/setup.ts"],
 	testTimeout: 30000,
 	moduleNameMapper: {
 		"^@/(.*)$": "<rootDir>/src/$1",

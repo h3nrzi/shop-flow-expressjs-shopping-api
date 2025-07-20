@@ -1,5 +1,5 @@
-import { signupRequest } from "@/tests/helpers/auth.helper";
-import { updateMeRequest } from "@/tests/helpers/users.helper";
+import { signupRequest } from "@/__tests__/helpers/auth.helper";
+import { updateMeRequest } from "@/__tests__/helpers/users.helper";
 
 let token: string;
 

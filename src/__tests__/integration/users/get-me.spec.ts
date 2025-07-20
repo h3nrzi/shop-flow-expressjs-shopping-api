@@ -1,7 +1,7 @@
 import {
 	getMeRequest,
 	signupRequest,
-} from "@/tests/helpers/auth.helper";
+} from "@/__tests__/helpers/auth.helper";
 
 describe("GET /api/users/get-me", () => {
 	it("should return 200 if user is authenticated", async () => {

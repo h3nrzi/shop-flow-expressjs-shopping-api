@@ -2,7 +2,7 @@ import {
 	logoutRequest,
 	signupRequest,
 	validUser,
-} from "@/tests/helpers/auth.helper";
+} from "@/__tests__/helpers/auth.helper";
 
 describe("POST /api/users/logout", () => {
 	describe("success", () => {

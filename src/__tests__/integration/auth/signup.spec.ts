@@ -1,7 +1,7 @@
 import {
 	signupRequest,
 	validUser,
-} from "@/tests/helpers/auth.helper";
+} from "@/__tests__/helpers/auth.helper";
 
 const validationCases = [
 	{
