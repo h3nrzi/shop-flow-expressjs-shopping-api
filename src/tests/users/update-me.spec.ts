@@ -1,5 +1,5 @@
-import { signup } from "@/tests/helpers/auth.requests";
-import { updateMe } from "@/tests/helpers/users.requests";
+import { signupRequest } from "@/tests/helpers/auth.helper";
+import { updateMeRequest } from "@/tests/helpers/users.helper";
 
 let token: string;
 
@@ -19,7 +19,7 @@ const validationCases = [
 ];
 
 beforeEach(async () => {
-	const signupRes = await signup({
+	const signupRes = await signupRequest({
 		name: "John",
 		email: "john@test.com",
 		password: "password",
@@ -32,7 +32,7 @@ beforeEach(async () => {
 describe("PUT /api/users/update-me", () => {
 	describe("Authorization", () => {
 		it("should return 401 if user is not authenticated", async () => {
-			const res = await updateMe("invalid-token", {
+			const res = await updateMeRequest("invalid-token", {
 				name: "John Doe",
 				email: "john.doe@test.com",
 			});
@@ -43,7 +43,7 @@ describe("PUT /api/users/update-me", () => {
 	describe("Validation", () => {
 		validationCases.forEach(testCase => {
 			it(testCase.description, async () => {
-				const res = await updateMe(token, testCase.body);
+				const res = await updateMeRequest(token, testCase.body);
 				expect(res.status).toBe(400);
 			});
 		});
@@ -51,7 +51,7 @@ describe("PUT /api/users/update-me", () => {
 
 	describe("Success", () => {
 		it("should update the user's name and email", async () => {
-			const res = await updateMe(token, {
+			const res = await updateMeRequest(token, {
 				name: "John Doe",
 				email: "john.doe@test.com",
 				photo: "https://pic.com",

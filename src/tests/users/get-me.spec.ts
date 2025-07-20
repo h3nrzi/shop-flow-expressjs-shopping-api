@@ -1,15 +1,20 @@
-import { getMe, signup } from "@/tests/helpers/auth.requests";
+import {
+	getMeRequest,
+	signupRequest,
+} from "@/tests/helpers/auth.helper";
 
 describe("GET /api/users/get-me", () => {
 	it("should return 200 if user is authenticated", async () => {
-		const signupRes = await signup({
+		const signupRes = await signupRequest({
 			name: "test",
 			email: "test@test.com",
 			password: "password",
 			passwordConfirmation: "password",
 		});
 
-		const res = await getMe(signupRes.headers["set-cookie"]);
+		const res = await getMeRequest(
+			signupRes.headers["set-cookie"]
+		);
 		expect(res.status).toBe(200);
 	});
 });

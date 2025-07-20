@@ -1,4 +1,3 @@
-import { sign } from "jsonwebtoken";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose from "mongoose";
 
@@ -34,37 +33,6 @@ afterAll(async () => {
 	await mongoose.connection.close();
 	await mongo.stop();
 });
-
-// ===============================================
-// ============ Helper Functions =================
-// ===============================================
-
-declare global {
-	var signup: () => string;
-}
-
-global.signup = (): string => {
-	const payload = {
-		id: new mongoose.Types.ObjectId().toHexString(),
-		email: "test@test.com",
-	};
-
-	const token = sign(payload, process.env.JWT_SECRET!);
-	const cookie = { jwt: token };
-
-	return JSON.stringify(cookie);
-};
-
-// ===============================================
-// ============ Helper Variables =================
-// ===============================================
-
-export const validUser = {
-	name: "test",
-	email: "test@test.com",
-	password: "password",
-	passwordConfirmation: "password",
-};
 
 // ===============================================
 // ============ Mocks ============================

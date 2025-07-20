@@ -1,7 +1,7 @@
 import request, { Response } from "supertest";
 import app from "@/app";
 
-export const updateMe = async (
+export const updateMeRequest = async (
 	cookie: string,
 	body: any
 ): Promise<Response> => {

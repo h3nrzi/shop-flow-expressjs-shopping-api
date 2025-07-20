@@ -1,10 +1,10 @@
 import { User } from "../../core";
 import { sendEmail } from "../../utils/email";
 import {
-	forgotPassword,
-	signup,
-} from "../helpers/auth-requests";
-import { validUser } from "../helpers/setup";
+	forgotPasswordRequest,
+	signupRequest,
+	validUser,
+} from "@/tests/helpers/auth.helper";
 
 const validationCases = [
 	{
@@ -21,7 +21,7 @@ describe("POST /api/users/forgot-password", () => {
 	describe("validation dto", () => {
 		validationCases.forEach(({ testCaseName, user }) => {
 			it(testCaseName, async () => {
-				const res = await forgotPassword(user);
+				const res = await forgotPasswordRequest(user);
 				expect(res.status).toBe(400);
 				expect(res.body.errors[0].message).toBeDefined();
 			});
@@ -30,7 +30,7 @@ describe("POST /api/users/forgot-password", () => {
 
 	describe("business logic", () => {
 		it("should return 404 if user is not found", async () => {
-			const res = await forgotPassword({
+			const res = await forgotPasswordRequest({
 				email: "test@test.com",
 			});
 			expect(res.status).toBe(404);
@@ -38,12 +38,12 @@ describe("POST /api/users/forgot-password", () => {
 		});
 
 		it("should return 401 if user is not active", async () => {
-			await signup(validUser);
+			await signupRequest(validUser);
 			await User.updateOne(
 				{ email: validUser.email },
-				{ active: false },
+				{ active: false }
 			);
-			const res = await forgotPassword({
+			const res = await forgotPasswordRequest({
 				email: validUser.email,
 			});
 			expect(res.status).toBe(401);
@@ -53,8 +53,8 @@ describe("POST /api/users/forgot-password", () => {
 
 	describe("success", () => {
 		it("should send email and set passwordResetToken and passwordResetExpires", async () => {
-			await signup(validUser);
-			const res = await forgotPassword({
+			await signupRequest(validUser);
+			const res = await forgotPasswordRequest({
 				email: validUser.email,
 			});
 
@@ -66,7 +66,7 @@ describe("POST /api/users/forgot-password", () => {
 			expect(sendEmail).toHaveBeenCalledWith(
 				validUser.email,
 				expect.any(String),
-				"درخواست برای ریست کردن رمز عبور",
+				"درخواست برای ریست کردن رمز عبور"
 			);
 
 			// check if the user has a passwordResetToken and passwordResetExpires

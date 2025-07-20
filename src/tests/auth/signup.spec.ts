@@ -1,4 +1,7 @@
-import { signup } from "../helpers/auth-requests";
+import {
+	signupRequest,
+	validUser,
+} from "@/tests/helpers/auth.helper";
 
 const validationCases = [
 	{
@@ -41,18 +44,11 @@ const validationCases = [
 	},
 ];
 
-const validUser = {
-	name: "test",
-	email: "test@test.com",
-	password: "password",
-	passwordConfirmation: "password",
-};
-
 describe("POST /api/users/signup", () => {
 	describe("validation dto", () => {
 		validationCases.forEach(({ testCaseName, user }) => {
 			it(testCaseName, async () => {
-				const res = await signup(user);
+				const res = await signupRequest(user);
 
 				expect(res.status).toBe(400);
 				expect(res.body.errors[0].message).toBeDefined();
@@ -62,7 +58,7 @@ describe("POST /api/users/signup", () => {
 
 	describe("success", () => {
 		it("should return 201 and a cookie if signup is successful", async () => {
-			const res = await signup(validUser);
+			const res = await signupRequest(validUser);
 			expect(res.status).toBe(201);
 			expect(res.headers["set-cookie"]).toBeDefined();
 		});
@@ -70,8 +66,8 @@ describe("POST /api/users/signup", () => {
 
 	describe("business logic", () => {
 		it("should return 400 if email is already in use", async () => {
-			await signup(validUser);
-			const res = await signup(validUser);
+			await signupRequest(validUser);
+			const res = await signupRequest(validUser);
 			expect(res.status).toBe(400);
 			expect(res.body.errors[0].message).toBeDefined();
 		});
