@@ -1,10 +1,16 @@
 import {
 	signupRequest,
-	validUser,
+	getUniqueUser,
 } from "@/__tests__/helpers/auth.helper";
 import { updateMeRequest } from "@/__tests__/helpers/users.helper";
 
 let token: string;
+let user: {
+	email: string;
+	name: string;
+	password: string;
+	passwordConfirmation: string;
+};
 
 const validationCases = [
 	{
@@ -13,6 +19,7 @@ const validationCases = [
 		body: {
 			email: "john.doe",
 		},
+		expectedError: "فرمت ایمیل کاربر معتبر نیست",
 	},
 	{
 		description:
@@ -20,11 +27,13 @@ const validationCases = [
 		body: {
 			name: "",
 		},
+		expectedError: "نام کاربر الزامی است",
 	},
 ];
 
 beforeEach(async () => {
-	const signupRes = await signupRequest(validUser);
+	user = getUniqueUser("user1");
+	const signupRes = await signupRequest(user);
 
 	token = signupRes.headers["set-cookie"][0];
 });
@@ -33,22 +42,28 @@ describe("PUT /api/users/update-me", () => {
 	describe("Authorization", () => {
 		it("should return 401 if user is not authenticated", async () => {
 			const res = await updateMeRequest("invalid-token", {
-				name: validUser.name,
-				email: validUser.email,
+				name: "new name",
+				email: "newemail@test.com",
 				photo: "https://pic.com",
 			});
 			expect(res.status).toBe(401);
+			expect(res.body.errors[0].message).toBe(
+				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
+			);
 		});
 	});
 
 	describe("Validation", () => {
-		validationCases.forEach(testCase => {
-			it(testCase.description, async () => {
-				const res = await updateMeRequest(token, testCase.body);
-				expect(res.status).toBe(400);
-				expect(res.body.errors).toBeDefined();
-			});
-		});
+		validationCases.forEach(
+			({ description, body, expectedError }) => {
+				it(description, async () => {
+					const res = await updateMeRequest(token, body);
+					expect(res.status).toBe(400);
+					expect(res.body.errors).toBeDefined();
+					expect(res.body.errors[0].message).toBe(expectedError);
+				});
+			}
+		);
 	});
 
 	describe("Business Logics", () => {
@@ -58,7 +73,9 @@ describe("PUT /api/users/update-me", () => {
 				passwordConfirmation: "newpassword",
 			});
 			expect(res.status).toBe(400);
-			expect(res.body.errors).toBeDefined();
+			expect(res.body.errors[0].message).toBe(
+				"با این درخواست نمی توانید رمز عبور را آپدیت کنید"
+			);
 		});
 	});
 

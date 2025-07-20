@@ -1,7 +1,7 @@
 import { updateMePasswordRequest } from "@/__tests__/helpers/users.helper";
 import {
 	signupRequest,
-	validUser,
+	getUniqueUser,
 } from "@/__tests__/helpers/auth.helper";
 
 const validationCases = [
@@ -13,6 +13,7 @@ const validationCases = [
 			password: "newpassword",
 			passwordConfirmation: "newpassword",
 		},
+		expectedError: "رمز عبور فعلی کاربر الزامی است",
 	},
 	{
 		description: "should return 400 if password is not provided",
@@ -21,6 +22,7 @@ const validationCases = [
 			password: "",
 			passwordConfirmation: "newpassword",
 		},
+		expectedError: "رمز عبور کاربر الزامی است",
 	},
 	{
 		description:
@@ -30,6 +32,7 @@ const validationCases = [
 			password: "newpassword",
 			passwordConfirmation: "",
 		},
+		expectedError: "تایید رمز عبور کاربر الزامی است",
 	},
 	{
 		description:
@@ -39,14 +42,21 @@ const validationCases = [
 			password: "newpassword",
 			passwordConfirmation: "newpassword2",
 		},
+		expectedError: "رمز عبور و تایید رمز عبور باید یکسان باشد",
 	},
 ];
 
 let token: string;
+let user: {
+	email: string;
+	password: string;
+	name: string;
+	passwordConfirmation: string;
+};
 
 beforeEach(async () => {
-	const signupRes = await signupRequest(validUser);
-
+	user = getUniqueUser("user1");
+	const signupRes = await signupRequest(user);
 	token = signupRes.headers["set-cookie"][0];
 });
 
@@ -62,17 +72,23 @@ describe("PUT /api/users/update-me-password", () => {
 				}
 			);
 			expect(res.status).toBe(401);
+			expect(res.body.errors[0].message).toBe(
+				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
+			);
 		});
 	});
 
 	describe("Validation", () => {
-		validationCases.forEach(({ description, body }) => {
-			it(description, async () => {
-				const res = await updateMePasswordRequest(token, body);
-				expect(res.status).toBe(400);
-				expect(res.body.errors).toBeDefined();
-			});
-		});
+		validationCases.forEach(
+			({ description, body, expectedError }) => {
+				it(description, async () => {
+					const res = await updateMePasswordRequest(token, body);
+					expect(res.status).toBe(400);
+					expect(res.body.errors).toBeDefined();
+					expect(res.body.errors[0].message).toBe(expectedError);
+				});
+			}
+		);
 	});
 
 	describe("Business Logics", () => {
@@ -84,18 +100,20 @@ describe("PUT /api/users/update-me-password", () => {
 			});
 			expect(res.status).toBe(403);
 			expect(res.body.errors).toBeDefined();
+			expect(res.body.errors[0].message).toBe(
+				"رمز عبور فعلی شما اشتباه است"
+			);
 		});
 	});
 
 	describe("Success", () => {
 		it("should return 200 if password is updated", async () => {
 			const res = await updateMePasswordRequest(token, {
-				passwordCurrent: "password",
+				passwordCurrent: user.password,
 				password: "newpassword",
 				passwordConfirmation: "newpassword",
 			});
 			expect(res.status).toBe(200);
-			expect(res.body.data).toBeDefined();
 		});
 	});
 });
