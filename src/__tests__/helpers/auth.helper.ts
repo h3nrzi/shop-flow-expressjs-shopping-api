@@ -49,14 +49,6 @@ export const logoutRequest = async (
 		.set("Cookie", cookie);
 };
 
-export const getMeRequest = async (
-	cookie: string
-): Promise<Response> => {
-	return await request(app)
-		.get("/api/users/get-me")
-		.set("Cookie", cookie);
-};
-
 export const forgotPasswordRequest = async (
 	body: IForgotPasswordDto
 ): Promise<Response> => {
