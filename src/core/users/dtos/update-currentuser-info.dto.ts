@@ -1,7 +1,7 @@
 export interface IUpdateCurrentUserInfoDto {
-	name?: string;
-	email?: string;
-	photo?: string;
-	password?: string;
-	passwordConfirmation?: string;
+	name: string | null;
+	email: string | null;
+	photo: string | null;
+	password?: string; // just for type checking
+	passwordConfirmation?: string; // just for type checking
 }

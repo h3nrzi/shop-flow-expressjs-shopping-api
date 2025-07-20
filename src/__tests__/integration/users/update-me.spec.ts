@@ -5,16 +5,22 @@ let token: string;
 
 const validationCases = [
 	{
-		description: "should return 400 if name is not provided",
-		body: { name: null, email: "john.doe@test.com" },
+		description:
+			"should return 400 if only email is provided but it is invalid",
+		body: {
+			name: null,
+			email: "john.doe",
+			photo: null,
+		},
 	},
 	{
-		description: "should return 400 if email is not provided",
-		body: { name: "John Doe", email: null },
-	},
-	{
-		description: "should return 400 if email is not valid",
-		body: { name: "John Doe", email: "john.doe" },
+		description:
+			"should return 400 if only name is provided but it is invalid",
+		body: {
+			name: " ",
+			email: null,
+			photo: null,
+		},
 	},
 ];
 
@@ -35,6 +41,7 @@ describe("PUT /api/users/update-me", () => {
 			const res = await updateMeRequest("invalid-token", {
 				name: "John Doe",
 				email: "john.doe@test.com",
+				photo: "https://pic.com",
 			});
 			expect(res.status).toBe(401);
 		});
@@ -45,12 +52,13 @@ describe("PUT /api/users/update-me", () => {
 			it(testCase.description, async () => {
 				const res = await updateMeRequest(token, testCase.body);
 				expect(res.status).toBe(400);
+				expect(res.body.errors).toBeDefined();
 			});
 		});
 	});
 
 	describe("Success", () => {
-		it("should update the user's name and email", async () => {
+		it("should update the user's name, email and photo", async () => {
 			const res = await updateMeRequest(token, {
 				name: "John Doe",
 				email: "john.doe@test.com",

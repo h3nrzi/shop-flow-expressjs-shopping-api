@@ -21,12 +21,12 @@ export class UserService {
 
 	async findUserById(
 		userId: string,
-		select?: string,
+		select?: string
 	): Promise<IUserDoc | null> {
 		// find the user, if not found, throw an error
 		const targetUser = await this.userRepository.findById(
 			userId,
-			select,
+			select
 		);
 		if (!targetUser) {
 			throw new NotFoundError("هیچ موردی با این شناسه یافت نشد");
@@ -36,7 +36,7 @@ export class UserService {
 	}
 
 	async findUsersCountByDay(
-		period: string,
+		period: string
 	): Promise<{ count: number; date: Date }[]> {
 		let startDate: Date | undefined;
 		const endDate = new Date();
@@ -44,7 +44,7 @@ export class UserService {
 		switch (period) {
 			case "week":
 				startDate = new Date(
-					Date.now() - 7 * 24 * 60 * 60 * 1000,
+					Date.now() - 7 * 24 * 60 * 60 * 1000
 				);
 				break;
 			case "month":
@@ -64,7 +64,7 @@ export class UserService {
 
 		return this.userRepository.findCountByDay(
 			endDate,
-			startDate,
+			startDate
 		);
 	}
 
@@ -73,15 +73,15 @@ export class UserService {
 	 ******************************************************/
 
 	async createUser(
-		createUserDto: ICreateUserDto,
+		createUserDto: ICreateUserDto
 	): Promise<IUserDoc> {
 		// check if the email is already in use, if so, throw an error
 		const targetUser = await this.userRepository.findByEmail(
-			createUserDto.email,
+			createUserDto.email
 		);
 		if (targetUser) {
 			throw new BadRequestError(
-				"این ایمیل قبلا استفاده شده است",
+				"این ایمیل قبلا استفاده شده است"
 			);
 		}
 
@@ -95,7 +95,7 @@ export class UserService {
 	async updateUser(
 		userId: string,
 		updateUserDto: IUpdateUserDto,
-		currentUser: IUserDoc,
+		currentUser: IUserDoc
 	): Promise<IUserDoc | null> {
 		// find the user, if not found, throw an error
 		const targetUser = await this.findUserById(userId);
@@ -104,7 +104,7 @@ export class UserService {
 		if (targetUser!.role === "admin") {
 			if (currentUser.email !== "admin@gmail.com") {
 				throw new NotAuthorizedError(
-					"شما نمی توانید حساب ادمین را آپدیت کنید فقط مدیر سیستم می تواند این کار را انجام دهد",
+					"شما نمی توانید حساب ادمین را آپدیت کنید فقط مدیر سیستم می تواند این کار را انجام دهد"
 				);
 			}
 		}
@@ -114,7 +114,7 @@ export class UserService {
 
 	async updateCurrentUserInfo(
 		currentUser: IUserDoc,
-		updateUserDto: IUpdateCurrentUserInfoDto,
+		updateUserDto: IUpdateCurrentUserInfoDto
 	): Promise<IUserDoc | null> {
 		// if password or passwordConfirmation is provided, throw an error
 		if (
@@ -122,17 +122,17 @@ export class UserService {
 			updateUserDto.passwordConfirmation
 		) {
 			throw new BadRequestError(
-				"با این درخواست نمی توانید رمز عبور را آپدیت کنید",
+				"با این درخواست نمی توانید رمز عبور را آپدیت کنید"
 			);
 		}
 
 		const updatedUser = await this.userRepository.update(
 			currentUser.id,
 			{
-				name: updateUserDto.name,
-				email: updateUserDto.email,
-				photo: updateUserDto.photo,
-			},
+				name: updateUserDto.name ?? currentUser.name,
+				email: updateUserDto.email ?? currentUser.email,
+				photo: updateUserDto.photo ?? currentUser.photo,
+			}
 		);
 
 		return updatedUser;
@@ -140,21 +140,21 @@ export class UserService {
 
 	async updateCurrentUserPassword(
 		currentUser: IUserDoc,
-		updateCurrentUserPasswordDto: IUpdateCurrentUserPasswordDto,
+		updateCurrentUserPasswordDto: IUpdateCurrentUserPasswordDto
 	): Promise<IUserDoc | null> {
 		// find the user, if not found, throw an error
 		const targetUser = await this.findUserById(
 			currentUser.id,
-			"+password",
+			"+password"
 		);
 
 		// check if the password current is correct
 		const correct = await targetUser!.correctPassword(
-			updateCurrentUserPasswordDto.passwordCurrent,
+			updateCurrentUserPasswordDto.passwordCurrent
 		);
 		if (!correct) {
 			throw new NotAuthorizedError(
-				"رمز عبور فعلی شما اشتباه است",
+				"رمز عبور فعلی شما اشتباه است"
 			);
 		}
 
@@ -178,7 +178,7 @@ export class UserService {
 
 	async deleteUser(
 		userId: string,
-		currentUser: IUserDoc,
+		currentUser: IUserDoc
 	): Promise<void> {
 		// find the user, if not found, throw an error
 		const targetUser = await this.findUserById(userId);
@@ -187,7 +187,7 @@ export class UserService {
 		if (targetUser!.role === "admin") {
 			if (currentUser.email !== "admin@gmail.com") {
 				throw new NotAuthorizedError(
-					"شما نمی توانید حساب ادمین را حذف کنید فقط مدیر سیستم می تواند این کار را انجام دهد",
+					"شما نمی توانید حساب ادمین را حذف کنید فقط مدیر سیستم می تواند این کار را انجام دهد"
 				);
 			}
 		}
