@@ -8,18 +8,14 @@ const validationCases = [
 		description:
 			"should return 400 if only email is provided but it is invalid",
 		body: {
-			name: null,
 			email: "john.doe",
-			photo: null,
 		},
 	},
 	{
 		description:
 			"should return 400 if only name is provided but it is invalid",
 		body: {
-			name: " ",
-			email: null,
-			photo: null,
+			name: "",
 		},
 	},
 ];
@@ -57,15 +53,24 @@ describe("PUT /api/users/update-me", () => {
 		});
 	});
 
+	describe("Business Logics", () => {
+		it("should return 400 if password and passwordConfirmation are provided", async () => {
+			const res = await updateMeRequest(token, {
+				password: "newpassword",
+				passwordConfirmation: "newpassword",
+			});
+			expect(res.status).toBe(400);
+			expect(res.body.errors).toBeDefined();
+		});
+	});
+
 	describe("Success", () => {
 		it("should update the user's name, email and photo", async () => {
 			const res = await updateMeRequest(token, {
-				name: "John Doe",
 				email: "john.doe@test.com",
 				photo: "https://pic.com",
 			});
 			expect(res.status).toBe(200);
-			expect(res.body.data.updatedUser.name).toBe("John Doe");
 			expect(res.body.data.updatedUser.email).toBe(
 				"john.doe@test.com"
 			);

@@ -129,14 +129,26 @@ router.patch("/update-me", [
 
 router.patch("/update-me-password", [
 	body("passwordCurrent")
+		.notEmpty()
+		.withMessage("رمز عبور فعلی کاربر الزامی است")
 		.isString()
-		.withMessage("رمز عبور فعلی کاربر الزامی است"),
+		.withMessage("فرمت رمز عبور فعلی کاربر معتبر نیست"),
 	body("password")
+		.notEmpty()
+		.withMessage("رمز عبور کاربر الزامی است")
 		.isString()
-		.withMessage("رمز عبور کاربر الزامی است"),
+		.withMessage("فرمت رمز عبور کاربر معتبر نیست"),
 	body("passwordConfirmation")
+		.notEmpty()
+		.withMessage("تایید رمز عبور کاربر الزامی است")
 		.isString()
-		.withMessage("تایید رمز عبور کاربر الزامی است"),
+		.withMessage("فرمت تایید رمز عبور کاربر معتبر نیست"),
+	body("passwordConfirmation")
+		.custom((value, { req }) => {
+			if (value !== req.body.password) return false;
+			return true;
+		})
+		.withMessage("رمز عبور و تایید رمز عبور باید یکسان باشد"),
 	validateRequest,
 	userController.updateCurrentUserPassword.bind(userController),
 ]);
