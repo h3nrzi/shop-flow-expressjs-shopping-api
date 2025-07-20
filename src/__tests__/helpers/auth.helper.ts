@@ -24,21 +24,13 @@ export const validUser = {
 export const signupRequest = async (
 	body: ISignupDto
 ): Promise<Response> => {
-	return await request(app).post("/api/users/signup").send({
-		name: body.name,
-		email: body.email,
-		password: body.password,
-		passwordConfirmation: body.passwordConfirmation,
-	});
+	return await request(app).post("/api/users/signup").send(body);
 };
 
 export const loginRequest = async (
 	body: ILoginDto
 ): Promise<Response> => {
-	return await request(app).post("/api/users/login").send({
-		email: body.email,
-		password: body.password,
-	});
+	return await request(app).post("/api/users/login").send(body);
 };
 
 export const logoutRequest = async (
@@ -54,7 +46,7 @@ export const forgotPasswordRequest = async (
 ): Promise<Response> => {
 	return await request(app)
 		.post("/api/users/forgot-password")
-		.send({ email: body.email });
+		.send(body);
 };
 
 export const resetPasswordRequest = async (
@@ -65,10 +57,7 @@ export const resetPasswordRequest = async (
 		.patch(
 			`/api/users/reset-password?resetToken=${query.resetToken}`
 		)
-		.send({
-			password: body.password,
-			passwordConfirmation: body.passwordConfirmation,
-		});
+		.send(body);
 };
 
 export const getUniqueUser = (
