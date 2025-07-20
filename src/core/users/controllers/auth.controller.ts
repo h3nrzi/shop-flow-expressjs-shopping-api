@@ -16,14 +16,14 @@ export class AuthController {
 
 	async signup(req: Request, res: Response): Promise<void> {
 		const user = await this.authService.signup(
-			req.body as ISignupDto,
+			req.body as ISignupDto
 		);
 		createSendTokenAndResponse(user, 201, res);
 	}
 
 	async login(req: Request, res: Response): Promise<void> {
 		const user = await this.authService.login(
-			req.body as ILoginDto,
+			req.body as ILoginDto
 		);
 		createSendTokenAndResponse(user, 200, res);
 	}
@@ -31,7 +31,7 @@ export class AuthController {
 	async logout(req: Request, res: Response): Promise<void> {
 		res.cookie("jwt", "", {
 			expires: new Date(
-				Date.now() + ms(process.env.JWT_COOKIE_EXPIRES_IN!),
+				Date.now() + ms(process.env.JWT_COOKIE_EXPIRES_IN!)
 			),
 			secure: process.env.NODE_ENV === "production",
 			httpOnly: true,
@@ -42,17 +42,17 @@ export class AuthController {
 
 	async forgotPassword(
 		req: Request,
-		res: Response,
+		res: Response
 	): Promise<void> {
 		// Send email to user with reset password link,
 		// if the email is not sent, throw error
 		await this.authService.forgotPassword(
-			req.body as IForgotPasswordDto,
+			req.body as IForgotPasswordDto
 		);
 
 		res.status(200).json({
 			status: "success",
-			message: "رمز با موفقیت به ایمیل ارسال شد!",
+			message: "ایمیل بازیابی رمز عبور با موفقیت ارسال شد",
 		});
 	}
 
@@ -62,11 +62,11 @@ export class AuthController {
 
 	async resetPassword(
 		req: Request,
-		res: Response,
+		res: Response
 	): Promise<void> {
 		const user = await this.authService.resetPassword(
 			req.body as IResetPasswordDto,
-			req.query.resetToken as string,
+			req.query.resetToken as string
 		);
 		createSendTokenAndResponse(user, 200, res);
 	}

@@ -1,29 +1,31 @@
 import {
 	forgotPasswordRequest,
+	getUniqueUser,
 	signupRequest,
-	validUser,
 } from "@/__tests__/helpers/auth.helper";
-import { User } from "@/core";
+import { userRepository } from "@/core";
 import { sendEmail } from "@/utils/email";
 
 const validationCases = [
 	{
 		testCaseName: "should return 400 if email is not provided",
-		user: { email: "" },
+		body: { email: "" },
+		error: "ایمیل کاربر الزامی است",
 	},
 	{
 		testCaseName: "should return 400 if email is not valid",
-		user: { email: "invalid-email" },
+		body: { email: "user@test" },
+		error: "فرمت ایمیل وارد شده معتبر نیست",
 	},
 ];
 
 describe("POST /api/users/forgot-password", () => {
 	describe("validation dto", () => {
-		validationCases.forEach(({ testCaseName, user }) => {
+		validationCases.forEach(({ testCaseName, body, error }) => {
 			it(testCaseName, async () => {
-				const res = await forgotPasswordRequest(user);
+				const res = await forgotPasswordRequest(body);
 				expect(res.status).toBe(400);
-				expect(res.body.errors[0].message).toBeDefined();
+				expect(res.body.errors[0].message).toBe(error);
 			});
 		});
 	});
@@ -34,47 +36,56 @@ describe("POST /api/users/forgot-password", () => {
 				email: "test@test.com",
 			});
 			expect(res.status).toBe(404);
-			expect(res.body.errors[0].message).toBeDefined();
+			expect(res.body.errors[0].message).toBe(
+				"هیچ کاربری با این آدرس ایمیل وجود ندارد."
+			);
 		});
 
 		it("should return 401 if user is not active", async () => {
-			await signupRequest(validUser);
-			await User.updateOne(
-				{ email: validUser.email },
-				{ active: false }
+			const user = getUniqueUser("user");
+			await signupRequest(user);
+			const userDoc = await userRepository.findByEmail(
+				user.email
 			);
+			userDoc!.active = false;
+			await userDoc!.save({ validateBeforeSave: false });
 			const res = await forgotPasswordRequest({
-				email: validUser.email,
+				email: user.email,
 			});
 			expect(res.status).toBe(401);
-			expect(res.body.errors[0].message).toBeDefined();
+			expect(res.body.errors[0].message).toBe(
+				"کاربری که به این ایمیل مرتبط است مسدود شده است!"
+			);
 		});
 	});
 
 	describe("success", () => {
 		it("should send email and set passwordResetToken and passwordResetExpires", async () => {
-			await signupRequest(validUser);
+			const user = getUniqueUser("user");
+			await signupRequest(user);
 			const res = await forgotPasswordRequest({
-				email: validUser.email,
+				email: user.email,
 			});
 
 			// check if the response is 200
 			expect(res.status).toBe(200);
-			expect(res.body.message).toBeDefined();
+			expect(res.body.message).toBe(
+				"ایمیل بازیابی رمز عبور با موفقیت ارسال شد"
+			);
 
 			// check if sendEmail was called with the correct arguments
 			expect(sendEmail).toHaveBeenCalledWith(
-				validUser.email,
+				user.email,
 				expect.any(String),
 				"درخواست برای ریست کردن رمز عبور"
 			);
 
 			// check if the user has a passwordResetToken and passwordResetExpires
-			const user = await User.findOne({
-				email: validUser.email,
-			});
-			expect(user!.passwordResetToken).toBeDefined();
-			expect(user!.passwordResetExpires).toBeDefined();
+			const userDoc = await userRepository.findByEmail(
+				user.email
+			);
+			expect(userDoc!.passwordResetToken).toBeDefined();
+			expect(userDoc!.passwordResetExpires).toBeDefined();
 		});
 	});
 });

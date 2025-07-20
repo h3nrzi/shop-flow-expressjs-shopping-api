@@ -61,10 +61,11 @@ router.post(
 );
 
 router.post("/forgot-password", [
-	body("email").notEmpty().withMessage("ایمیل کاربر الزامی است"),
 	body("email")
+		.notEmpty()
+		.withMessage("ایمیل کاربر الزامی است")
 		.isEmail()
-		.withMessage("ایمیل وارد شده معتبر نیست"),
+		.withMessage("فرمت ایمیل وارد شده معتبر نیست"),
 	validateRequest,
 	authController.forgotPassword.bind(authController),
 ]);
