@@ -65,12 +65,12 @@ describe("PUT /api/users/update-me", () => {
 	describe("Success", () => {
 		it("should update the user's name, email and photo", async () => {
 			const res = await updateMeRequest(token, {
-				email: validUser.email,
+				email: "newemail@test.com",
 				photo: "https://pic.com",
 			});
 			expect(res.status).toBe(200);
 			expect(res.body.data.updatedUser.email).toBe(
-				validUser.email
+				"newemail@test.com"
 			);
 			expect(res.body.data.updatedUser.photo).toBe(
 				"https://pic.com"
