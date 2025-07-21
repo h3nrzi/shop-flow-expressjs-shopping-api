@@ -21,7 +21,7 @@ paths:
                     type: object
                     properties:
                       currentUser:
-                        $ref: './common.yaml#/components/schemas/User'
+                        $ref: '#/components/schemas/User'
         "401":
           $ref: './common.yaml#/components/responses/Unauthorized'
 
@@ -52,7 +52,7 @@ paths:
                     type: object
                     properties:
                       updatedUser:
-                        $ref: './common.yaml#/components/schemas/User'
+                        $ref: '#/components/schemas/User'
         "400":
           $ref: './common.yaml#/components/responses/ValidationError'
         "401":

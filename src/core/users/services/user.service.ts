@@ -1,4 +1,4 @@
-import { BadRequestError } from "@/errors/bad-request-error";
+import { BadRequestError } from "../../../errors/bad-request-error";
 import { ForbiddenError } from "../../../errors/forbidden-error";
 import { NotAuthorizedError } from "../../../errors/not-authorized-error";
 import { NotFoundError } from "../../../errors/not-found-error";

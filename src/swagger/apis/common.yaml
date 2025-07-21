@@ -1,5 +1,169 @@
 components:
   schemas:
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 60d21b4667d0d8992e610c85
+        name:
+          type: string
+          example: Product Name
+        slug:
+          type: string
+          example: product-name
+        description:
+          type: string
+          example: Product description
+        image:
+          type: string
+          example: https://example.com/image.jpg
+        images:
+          type: array
+          items:
+            type: string
+            example: https://example.com/image2.jpg
+        countInStock:
+          type: integer
+          example: 10
+        isAvailable:
+          type: boolean
+          example: true
+        brand:
+          type: string
+          example: Brand Name
+        category:
+          type: string
+          example: Category Name
+        rating:
+          type: number
+          example: 4.5
+        numReviews:
+          type: integer
+          example: 5
+        price:
+          type: number
+          example: 100000
+        discount:
+          type: number
+          example: 10
+        discountedPrice:
+          type: number
+          example: 90000
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 60d21b4667d0d8992e610c85
+        name:
+          type: string
+          example: User Name
+        email:
+          type: string
+          example: user@example.com
+        photo:
+          type: string
+          example: https://example.com/photo.jpg
+        role:
+          type: string
+          enum:
+            - user
+            - admin
+          example: user
+        active:
+          type: boolean
+          example: true
+    OrderItem:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 60d21b4667d0d8992e610c85
+        product:
+          $ref: '#/components/schemas/Product'
+        qty:
+          type: integer
+          example: 2
+    ShippingAddress:
+      type: object
+      properties:
+        province:
+          type: string
+          example: Tehran
+        city:
+          type: string
+          example: Tehran
+        street:
+          type: string
+          example: Valiasr St.
+    Order:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 60d21b4667d0d8992e610c85
+        user:
+          $ref: '#/components/schemas/User'
+        orderItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItem'
+        shippingAddress:
+          $ref: '#/components/schemas/ShippingAddress'
+        paymentMethod:
+          type: string
+          example: online
+        itemsPrice:
+          type: number
+          example: 200000
+        shippingPrice:
+          type: number
+          example: 20000
+        taxPrice:
+          type: number
+          example: 10000
+        totalPrice:
+          type: number
+          example: 230000
+        isPaid:
+          type: boolean
+          example: false
+        isDelivered:
+          type: boolean
+          example: false
+        paidAt:
+          type: string
+          format: date-time
+          example: 2023-01-01T12:00:00.000Z
+        deliveredAt:
+          type: string
+          format: date-time
+          example: 2023-01-02T12:00:00.000Z
+        createdAt:
+          type: string
+          format: date-time
+          example: 2023-01-01T10:00:00.000Z
+        updatedAt:
+          type: string
+          format: date-time
+          example: 2023-01-01T10:00:00.000Z
+    Review:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 60d21b4667d0d8992e610c85
+        comment:
+          type: string
+          example: خیلی عالی بود!
+        rating:
+          type: integer
+          example: 5
+        user:
+          $ref: '#/components/schemas/User'
+        product:
+          $ref: '#/components/schemas/Product'
     SignupDto:
       type: object
       required:
@@ -130,7 +294,7 @@ components:
           example: "https://example.com/avatar.jpg"
         active:
           type: boolean
-          example: true
+          example: true 
   responses:
     Unauthorized:
       description: User not authenticated or not admin
@@ -170,7 +334,7 @@ components:
                   properties:
                     field:
                       type: string
-                      example: "name"
+                      example: name
                     message:
                       type: string
                       example: "نام کاربر الزامی است"

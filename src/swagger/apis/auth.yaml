@@ -27,9 +27,9 @@ paths:
                     type: object
                     properties:
                       user:
-                        $ref: './common.yaml#/components/schemas/User'
+                        $ref: '#/components/schemas/User'
         "400":
-          $ref: './common.yaml#/components/responses/ValidationError'
+          $ref: '#/components/responses/ValidationError'
 
   /api/users/login:
     post:
@@ -58,11 +58,11 @@ paths:
                     type: object
                     properties:
                       user:
-                        $ref: './common.yaml#/components/schemas/User'
+                        $ref: '#/components/schemas/User'
         "400":
-          $ref: './common.yaml#/components/responses/ValidationError'
+          $ref: '#/components/responses/ValidationError'
         "401":
-          $ref: './common.yaml#/components/responses/Unauthorized'
+          $ref: '#/components/responses/Unauthorized'
         "403":
           description: User is blocked
           content:
@@ -119,11 +119,11 @@ paths:
                     type: string
                     example: "ایمیل بازیابی رمز عبور با موفقیت ارسال شد"
         "400":
-          $ref: './common.yaml#/components/responses/ValidationError'
+          $ref: '#/components/responses/ValidationError'
         "404":
-          $ref: './common.yaml#/components/responses/NotFound'
+          $ref: '#/components/responses/NotFound'
         "401":
-          $ref: './common.yaml#/components/responses/Unauthorized'
+          $ref: '#/components/responses/Unauthorized'
 
   /api/users/reset-password:
     patch:
@@ -162,6 +162,6 @@ paths:
                         type: string
                         example: "رمز عبور با موفقیت تغییر کرد"
         "400":
-          $ref: './common.yaml#/components/responses/ValidationError'
+          $ref: '#/components/responses/ValidationError'
         "401":
-          $ref: './common.yaml#/components/responses/Unauthorized'
+          $ref: '#/components/responses/Unauthorized'
