@@ -49,3 +49,12 @@ export const deleteUserRequest = async (
 		.delete(`/api/users/${userId}`)
 		.set("Cookie", cookie);
 };
+
+export const getUsersCountByDayRequest = async (
+	cookie: string,
+	period?: string
+): Promise<Response> => {
+	let url = "/api/users/get-users-count";
+	if (period) url += `?period=${period}`;
+	return await request(app).get(url).set("Cookie", cookie);
+};
