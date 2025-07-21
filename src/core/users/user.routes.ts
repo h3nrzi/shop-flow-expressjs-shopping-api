@@ -7,30 +7,28 @@ import { validateRequest } from "../../middlewares/validate-request";
 const router = express.Router();
 
 router.post("/signup", [
-	body("name").notEmpty().withMessage("نام کاربر الزامی است"),
 	body("name")
+		.notEmpty()
+		.withMessage("نام کاربر الزامی است")
 		.isString()
 		.withMessage("فرمت نام کاربر باید string باشد"),
-	body("email").notEmpty().withMessage("ایمیل کاربر الزامی است"),
 	body("email")
+		.notEmpty()
+		.withMessage("ایمیل کاربر الزامی است")
 		.isEmail()
 		.withMessage("ایمیل وارد شده معتبر نیست"),
 	body("password")
 		.notEmpty()
-		.withMessage("رمز عبور کاربر الزامی است"),
-	body("password")
+		.withMessage("رمز عبور کاربر الزامی است")
 		.isString()
-		.withMessage("فرمت رمز عبور کاربر باید string باشد"),
-	body("password")
+		.withMessage("فرمت رمز عبور کاربر باید string باشد")
 		.isLength({ min: 8 })
 		.withMessage("رمز عبور کاربر باید حداقل 8 کاراکتر باشد"),
 	body("passwordConfirmation")
 		.notEmpty()
-		.withMessage("تایید رمز عبور کاربر الزامی است"),
-	body("passwordConfirmation")
+		.withMessage("تایید رمز عبور کاربر الزامی است")
 		.isString()
-		.withMessage("فرمت تایید رمز عبور کاربر باید string باشد"),
-	body("passwordConfirmation")
+		.withMessage("فرمت تایید رمز عبور کاربر باید string باشد")
 		.custom((value, { req }) => {
 			if (value !== req.body.password) return false;
 			return true;
@@ -75,7 +73,9 @@ router.patch("/reset-password", [
 		.notEmpty()
 		.withMessage("رمز عبور کاربر الزامی است")
 		.isString()
-		.withMessage("فرمت رمز عبور کاربر باید string باشد"),
+		.withMessage("فرمت رمز عبور کاربر باید string باشد")
+		.isLength({ min: 8 })
+		.withMessage("رمز عبور کاربر باید حداقل 8 کاراکتر باشد"),
 	body("passwordConfirmation")
 		.notEmpty()
 		.withMessage("تایید رمز عبور کاربر الزامی است")
@@ -138,7 +138,9 @@ router.patch("/update-me-password", [
 		.notEmpty()
 		.withMessage("رمز عبور کاربر الزامی است")
 		.isString()
-		.withMessage("فرمت رمز عبور کاربر معتبر نیست"),
+		.withMessage("فرمت رمز عبور کاربر معتبر نیست")
+		.isLength({ min: 8 })
+		.withMessage("رمز عبور کاربر باید حداقل 8 کاراکتر باشد"),
 	body("passwordConfirmation")
 		.notEmpty()
 		.withMessage("تایید رمز عبور کاربر الزامی است")
