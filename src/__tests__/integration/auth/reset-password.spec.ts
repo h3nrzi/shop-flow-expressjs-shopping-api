@@ -11,14 +11,14 @@ const validationCases = [
 	{
 		testCaseName:
 			"should return 400 if the password is not provided",
-		body: { password: "", passwordConfirmation: "123456" },
+		body: { password: "", passwordConfirmation: "test123456" },
 		query: { resetToken: "123456" },
 		error: "رمز عبور کاربر الزامی است",
 	},
 	{
 		testCaseName:
 			"should return 400 if the password confirmation is not provided",
-		body: { password: "123456", passwordConfirmation: "" },
+		body: { password: "test123456", passwordConfirmation: "" },
 		query: { resetToken: "123456" },
 		error: "تایید رمز عبور کاربر الزامی است",
 	},
@@ -26,7 +26,7 @@ const validationCases = [
 		testCaseName:
 			"should return 400 if the password and password confirmation are not the same",
 		body: {
-			password: "123456",
+			password: "test123456",
 			passwordConfirmation: "1234567",
 		},
 		query: { resetToken: "123456" },
@@ -35,7 +35,10 @@ const validationCases = [
 	{
 		testCaseName:
 			"should return 400 if the reset token is not provided",
-		body: { password: "123456", passwordConfirmation: "123456" },
+		body: {
+			password: "test123456",
+			passwordConfirmation: "test123456",
+		},
 		query: { resetToken: "" },
 		error: "ریست توکن کاربر الزامی است",
 	},
