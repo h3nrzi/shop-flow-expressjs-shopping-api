@@ -1,5 +1,4 @@
 import crypto from "node:crypto";
-import { BadRequestError } from "../../../errors/bad-request-error";
 import { InternalServerError } from "../../../errors/internal-server-error";
 import { NotAuthorizedError } from "../../../errors/not-authorized-error";
 import { NotFoundError } from "../../../errors/not-found-error";
@@ -19,24 +18,11 @@ export class AuthService {
 	 ******************************************************/
 
 	async signup(signupDto: ISignupDto): Promise<IUserDoc> {
-		// check if the email is already in use, if so, throw an error
-		const { name, email, password, passwordConfirmation } =
-			signupDto;
-		const existingUser = await this.userRepository.findByEmail(
-			email
-		);
-		if (existingUser) {
-			throw new BadRequestError(
-				"این ایمیل قبلا استفاده شده است"
-			);
-		}
-
-		// create the user and return it
-		return await this.userRepository.create({
-			name,
-			email,
-			password,
-			passwordConfirmation,
+		return this.userRepository.create({
+			email: signupDto.email,
+			name: signupDto.name,
+			password: signupDto.password,
+			passwordConfirmation: signupDto.passwordConfirmation,
 		});
 	}
 

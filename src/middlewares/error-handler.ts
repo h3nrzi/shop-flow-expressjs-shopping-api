@@ -5,7 +5,7 @@ export const errorHandler: ErrorRequestHandler = (
 	err,
 	req,
 	res,
-	next,
+	next
 ) => {
 	// if the error is a CastError, send a 400 error and log the error
 	// CastError is a Mongoose error that occurs when a value is not of the correct type
@@ -17,6 +17,21 @@ export const errorHandler: ErrorRequestHandler = (
 				{
 					field: err.path,
 					message: "شناسه نامعتبر است",
+				},
+			],
+		});
+	}
+
+	// if the error is a duplicate key error, send a 400 error and log the error
+	// duplicate key error is a Mongoose error that occurs when a value is not unique
+	// in this case, we are sending a 400 error and logging the error
+	if (err.code === 11000 && err.keyPattern?.email) {
+		return res.status(400).send({
+			status: "error",
+			errors: [
+				{
+					field: err.path,
+					message: "این ایمیل قبلا استفاده شده است",
 				},
 			],
 		});

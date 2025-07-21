@@ -1,5 +1,5 @@
+import { BadRequestError } from "@/errors/bad-request-error";
 import { ForbiddenError } from "../../../errors/forbidden-error";
-import { BadRequestError } from "../../../errors/bad-request-error";
 import { NotAuthorizedError } from "../../../errors/not-authorized-error";
 import { NotFoundError } from "../../../errors/not-found-error";
 import { UnprocessableEntityError } from "../../../errors/unprocessable-entity-error";
@@ -77,17 +77,12 @@ export class UserService {
 	async createUser(
 		createUserDto: ICreateUserDto
 	): Promise<IUserDoc> {
-		// check if the email is already in use, if so, throw an error
-		const targetUser = await this.userRepository.findByEmail(
-			createUserDto.email
-		);
-		if (targetUser) {
-			throw new BadRequestError(
-				"این ایمیل قبلا استفاده شده است"
-			);
-		}
-
-		return this.userRepository.create(createUserDto);
+		return this.userRepository.create({
+			email: createUserDto.email,
+			name: createUserDto.name,
+			password: createUserDto.password,
+			passwordConfirmation: createUserDto.passwordConfirmation,
+		});
 	}
 
 	/*******************************************************
