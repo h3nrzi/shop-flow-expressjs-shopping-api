@@ -137,6 +137,7 @@ describe("POST /api/users", () => {
 			const newUser = getUniqueUser("new-user");
 			const res = await createUserRequest(adminCookie, newUser);
 			expect(res.status).toBe(201);
+			expect(res.body.data.user).toBeDefined();
 		});
 	});
 });

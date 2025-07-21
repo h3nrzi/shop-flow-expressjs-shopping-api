@@ -48,6 +48,7 @@ describe("GET /api/users", () => {
 		it("should return 200 with all users", async () => {
 			const res = await allUsersRequest(adminCookie);
 			expect(res.status).toBe(200);
+			expect(res.body.data.users).toBeDefined();
 		});
 	});
 });
