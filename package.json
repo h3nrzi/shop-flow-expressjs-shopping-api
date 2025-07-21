@@ -7,7 +7,9 @@
 		"start:dev": "nodemon src/server.ts",
 		"start": "node src/dist/server.js",
 		"build": "npm install && tsc -p src",
-		"test": "jest --watchAll --no-cache --detectOpenHandles --forceExit"
+		"test": "jest --no-cache --detectOpenHandles --forceExit",
+		"test:watch": "jest --watchAll --no-cache --detectOpenHandles --forceExit",
+		"test:coverage": "jest --coverage --no-cache --detectOpenHandles --forceExit"
 	},
 	"keywords": [],
 	"author": "Hossein Rezaei",
