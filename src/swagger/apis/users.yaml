@@ -88,10 +88,10 @@ paths:
                       properties:
                         field:
                           type: string
-                          example: "email"
+                          example: "name"
                         message:
                           type: string
-                          example: "فرمت ایمیل کاربر معتبر نیست"
+                          example: "نام کاربر الزامی است"
         "401":
           description: User not authenticated
           content:
@@ -113,6 +113,27 @@ paths:
                         message:
                           type: string
                           example: "شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
+        "422":
+          description: Password fields sent in update-me
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: "password"
+                        message:
+                          type: string
+                          example: "با این درخواست نمی توانید رمز عبور را آپدیت کنید"
 
   /api/users/update-me-password:
     patch:
@@ -160,10 +181,10 @@ paths:
                       properties:
                         field:
                           type: string
-                          example: "passwordConfirmation"
+                          example: "passwordCurrent"
                         message:
                           type: string
-                          example: "رمز عبور و تایید رمز عبور مطابقت ندارند"
+                          example: "رمز عبور فعلی کاربر الزامی است"
         "401":
           description: User not authenticated
           content:
@@ -205,7 +226,7 @@ paths:
                           example: null
                         message:
                           type: string
-                          example: "رمز عبور فعلی معتبر نیست"
+                          example: "رمز عبور فعلی شما اشتباه است"
 
   /api/users/delete-me:
     delete:

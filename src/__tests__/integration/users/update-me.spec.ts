@@ -67,12 +67,12 @@ describe("PUT /api/users/update-me", () => {
 	});
 
 	describe("Business Logics", () => {
-		it("should return 400 if password and passwordConfirmation are provided", async () => {
+		it("should return 422 if password and passwordConfirmation are provided", async () => {
 			const res = await updateMeRequest(token, {
 				password: "newpassword",
 				passwordConfirmation: "newpassword",
 			});
-			expect(res.status).toBe(400);
+			expect(res.status).toBe(422);
 			expect(res.body.errors[0].message).toBe(
 				"با این درخواست نمی توانید رمز عبور را آپدیت کنید"
 			);

@@ -2,6 +2,7 @@ import { ForbiddenError } from "../../../errors/forbidden-error";
 import { BadRequestError } from "../../../errors/bad-request-error";
 import { NotAuthorizedError } from "../../../errors/not-authorized-error";
 import { NotFoundError } from "../../../errors/not-found-error";
+import { UnprocessableEntityError } from "../../../errors/unprocessable-entity-error";
 import { ICreateUserDto } from "../dtos/create-user.dto";
 import { IUpdateCurrentUserInfoDto } from "../dtos/update-currentuser-info.dto";
 import { IUpdateCurrentUserPasswordDto } from "../dtos/update-currentuser-password.dto";
@@ -122,7 +123,7 @@ export class UserService {
 			updateUserDto.password ||
 			updateUserDto.passwordConfirmation
 		) {
-			throw new BadRequestError(
+			throw new UnprocessableEntityError(
 				"با این درخواست نمی توانید رمز عبور را آپدیت کنید"
 			);
 		}
