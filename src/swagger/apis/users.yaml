@@ -1,3 +1,4 @@
+# Shared schemas and responses are referenced from common.yaml
 paths:
   /api/users/get-me:
     get:
@@ -20,28 +21,9 @@ paths:
                     type: object
                     properties:
                       currentUser:
-                        $ref: "#/components/schemas/User"
+                        $ref: './common.yaml#/components/schemas/User'
         "401":
-          description: User not authenticated
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: "fail"
-                  errors:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        field:
-                          type: string
-                          example: null
-                        message:
-                          type: string
-                          example: "شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
+          $ref: './common.yaml#/components/responses/Unauthorized'
 
   /api/users/update-me:
     patch:
@@ -54,7 +36,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UpdateCurrentUserInfo"
+              $ref: '#/components/schemas/UpdateCurrentUserInfo'
       responses:
         "200":
           description: User information updated successfully
@@ -70,49 +52,11 @@ paths:
                     type: object
                     properties:
                       updatedUser:
-                        $ref: "#/components/schemas/User"
+                        $ref: './common.yaml#/components/schemas/User'
         "400":
-          description: Validation error
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: "fail"
-                  errors:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        field:
-                          type: string
-                          example: "name"
-                        message:
-                          type: string
-                          example: "نام کاربر الزامی است"
+          $ref: './common.yaml#/components/responses/ValidationError'
         "401":
-          description: User not authenticated
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: "fail"
-                  errors:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        field:
-                          type: string
-                          example: null
-                        message:
-                          type: string
-                          example: "شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
+          $ref: './common.yaml#/components/responses/Unauthorized'
         "422":
           description: Password fields sent in update-me
           content:
@@ -146,7 +90,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UpdateCurrentUserPassword"
+              $ref: '#/components/schemas/UpdateCurrentUserPassword'
       responses:
         "200":
           description: Password updated successfully
@@ -165,47 +109,9 @@ paths:
                         type: string
                         example: "Password updated successfully."
         "400":
-          description: Validation error
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: "fail"
-                  errors:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        field:
-                          type: string
-                          example: "passwordCurrent"
-                        message:
-                          type: string
-                          example: "رمز عبور فعلی کاربر الزامی است"
+          $ref: './common.yaml#/components/responses/ValidationError'
         "401":
-          description: User not authenticated
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: "fail"
-                  errors:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        field:
-                          type: string
-                          example: null
-                        message:
-                          type: string
-                          example: "شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
+          $ref: './common.yaml#/components/responses/Unauthorized'
         "403":
           description: Current password is incorrect
           content:
@@ -238,26 +144,7 @@ paths:
         "204":
           description: User deleted successfully
         "401":
-          description: User not authenticated
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: "fail"
-                  errors:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        field:
-                          type: string
-                          example: null
-                        message:
-                          type: string
-                          example: "شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
+          $ref: './common.yaml#/components/responses/Unauthorized'
         "401-alt":
           description: if the token is provided belongs to user that is not exist
           content:
@@ -280,39 +167,3 @@ paths:
                           type: string
                           example: "کاربر متعلق به این توکن دیگر وجود ندارد!"
 
-components:
-  schemas:
-    UpdateCurrentUserInfo:
-      type: object
-      properties:
-        name:
-          type: string
-          example: "John Doe"
-        email:
-          type: string
-          format: email
-          example: "john.doe@example.com"
-        photo:
-          type: string
-          format: uri
-          example: "https://example.com/avatar.jpg"
-    UpdateCurrentUserPassword:
-      type: object
-      required:
-        - passwordCurrent
-        - password
-        - passwordConfirmation
-      properties:
-        passwordCurrent:
-          type: string
-          format: password
-          example: "currentPassword123"
-        password:
-          type: string
-          format: password
-          minLength: 8
-          example: "newStrongPass123!"
-        passwordConfirmation:
-          type: string
-          format: password
-          example: "newStrongPass123!"

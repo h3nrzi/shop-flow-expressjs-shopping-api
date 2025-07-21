@@ -26,19 +26,23 @@
 		},
 		{
 			"name": "Users",
-			"description": "Users endpoint"
+			"description": "Users related endpoints"
 		},
 		{
 			"name": "Products",
-			"description": "Products endpoint"
+			"description": "Products related endpoints"
 		},
 		{
 			"name": "Orders",
-			"description": "Orders endpoint"
+			"description": "Orders related endpoints"
 		},
 		{
 			"name": "Reviews",
-			"description": "Reviews endpoint"
+			"description": "Reviews related endpoints"
+		},
+		{
+			"name": "Admin",
+			"description": "Admin related endpoints"
 		}
 	],
 	"components": {

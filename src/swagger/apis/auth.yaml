@@ -1,3 +1,4 @@
+# Shared schemas and responses are referenced from common.yaml
 paths:
   /api/users/signup:
     post:
@@ -10,7 +11,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/SignupDto"
+              $ref: '#/components/schemas/SignupDto'
       responses:
         "201":
           description: User registered successfully
@@ -26,28 +27,9 @@ paths:
                     type: object
                     properties:
                       user:
-                        $ref: "#/components/schemas/User"
+                        $ref: './common.yaml#/components/schemas/User'
         "400":
-          description: Validation error or user already exists
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: "fail"
-                  errors:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        field:
-                          type: string
-                          example: email
-                        message:
-                          type: string
-                          example: "ایمیل کاربر الزامی است"
+          $ref: './common.yaml#/components/responses/ValidationError'
 
   /api/users/login:
     post:
@@ -60,7 +42,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/LoginDto"
+              $ref: '#/components/schemas/LoginDto'
       responses:
         "200":
           description: User logged in successfully
@@ -76,49 +58,11 @@ paths:
                     type: object
                     properties:
                       user:
-                        $ref: "#/components/schemas/User"
+                        $ref: './common.yaml#/components/schemas/User'
         "400":
-          description: Validation error
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: "fail"
-                  errors:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        field:
-                          type: string
-                          example: email
-                        message:
-                          type: string
-                          example: "فرمت ایمیل وارد شده معتبر نیست"
+          $ref: './common.yaml#/components/responses/ValidationError'
         "401":
-          description: Invalid credentials or user not active
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: "fail"
-                  errors:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        field:
-                          type: string
-                          example: email
-                        message:
-                          type: string
-                          example: "ایمیل یا رمز عبور اشتباه است!"
+          $ref: './common.yaml#/components/responses/Unauthorized'
         "403":
           description: User is blocked
           content:
@@ -159,7 +103,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/ForgotPasswordDto"
+              $ref: '#/components/schemas/ForgotPasswordDto'
       responses:
         "200":
           description: Password reset email sent
@@ -175,62 +119,11 @@ paths:
                     type: string
                     example: "ایمیل بازیابی رمز عبور با موفقیت ارسال شد"
         "400":
-          description: Validation error
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: "fail"
-                  errors:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        field:
-                          type: string
-                          example: email
-                        message:
-                          type: string
-                          example: "فرمت ایمیل وارد شده معتبر نیست"
+          $ref: './common.yaml#/components/responses/ValidationError'
         "404":
-          description: User not found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: "fail"
-                  errors:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        message:
-                          type: string
-                          example: "هیچ کاربری با این آدرس ایمیل وجود ندارد."
+          $ref: './common.yaml#/components/responses/NotFound'
         "401":
-          description: User is not active
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: "fail"
-                  errors:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        message:
-                          type: string
-                          example: "کاربری که به این ایمیل مرتبط است مسدود شده است!"
+          $ref: './common.yaml#/components/responses/Unauthorized'
 
   /api/users/reset-password:
     patch:
@@ -250,7 +143,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/ResetPasswordDto"
+              $ref: '#/components/schemas/ResetPasswordDto'
       responses:
         "200":
           description: Password reset successfully
@@ -269,108 +162,6 @@ paths:
                         type: string
                         example: "رمز عبور با موفقیت تغییر کرد"
         "400":
-          description: Validation error
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: "fail"
-                  errors:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        field:
-                          type: string
-                          example: password
-                        message:
-                          type: string
-                          example: "رمز عبور و تایید رمز عبور باید یکسان باشد"
+          $ref: './common.yaml#/components/responses/ValidationError'
         "401":
-          description: Invalid or expired reset token
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: "fail"
-                  errors:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        field:
-                          type: string
-                          example: password
-                        message:
-                          type: string
-                          example: "توکن نامعتبر است یا منقضی شده است!"
-
-tags:
-  - name: Auth
-    description: Authentication related endpoints
-
-components:
-  schemas:
-    SignupDto:
-      type: object
-      required:
-        - name
-        - email
-        - password
-        - passwordConfirmation
-      properties:
-        name:
-          type: string
-          example: Hossein Rezaei
-        email:
-          type: string
-          example: hossein@example.com
-        password:
-          type: string
-          format: password
-          example: StrongPass123!
-        passwordConfirmation:
-          type: string
-          format: password
-          example: StrongPass123!
-    LoginDto:
-      type: object
-      required:
-        - email
-        - password
-      properties:
-        email:
-          type: string
-          example: hossein@example.com
-        password:
-          type: string
-          format: password
-          example: StrongPass123!
-    ForgotPasswordDto:
-      type: object
-      required:
-        - email
-      properties:
-        email:
-          type: string
-          example: hossein@example.com
-    ResetPasswordDto:
-      type: object
-      required:
-        - password
-        - passwordConfirmation
-      properties:
-        password:
-          type: string
-          format: password
-          example: NewStrongPass123!
-        passwordConfirmation:
-          type: string
-          format: password
-          example: NewStrongPass123!
+          $ref: './common.yaml#/components/responses/Unauthorized'
