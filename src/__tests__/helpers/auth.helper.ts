@@ -7,18 +7,7 @@ import { ISignupDto } from "../../core/users/dtos/signup.dto";
 import { sendEmail } from "@/utils/email";
 
 // ===============================================
-// ============ Helper Variables =================
-// ===============================================
-
-export const validUser = {
-	name: "test",
-	email: "test@test.com",
-	password: "password",
-	passwordConfirmation: "password",
-};
-
-// ===============================================
-// ============ Helper Functions =================
+// ============ Helper Requests =================
 // ===============================================
 
 export const signupRequest = async (
@@ -60,9 +49,18 @@ export const resetPasswordRequest = async (
 		.send(body);
 };
 
-export const getUniqueUser = (
-	suffix: string
-): typeof validUser => ({
+// ===============================================
+// ============ Helper Functions =================
+// ===============================================
+
+interface IValidUser {
+	name: string;
+	email: string;
+	password: string;
+	passwordConfirmation: string;
+}
+
+export const getUniqueUser = (suffix: string): IValidUser => ({
 	name: "test",
 	email: `test${suffix}@test.com`,
 	password: "test123456",
@@ -70,7 +68,7 @@ export const getUniqueUser = (
 });
 
 export const signupAndRequestForgotPassword = async (
-	user: typeof validUser
+	user: IValidUser
 ): Promise<string> => {
 	// Make the request to signup
 	await signupRequest(user);

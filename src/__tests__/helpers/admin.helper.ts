@@ -3,6 +3,10 @@ import { ICreateUserDto } from "@/core/users/dtos/create-user.dto";
 import { IUpdateUserDto } from "@/core/users/dtos/update-user.dto";
 import request, { Response } from "supertest";
 
+// ===============================================
+// ============ Users Related Requests ============
+// ===============================================
+
 export const allUsersRequest = async (
 	cookie: string
 ): Promise<Response> => {
@@ -58,3 +62,11 @@ export const getUsersCountByDayRequest = async (
 	if (period) url += `?period=${period}`;
 	return await request(app).get(url).set("Cookie", cookie);
 };
+
+// ===============================================
+// ============ Products Related Requests ========
+// ===============================================
+
+// ===============================================
+// ============ Orders Related Requests ==========
+// ===============================================
