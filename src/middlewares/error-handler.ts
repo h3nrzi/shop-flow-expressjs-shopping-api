@@ -16,7 +16,7 @@ export const errorHandler: ErrorRequestHandler = (
 			errors: [
 				{
 					field: err.path,
-					message: "شناسه نامعتبر است",
+					message: "شناسه کاربر معتبر نیست",
 				},
 			],
 		});

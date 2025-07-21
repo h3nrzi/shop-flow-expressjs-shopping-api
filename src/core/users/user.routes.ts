@@ -1,7 +1,7 @@
 import express from "express";
+import { body, query } from "express-validator";
 import { authController, userController } from "..";
 import authMiddleware from "../../middlewares/auth";
-import { body, param, query } from "express-validator";
 import { validateRequest } from "../../middlewares/validate-request";
 
 const router = express.Router();
@@ -208,24 +208,9 @@ router
 
 router
 	.route("/:id")
-	.get([
-		param("id")
-			.isMongoId()
-			.withMessage("شناسه کاربر معتبر نیست"),
-		validateRequest,
-		userController.findUserById.bind(userController),
-	])
-	.delete([
-		param("id")
-			.isMongoId()
-			.withMessage("شناسه کاربر معتبر نیست"),
-		validateRequest,
-		userController.deleteUser.bind(userController),
-	])
+	.get([userController.findUserById.bind(userController)])
+	.delete([userController.deleteUser.bind(userController)])
 	.patch([
-		param("id")
-			.isMongoId()
-			.withMessage("شناسه کاربر معتبر نیست"),
 		body("name")
 			.optional()
 			.isString()
