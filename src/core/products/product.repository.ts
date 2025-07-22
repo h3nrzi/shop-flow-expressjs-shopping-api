@@ -2,24 +2,24 @@ import { PopulateOptions } from "mongoose";
 import APIFeatures from "../../utils/apiFeatures";
 import { CreateProductDto } from "./dtos/create-product.dto";
 import { UpdateProductDto } from "./dtos/update-product.dto";
-import { ProductDoc, ProductModel } from "./product.interface";
+import { IProductDoc, IProductModel } from "./product.interface";
 
 class ProductRepository {
-	constructor(private readonly productModel: ProductModel) {}
+	constructor(private readonly productModel: IProductModel) {}
 
 	async getAll(
 		query: any,
-		initialFilter?: any,
+		initialFilter?: any
 	): Promise<{
 		pagination: any;
 		skip: number;
 		total: number;
-		products: ProductDoc[];
+		products: IProductDoc[];
 	}> {
 		const features = new APIFeatures(
 			this.productModel as any,
 			query,
-			initialFilter,
+			initialFilter
 		);
 		const { pagination, skip, total } = await features
 			.filter()
@@ -35,27 +35,27 @@ class ProductRepository {
 
 	getOne(
 		id: string,
-		populate?: PopulateOptions,
-	): Promise<ProductDoc | null> {
+		populate?: PopulateOptions
+	): Promise<IProductDoc | null> {
 		return this.productModel
 			.findById(id)
 			.populate(populate as PopulateOptions);
 	}
 
-	createOne(data: CreateProductDto): Promise<ProductDoc> {
+	createOne(data: CreateProductDto): Promise<IProductDoc> {
 		return this.productModel.create(data);
 	}
 
 	updateOne(
 		id: string,
-		data: UpdateProductDto,
-	): Promise<ProductDoc | null> {
+		data: UpdateProductDto
+	): Promise<IProductDoc | null> {
 		return this.productModel.findByIdAndUpdate(id, data, {
 			new: true,
 		});
 	}
 
-	deleteOne(id: string): Promise<ProductDoc | null> {
+	deleteOne(id: string): Promise<IProductDoc | null> {
 		return this.productModel.findByIdAndDelete(id);
 	}
 }

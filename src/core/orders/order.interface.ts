@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
-import { ProductDoc } from "../products/product.interface";
+import { IProductDoc } from "../products/product.interface";
 import { IUserDoc } from "../users/user.interface";
 
 export interface IOrderItem {
-	product: mongoose.Types.ObjectId | ProductDoc;
+	product: mongoose.Types.ObjectId | IProductDoc;
 	qty: number;
 }
 

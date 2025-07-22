@@ -1,6 +1,29 @@
 import { Document, Model } from "mongoose";
 
-export interface ProductDoc extends Document {
+export interface IProductQuery {
+	// filters
+	brand?: string;
+	category?: string;
+	countInStock?: number;
+	isAvailable?: boolean;
+	rating?: number;
+	numReviews?: number;
+	price?: number;
+	discount?: number;
+	discountedPrice?: number;
+
+	// pagination
+	page?: number;
+	limit?: number;
+
+	// sort
+	sort?: "asc" | "desc";
+
+	// search
+	search?: string;
+}
+
+export interface IProductDoc extends Document {
 	_id: string;
 	name: string;
 	slug: string;
@@ -18,4 +41,4 @@ export interface ProductDoc extends Document {
 	discountedPrice?: number;
 }
 
-export interface ProductModel extends Model<ProductDoc> {}
+export interface IProductModel extends Model<IProductDoc> {}

@@ -1,12 +1,12 @@
 import { model, Schema } from "mongoose";
 import slugify from "slugify";
-import { ProductDoc, ProductModel } from "./product.interface";
+import { IProductDoc, IProductModel } from "./product.interface";
 
 // ================================
 // Schema
 // ================================
 
-const productSchema = new Schema<ProductDoc>(
+const productSchema = new Schema<IProductDoc>(
 	{
 		name: {
 			type: String,
@@ -69,7 +69,7 @@ const productSchema = new Schema<ProductDoc>(
 		toJSON: { virtuals: true },
 		toObject: { virtuals: true },
 		timestamps: true,
-	},
+	}
 );
 
 // ================================
@@ -93,8 +93,8 @@ productSchema.pre("save", function (next) {
 	next();
 });
 
-const Product = model<ProductDoc, ProductModel>(
+const Product = model<IProductDoc, IProductModel>(
 	"Product",
-	productSchema,
+	productSchema
 );
 export { Product };

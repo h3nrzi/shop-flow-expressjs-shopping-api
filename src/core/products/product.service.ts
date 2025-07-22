@@ -1,5 +1,5 @@
 import { PopulateOptions } from "mongoose";
-import { ProductDoc } from "./product.interface";
+import { IProductDoc } from "./product.interface";
 import ProductRepository from "./product.repository";
 import { CreateProductDto } from "./dtos/create-product.dto";
 import { UpdateProductDto } from "./dtos/update-product.dto";
@@ -7,13 +7,13 @@ import { NotFoundError } from "../../errors/not-found-error";
 
 export class ProductService {
 	constructor(
-		private readonly productRepository: ProductRepository,
+		private readonly productRepository: ProductRepository
 	) {}
 
 	async getAllProducts(
 		query: any,
-		initialFilter?: any,
-	): Promise<{ pagination: any; products: ProductDoc[] }> {
+		initialFilter?: any
+	): Promise<{ pagination: any; products: IProductDoc[] }> {
 		const { pagination, skip, total, products } =
 			await this.productRepository.getAll(query, initialFilter);
 
@@ -26,15 +26,15 @@ export class ProductService {
 
 	async getProductById(
 		id: string,
-		populate?: PopulateOptions,
-	): Promise<ProductDoc> {
+		populate?: PopulateOptions
+	): Promise<IProductDoc> {
 		const product = await this.productRepository.getOne(
 			id,
-			populate,
+			populate
 		);
 		if (!product) {
 			throw new NotFoundError(
-				"هیچ محصولی با این شناسه یافت نشد",
+				"هیچ محصولی با این شناسه یافت نشد"
 			);
 		}
 
@@ -42,33 +42,33 @@ export class ProductService {
 	}
 
 	async createProduct(
-		createProductDto: CreateProductDto,
-	): Promise<ProductDoc> {
+		createProductDto: CreateProductDto
+	): Promise<IProductDoc> {
 		return this.productRepository.createOne(createProductDto);
 	}
 
 	async updateProduct(
 		id: string,
-		updateProductDto: UpdateProductDto,
-	): Promise<ProductDoc> {
+		updateProductDto: UpdateProductDto
+	): Promise<IProductDoc> {
 		const product = await this.productRepository.updateOne(
 			id,
-			updateProductDto,
+			updateProductDto
 		);
 		if (!product) {
 			throw new NotFoundError(
-				"هیچ محصولی با این شناسه یافت نشد",
+				"هیچ محصولی با این شناسه یافت نشد"
 			);
 		}
 
 		return product;
 	}
 
-	async deleteProduct(id: string): Promise<ProductDoc> {
+	async deleteProduct(id: string): Promise<IProductDoc> {
 		const product = await this.productRepository.deleteOne(id);
 		if (!product) {
 			throw new NotFoundError(
-				"هیچ محصولی با این شناسه یافت نشد",
+				"هیچ محصولی با این شناسه یافت نشد"
 			);
 		}
 

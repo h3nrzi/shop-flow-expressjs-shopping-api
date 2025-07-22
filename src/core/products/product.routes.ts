@@ -1,41 +1,30 @@
 import { Router } from "express";
-import authMiddleware from "../../middlewares/auth";
-import { productController } from "..";
 import { body, param } from "express-validator";
+import { productController } from "..";
+import authMiddleware from "../../middlewares/auth";
 import { validateRequest } from "../../middlewares/validate-request";
 import { reviewRouter } from "../reviews/review.routes";
 
 const router = Router();
 
-/************************************************************************
- *********  @description Protect all routes below to users only *********
- ************************************************************************/
-router.use(authMiddleware.protect);
-
-router.use(
-	"/:productId/reviews",
-	param("productId")
-		.isMongoId()
-		.withMessage("شناسه محصول معتبر نیست"),
-	validateRequest,
-	reviewRouter,
-);
+router.use("/:productId/reviews", reviewRouter);
 
 router.get(
 	"/",
-	productController.getAllProducts.bind(productController),
+	productController.getAllProducts.bind(productController)
 );
 
 router.get(
 	"/:id",
 	param("id").isMongoId().withMessage("شناسه محصول معتبر نیست"),
 	validateRequest,
-	productController.getProductById.bind(productController),
+	productController.getProductById.bind(productController)
 );
 
 /************************************************************************
  *********  @description Protect all routes below to admin only *********
  ************************************************************************/
+router.use(authMiddleware.protect);
 router.use(authMiddleware.restrictTo("admin"));
 
 router.post(
@@ -67,7 +56,7 @@ router.post(
 		.isNumeric()
 		.withMessage("تخفیف محصول الزامی است"),
 	validateRequest,
-	productController.createProduct.bind(productController),
+	productController.createProduct.bind(productController)
 );
 
 router.patch(
@@ -119,14 +108,14 @@ router.patch(
 		.isNumeric()
 		.withMessage("تخفیف محصول الزامی است"),
 	validateRequest,
-	productController.updateProduct.bind(productController),
+	productController.updateProduct.bind(productController)
 );
 
 router.delete(
 	"/:id",
 	param("id").isMongoId().withMessage("شناسه محصول معتبر نیست"),
 	validateRequest,
-	productController.deleteProduct.bind(productController),
+	productController.deleteProduct.bind(productController)
 );
 
 export { router as productRouter };
