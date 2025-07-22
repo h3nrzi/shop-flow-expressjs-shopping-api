@@ -11,7 +11,6 @@ export const getAllProductsRequest = (
 				.join("&")
 		: "";
 
-	console.log(`/api/products?${queryString}`);
 	return request(app).get(`/api/products?${queryString}`);
 };
 
