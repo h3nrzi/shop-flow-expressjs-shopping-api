@@ -1,41 +1,41 @@
 import { updateUserRequest } from "@/__tests__/helpers/admin.helper";
 import {
+	getInvalidToken,
 	getUniqueUser,
 	signupRequest,
 } from "@/__tests__/helpers/auth.helper";
+import { updateMePasswordRequest } from "@/__tests__/helpers/users.helper";
 import { userRepository } from "@/core";
 import mongoose from "mongoose";
 
 const validationCases = [
 	{
-		description: "should return 400 if the id is invalid",
+		description: "If the id is invalid",
 		userId: "invalid-id",
 		body: { name: "new name" },
 		status: 400,
 		error: "شناسه کاربر معتبر نیست",
 	},
 	{
-		description: "should return 400 if the name is not a string",
+		description: "If the name is not a string",
 		body: { name: 123 },
 		status: 400,
 		error: "فرمت نام کاربر معتبر نیست",
 	},
 	{
-		description: "should return 400 if the email is not valid",
+		description: "If the email is not valid",
 		body: { email: "not-an-email" },
 		status: 400,
 		error: "فرمت ایمیل کاربر معتبر نیست",
 	},
 	{
-		description:
-			"should return 400 if the photo is not a string",
+		description: "If the photo is not a string",
 		body: { photo: 123 },
 		status: 400,
 		error: "فرمت تصویر کاربر معتبر نیست",
 	},
 	{
-		description:
-			"should return 400 if the active is not a boolean",
+		description: "If the active is not a boolean",
 		body: { active: "yes" },
 		status: 400,
 		error: "فرمت وضعیت کاربر معتبر نیست",
@@ -97,7 +97,71 @@ describe("PATCH /api/users/:id", () => {
 			);
 		});
 
-		it("If user is not an admin", async () => {
+		it("If token is invalid", async () => {
+			const res = await updateUserRequest(
+				"jwt=invalid-token",
+				userId,
+				{ name: "new name" }
+			);
+			expect(res.status).toBe(401);
+			expect(res.body.errors[0].field).toBeNull();
+			expect(res.body.errors[0].message).toBe("توکن معتبر نیست");
+		});
+
+		it("If user for token does not exist", async () => {
+			const fakeToken = getInvalidToken();
+			const res = await updateUserRequest(
+				`jwt=${fakeToken}`,
+				userId,
+				{ name: "new name" }
+			);
+			expect(res.status).toBe(401);
+			expect(res.body.errors[0].field).toBeNull();
+			expect(res.body.errors[0].message).toBe(
+				"کاربر متعلق به این توکن دیگر وجود ندارد!"
+			);
+		});
+
+		it("If user is inactive", async () => {
+			const user = getUniqueUser("inactive");
+			const signupRes = await signupRequest(user);
+			const cookie = signupRes.headers["set-cookie"][0];
+			const repoUser = await userRepository.findByEmail(
+				user.email
+			);
+			repoUser!.active = false;
+			await repoUser!.save({ validateBeforeSave: false });
+			const res = await updateUserRequest(cookie, userId, {
+				name: "new name",
+			});
+			expect(res.status).toBe(401);
+			expect(res.body.errors[0].field).toBeNull();
+			expect(res.body.errors[0].message).toBe(
+				"کاربری که به این ایمیل مرتبط است غیرفعال شده!"
+			);
+		});
+
+		it("If user changed password after token was issued", async () => {
+			await updateMePasswordRequest(userCookie, {
+				passwordCurrent: "test123456",
+				password: "newpassword123",
+				passwordConfirmation: "newpassword123",
+			});
+
+			await new Promise(resolve => setTimeout(resolve, 500));
+
+			const res = await updateUserRequest(userCookie, userId, {
+				name: "new name",
+			});
+
+			expect(res.status).toBe(401);
+			expect(res.body.errors[0].field).toBeNull();
+			expect(res.body.errors[0].message).toBe(
+				"کاربر اخیرا رمز عبور را تغییر داده است! لطفا دوباره وارد شوید."
+			);
+		});
+
+		it("If user's role is not admin", async () => {
 			const res = await updateUserRequest(userCookie, userId, {
 				name: "new name",
 			});
@@ -107,8 +171,17 @@ describe("PATCH /api/users/:id", () => {
 			);
 		});
 
-		it("If an admin tries to update another admin (not main admin)", async () => {
-			// admin tries to update main admin
+		it("If an admin tries to update another admin", async () => {
+			const res = await updateUserRequest(adminCookie, adminId, {
+				name: "Hacker",
+			});
+			expect(res.status).toBe(401);
+			expect(res.body.errors[0].message).toBe(
+				"شما نمی توانید حساب ادمین را آپدیت کنید فقط مدیر سیستم می تواند این کار را انجام دهد"
+			);
+		});
+
+		it("If an admin tries to update the main admin", async () => {
 			const res = await updateUserRequest(
 				adminCookie,
 				mainAdminId,
@@ -177,7 +250,7 @@ describe("PATCH /api/users/:id", () => {
 	});
 
 	describe("should return 200", () => {
-		it("For admin", async () => {
+		it("If admin wants to update a normal user", async () => {
 			const res = await updateUserRequest(adminCookie, userId, {
 				name: "Updated Name",
 			});
@@ -185,7 +258,7 @@ describe("PATCH /api/users/:id", () => {
 			expect(res.body.data.user).toBeDefined();
 		});
 
-		it("For main admin", async () => {
+		it("If main admin wants to update another admin", async () => {
 			const res = await updateUserRequest(
 				mainAdminCookie,
 				adminId,
@@ -195,7 +268,7 @@ describe("PATCH /api/users/:id", () => {
 			expect(res.body.data.user).toBeDefined();
 		});
 
-		it("For main admin", async () => {
+		it("If main admin wants to update himself", async () => {
 			const res = await updateUserRequest(
 				mainAdminCookie,
 				mainAdminId,
