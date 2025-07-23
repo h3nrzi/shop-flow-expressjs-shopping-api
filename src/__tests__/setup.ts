@@ -10,6 +10,7 @@ let mongo: MongoMemoryServer;
 beforeAll(async () => {
 	// Set JWT secret for testing
 	process.env.JWT_SECRET = "asdf";
+	process.env.JWT_EXPIRES_IN = "1h";
 	process.env.NODE_ENV = "test";
 
 	// Close existing mongoose connection if open

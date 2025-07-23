@@ -5,6 +5,8 @@ import { ILoginDto } from "../../core/users/dtos/login.dto";
 import { IResetPasswordDto } from "../../core/users/dtos/reset.password.dto";
 import { ISignupDto } from "../../core/users/dtos/signup.dto";
 import { sendEmail } from "@/utils/email";
+import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 
 // ===============================================
 // ============ Helper Requests =================
@@ -59,6 +61,13 @@ interface IValidUser {
 	password: string;
 	passwordConfirmation: string;
 }
+
+export const getInvalidToken = (): string => {
+	const id = new mongoose.Types.ObjectId().toString();
+	return jwt.sign({ id }, process.env.JWT_SECRET!, {
+		expiresIn: process.env.JWT_EXPIRES_IN!,
+	});
+};
 
 export const getUniqueUser = (suffix: string): IValidUser => ({
 	name: "test",

@@ -19,3 +19,17 @@ export const getProductRequest = (
 ): Promise<Response> => {
 	return request(app).get(`/api/products/${id}`);
 };
+
+export const validProduct = {
+	name: "Test Product",
+	description: "A test product",
+	image: "test.jpg",
+	brand: "TestBrand",
+	category: "TestCategory",
+	countInStock: 10,
+	isAvailable: true,
+	rating: 5,
+	numReviews: 10,
+	discount: 10,
+	price: 1000,
+};

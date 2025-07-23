@@ -29,32 +29,54 @@ router.use(authMiddleware.restrictTo("admin"));
 
 router.post(
 	"/",
-	body("name").isString().withMessage("نام محصول الزامی است"),
+	body("name")
+		.exists({ checkFalsy: true })
+		.isString()
+		.withMessage("نام محصول الزامی است"),
 	body("description")
+		.exists({ checkFalsy: true })
 		.isString()
 		.withMessage("توضیحات محصول الزامی است"),
-	body("image").isString().withMessage("تصویر محصول الزامی است"),
-	// body("images").optional().isArray().withMessage("تصویرهای محصول الزامی است"),
+	body("image")
+		.exists({ checkFalsy: true })
+		.isString()
+		.withMessage("تصویر محصول الزامی است"),
+	body("images")
+		.optional()
+		.isArray()
+		.withMessage("تصویرهای محصول باید آرایه باشد"),
 	body("countInStock")
+		.optional()
 		.isInt({ min: 0 })
-		.withMessage("تعداد محصولات الزامی است"),
+		.withMessage("تعداد محصولات باید عدد صحیح و مثبت باشد"),
 	body("isAvailable")
+		.optional()
 		.isBoolean()
-		.withMessage("وضعیت محصول الزامی است"),
-	body("brand").isString().withMessage("برند محصول الزامی است"),
+		.withMessage("وضعیت محصول باید بولین باشد"),
+	body("brand")
+		.exists({ checkFalsy: true })
+		.isString()
+		.withMessage("برند محصول الزامی است"),
 	body("category")
+		.exists({ checkFalsy: true })
 		.isString()
 		.withMessage("دسته بندی محصول الزامی است"),
 	body("rating")
+		.optional()
 		.isNumeric()
-		.withMessage("امتیاز محصول الزامی است"),
+		.withMessage("امتیاز محصول باید عددی باشد"),
 	body("numReviews")
+		.optional()
 		.isInt({ min: 0 })
-		.withMessage("تعداد بازخوردها محصول الزامی است"),
-	body("price").isNumeric().withMessage("قیمت محصول الزامی است"),
-	body("discount")
+		.withMessage("تعداد بازخوردها باید عدد صحیح و مثبت باشد"),
+	body("price")
+		.exists({ checkFalsy: true })
 		.isNumeric()
-		.withMessage("تخفیف محصول الزامی است"),
+		.withMessage("قیمت محصول الزامی است"),
+	body("discount")
+		.optional()
+		.isNumeric()
+		.withMessage("تخفیف محصول باید عددی باشد"),
 	validateRequest,
 	productController.createProduct.bind(productController)
 );

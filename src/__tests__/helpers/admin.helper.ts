@@ -2,6 +2,7 @@ import app from "@/app";
 import { ICreateUserDto } from "@/core/users/dtos/create-user.dto";
 import { IUpdateUserDto } from "@/core/users/dtos/update-user.dto";
 import request, { Response } from "supertest";
+import { CreateProductDto } from "@/core/products/dtos/create-product.dto";
 
 // ===============================================
 // ============ Users Related Requests ============
@@ -66,6 +67,16 @@ export const getUsersCountByDayRequest = async (
 // ===============================================
 // ============ Products Related Requests ========
 // ===============================================
+
+export const createProductRequest = async (
+	cookie: string,
+	body: CreateProductDto
+): Promise<Response> => {
+	return await request(app)
+		.post("/api/products")
+		.set("Cookie", cookie)
+		.send(body);
+};
 
 // ===============================================
 // ============ Orders Related Requests ==========
