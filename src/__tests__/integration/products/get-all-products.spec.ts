@@ -9,36 +9,34 @@ import { productRepository } from "@/core";
 // 			page: -1 as unknown as number,
 // 			limit: -5 as unknown as number,
 // 		},
-// 		expectedStatus: 400,
 // 	},
 // 	{
 // 		testCaseName: "should return 400 if sort order is invalid",
 // 		query: {
 // 			sort: "invalid" as unknown as "asc" | "desc",
 // 		},
-// 		expectedStatus: 400,
 // 	},
 // ];
 
 describe("GET /api/products", () => {
-	// describe("Validation", () => {
+	// describe("400", () => {
 	// 	validationCases.forEach(
 	// 		({ testCaseName, query, expectedStatus }) => {
 	// 			it(testCaseName, async () => {
 	// 				const res = await getAllProductsRequest(query);
-	// 				expect(res.status).toBe(expectedStatus);
+	// 				expect(res.status).toBe(400);
 	// 			});
 	// 		}
 	// 	);
 	// });
 
-	describe("Success Cases", () => {
-		it("should return 200 with no query", async () => {
+	describe("200", () => {
+		it("if request is without query", async () => {
 			const res = await getAllProductsRequest({});
 			expect(res.status).toBe(200);
 		});
 
-		it("should return 200 with valid query", async () => {
+		it("if request is with query", async () => {
 			const res = await getAllProductsRequest({
 				discount: 10,
 				countInStock: 10,
@@ -46,7 +44,7 @@ describe("GET /api/products", () => {
 			expect(res.status).toBe(200);
 		});
 
-		it("pagination should work", async () => {
+		it("if pagination works", async () => {
 			// create 10 products
 			for (let i = 0; i < 10; i++) {
 				await productRepository.createOne({
@@ -76,7 +74,7 @@ describe("GET /api/products", () => {
 			expect(res.body.pagination.limit).toBe(5);
 		});
 
-		it("should filter products by brand", async () => {
+		it("if filter by brand", async () => {
 			// Create test products with specific brands
 			await productRepository.createOne({
 				name: "Samsung Phone",
@@ -100,7 +98,7 @@ describe("GET /api/products", () => {
 			expect(res.body.data).toBeDefined();
 		});
 
-		it("should filter products by category", async () => {
+		it("if filter by category", async () => {
 			await productRepository.createOne({
 				name: "Gaming Laptop",
 				price: 100000,
@@ -123,7 +121,7 @@ describe("GET /api/products", () => {
 			expect(res.body.data).toBeDefined();
 		});
 
-		it("should filter products by availability", async () => {
+		it("if filter by availability", async () => {
 			const res = await getAllProductsRequest({
 				isAvailable: true,
 			});
@@ -132,7 +130,7 @@ describe("GET /api/products", () => {
 			expect(res.body.data).toBeDefined();
 		});
 
-		it("should work with search query", async () => {
+		it("if search query works", async () => {
 			await productRepository.createOne({
 				name: "iPhone 14 Pro",
 				price: 120000,
@@ -155,7 +153,7 @@ describe("GET /api/products", () => {
 			expect(res.body.data).toBeDefined();
 		});
 
-		it("should handle multiple filters", async () => {
+		it("if multiple filters works", async () => {
 			// create 20 products
 			for (let i = 0; i < 20; i++) {
 				await productRepository.createOne({
@@ -185,7 +183,7 @@ describe("GET /api/products", () => {
 			expect(res.body.data).toBeDefined();
 		});
 
-		it("should work with sorting", async () => {
+		it("if sorting works", async () => {
 			const resAsc = await getAllProductsRequest({
 				sort: "asc",
 			});
@@ -197,7 +195,7 @@ describe("GET /api/products", () => {
 			expect(resDesc.status).toBe(200);
 		});
 
-		it("should handle empty results gracefully", async () => {
+		it("if empty results works", async () => {
 			const res = await getAllProductsRequest({
 				brand: "NonExistentBrand",
 			});
@@ -206,7 +204,7 @@ describe("GET /api/products", () => {
 			expect(res.body.data).toBeDefined();
 		});
 
-		it("should return proper data structure", async () => {
+		it("if return proper data structure", async () => {
 			const res = await getAllProductsRequest({});
 
 			expect(res.status).toBe(200);
