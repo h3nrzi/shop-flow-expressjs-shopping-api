@@ -86,8 +86,8 @@ beforeEach(async () => {
 });
 
 describe("PATCH /api/users/:id", () => {
-	describe("Authorization", () => {
-		it("should return 401 if no token is provided", async () => {
+	describe("should return 401", () => {
+		it("If no token is provided", async () => {
 			const res = await updateUserRequest("", userId, {
 				name: "new name",
 			});
@@ -97,7 +97,7 @@ describe("PATCH /api/users/:id", () => {
 			);
 		});
 
-		it("should return 401 if the user is not an admin", async () => {
+		it("If user is not an admin", async () => {
 			const res = await updateUserRequest(userCookie, userId, {
 				name: "new name",
 			});
@@ -106,9 +106,22 @@ describe("PATCH /api/users/:id", () => {
 				"شما اجازه انجام این عمل را ندارید!"
 			);
 		});
+
+		it("If an admin tries to update another admin (not main admin)", async () => {
+			// admin tries to update main admin
+			const res = await updateUserRequest(
+				adminCookie,
+				mainAdminId,
+				{ name: "Hacker" }
+			);
+			expect(res.status).toBe(401);
+			expect(res.body.errors[0].message).toBe(
+				"شما نمی توانید حساب ادمین را آپدیت کنید فقط مدیر سیستم می تواند این کار را انجام دهد"
+			);
+		});
 	});
 
-	describe("Validation", () => {
+	describe("should return 400", () => {
 		validationCases.forEach(testCase => {
 			it(testCase.description, async () => {
 				const id = testCase.userId || userId;
@@ -121,23 +134,8 @@ describe("PATCH /api/users/:id", () => {
 				expect(res.body.errors[0].message).toBe(testCase.error);
 			});
 		});
-	});
 
-	describe("Business Logic", () => {
-		it("should return 404 if the user does not exist", async () => {
-			const nonExistentId = new mongoose.Types.ObjectId();
-			const res = await updateUserRequest(
-				adminCookie,
-				nonExistentId.toString(),
-				{ name: "new name" }
-			);
-			expect(res.status).toBe(404);
-			expect(res.body.errors[0].message).toBe(
-				"هیچ موردی با این شناسه یافت نشد"
-			);
-		});
-
-		it("should return 400 if the email is already in use", async () => {
+		it("If the email is already in use", async () => {
 			// Create a second admin with the same email
 			const admin = getUniqueUser("going-to-be-admin");
 			await signupRequest(admin);
@@ -161,23 +159,25 @@ describe("PATCH /api/users/:id", () => {
 				"این ایمیل قبلا استفاده شده است"
 			);
 		});
+	});
 
-		it("should return 401 if an admin tries to update another admin (not main admin)", async () => {
-			// admin tries to update main admin
+	describe("should return 404", () => {
+		it("If the user does not exist", async () => {
+			const nonExistentId = new mongoose.Types.ObjectId();
 			const res = await updateUserRequest(
 				adminCookie,
-				mainAdminId,
-				{ name: "Hacker" }
+				nonExistentId.toString(),
+				{ name: "new name" }
 			);
-			expect(res.status).toBe(401);
+			expect(res.status).toBe(404);
 			expect(res.body.errors[0].message).toBe(
-				"شما نمی توانید حساب ادمین را آپدیت کنید فقط مدیر سیستم می تواند این کار را انجام دهد"
+				"هیچ موردی با این شناسه یافت نشد"
 			);
 		});
 	});
 
-	describe("Success", () => {
-		it("should update a user as admin", async () => {
+	describe("should return 200", () => {
+		it("For admin", async () => {
 			const res = await updateUserRequest(adminCookie, userId, {
 				name: "Updated Name",
 			});
@@ -185,7 +185,7 @@ describe("PATCH /api/users/:id", () => {
 			expect(res.body.data.user).toBeDefined();
 		});
 
-		it("should update an admin as main admin", async () => {
+		it("For main admin", async () => {
 			const res = await updateUserRequest(
 				mainAdminCookie,
 				adminId,
@@ -195,7 +195,7 @@ describe("PATCH /api/users/:id", () => {
 			expect(res.body.data.user).toBeDefined();
 		});
 
-		it("should update the main admin as main admin", async () => {
+		it("For main admin", async () => {
 			const res = await updateUserRequest(
 				mainAdminCookie,
 				mainAdminId,
