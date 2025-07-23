@@ -1,69 +1,68 @@
 import { createUserRequest } from "@/__tests__/helpers/admin.helper";
 import {
+	getInvalidToken,
 	getUniqueUser,
 	signupRequest,
 } from "@/__tests__/helpers/auth.helper";
+import { updateMePasswordRequest } from "@/__tests__/helpers/users.helper";
 import { userRepository } from "@/core";
 
 const validationCases = [
 	{
-		description: "should return 400 if the name is not provided",
+		description: "If the name is not provided",
 		body: {
 			name: "",
 			email: "test@test.com",
 			password: "password",
 			passwordConfirmation: "password",
 		},
-		status: 400,
 		error: "نام کاربر الزامی است",
+		field: "name",
 	},
 	{
-		description:
-			"should return 400 if the request body is invalid",
+		description: "If the request body is invalid",
 		body: {
 			name: "test",
 			email: "",
 			password: "password",
 			passwordConfirmation: "password",
 		},
-		status: 400,
 		error: "ایمیل کاربر الزامی است",
+		field: "email",
 	},
 	{
-		description:
-			"should return 400 if the password is not provided",
+		description: "If the password is not provided",
 		body: {
 			name: "test",
 			email: "test@test.com",
 			password: "",
 			passwordConfirmation: "password",
 		},
-		status: 400,
 		error: "رمز عبور کاربر الزامی است",
+		field: "password",
 	},
 	{
-		description:
-			"should return 400 if the password confirmation is not provided",
+		description: "If the password confirmation is not provided",
 		body: {
 			name: "test",
 			email: "test@test.com",
 			password: "password",
 			passwordConfirmation: "",
 		},
-		status: 400,
 		error: "تایید رمز عبور کاربر الزامی است",
+		field: "passwordConfirmation",
 	},
 	{
 		description:
-			"should return 400 if the password and password confirmation do not match",
+			"If the password and password confirmation do not match",
 		body: {
 			name: "test",
 			email: "test@test.com",
 			password: "password",
 			passwordConfirmation: "password1",
 		},
-		status: 400,
 		error: "رمز عبور و تایید رمز عبور باید یکسان باشد",
+		field: "passwordConfirmation",
 	},
 ];
 
@@ -88,40 +87,101 @@ beforeEach(async () => {
 });
 
 describe("POST /api/users", () => {
-	describe("Authorization", () => {
-		it("should return 401 if no token is provided", async () => {
+	describe("should return 401", () => {
+		it("If no token is provided", async () => {
 			const newUser = getUniqueUser("new-user");
 			const res = await createUserRequest("", newUser);
 			expect(res.status).toBe(401);
+			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
 				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
 			);
 		});
 
-		it("should return 401 if the user is not an admin", async () => {
+		it("If token is invalid", async () => {
+			const user = getUniqueUser("user");
+			const res = await createUserRequest(
+				"jwt=invalid-token",
+				user
+			);
+			expect(res.status).toBe(401);
+			expect(res.body.errors[0].field).toBeNull();
+			expect(res.body.errors[0].message).toBe("توکن معتبر نیست");
+		});
+
+		it("If user for token does not exist", async () => {
+			const fakeToken = getInvalidToken();
+			const user = getUniqueUser("user");
+			const res = await createUserRequest(
+				`jwt=${fakeToken}`,
+				user
+			);
+			expect(res.status).toBe(401);
+			expect(res.body.errors[0].field).toBeNull();
+			expect(res.body.errors[0].message).toBe(
+				"کاربر متعلق به این توکن دیگر وجود ندارد!"
+			);
+		});
+
+		it("If user is inactive", async () => {
+			const user = getUniqueUser("inactive");
+			const signupRes = await signupRequest(user);
+			const cookie = signupRes.headers["set-cookie"][0];
+			const repoUser = await userRepository.findByEmail(
+				user.email
+			);
+			repoUser!.active = false;
+			await repoUser!.save({ validateBeforeSave: false });
+			const res = await createUserRequest(cookie, user);
+			expect(res.status).toBe(401);
+			expect(res.body.errors[0].field).toBeNull();
+			expect(res.body.errors[0].message).toBe(
+				"کاربری که به این ایمیل مرتبط است غیرفعال شده!"
+			);
+		});
+
+		it("If user changed password after token was issued", async () => {
+			await updateMePasswordRequest(userCookie, {
+				passwordCurrent: "test123456",
+				password: "newpassword123",
+				passwordConfirmation: "newpassword123",
+			});
+
+			await new Promise(resolve => setTimeout(resolve, 500));
+
+			const user = getUniqueUser("changed-password");
+			const res = await createUserRequest(userCookie, user);
+			expect(res.status).toBe(401);
+			expect(res.body.errors[0].field).toBeNull();
+			expect(res.body.errors[0].message).toBe(
+				"کاربر اخیرا رمز عبور را تغییر داده است! لطفا دوباره وارد شوید."
+			);
+		});
+
+		it("If user is not an admin", async () => {
 			const newUser = getUniqueUser("new-user");
 			const res = await createUserRequest(userCookie, newUser);
 			expect(res.status).toBe(401);
+			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
 				"شما اجازه انجام این عمل را ندارید!"
 			);
 		});
 	});
 
-	describe("Validation", () => {
+	describe("should return 400", () => {
 		validationCases.forEach(
-			({ description, body, status, error }) => {
+			({ description, body, error, field }) => {
 				it(description, async () => {
 					const res = await createUserRequest(adminCookie, body);
-					expect(res.status).toBe(status);
+					expect(res.status).toBe(400);
+					expect(res.body.errors[0].field).toBe(field);
 					expect(res.body.errors[0].message).toBe(error);
 				});
 			}
 		);
-	});
 
-	describe("Business Logic", () => {
-		it("should return 400 if the email is already in use", async () => {
+		it("If the email is already in use", async () => {
 			const newUser = getUniqueUser("new-user");
 			await createUserRequest(adminCookie, newUser);
 			const res = await createUserRequest(adminCookie, newUser);
@@ -132,8 +192,8 @@ describe("POST /api/users", () => {
 		});
 	});
 
-	describe("Success", () => {
-		it("should return 201 with the new user", async () => {
+	describe("should return 201", () => {
+		it("If user is admin", async () => {
 			const newUser = getUniqueUser("new-user");
 			const res = await createUserRequest(adminCookie, newUser);
 			expect(res.status).toBe(201);

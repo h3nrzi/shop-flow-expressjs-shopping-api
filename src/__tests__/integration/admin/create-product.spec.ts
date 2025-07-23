@@ -33,6 +33,7 @@ describe("POST /api/admin/products", () => {
 		it("If no token is provided", async () => {
 			const res = await createProductRequest("", validProduct);
 			expect(res.status).toBe(401);
+			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
 				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
 			);
@@ -44,6 +45,7 @@ describe("POST /api/admin/products", () => {
 				validProduct
 			);
 			expect(res.status).toBe(401);
+			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe("توکن معتبر نیست");
 		});
 
@@ -54,6 +56,7 @@ describe("POST /api/admin/products", () => {
 				validProduct
 			);
 			expect(res.status).toBe(401);
+			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
 				"کاربر متعلق به این توکن دیگر وجود ندارد!"
 			);
@@ -73,6 +76,7 @@ describe("POST /api/admin/products", () => {
 				validProduct
 			);
 			expect(res.status).toBe(401);
+			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
 				"کاربری که به این ایمیل مرتبط است غیرفعال شده!"
 			);
@@ -85,12 +89,15 @@ describe("POST /api/admin/products", () => {
 				passwordConfirmation: "newpassword123",
 			});
 
+			await new Promise(resolve => setTimeout(resolve, 500));
+
 			const res = await createProductRequest(
 				userCookie,
 				validProduct
 			);
 
 			expect(res.status).toBe(401);
+			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
 				"کاربر اخیرا رمز عبور را تغییر داده است! لطفا دوباره وارد شوید."
 			);
@@ -102,6 +109,7 @@ describe("POST /api/admin/products", () => {
 				validProduct
 			);
 			expect(res.status).toBe(401);
+			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
 				"شما اجازه انجام این عمل را ندارید!"
 			);
@@ -115,6 +123,7 @@ describe("POST /api/admin/products", () => {
 				validProduct
 			);
 			expect(res.status).toBe(201);
+			expect(res.body.data.product).toBeDefined();
 		});
 	});
 });

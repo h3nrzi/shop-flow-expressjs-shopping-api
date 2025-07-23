@@ -83,6 +83,8 @@ describe("GET /api/users", () => {
 				passwordConfirmation: "newpassword123",
 			});
 
+			await new Promise(resolve => setTimeout(resolve, 500));
+
 			const res = await allUsersRequest(userCookie);
 
 			expect(res.status).toBe(401);
@@ -110,6 +112,7 @@ describe("GET /api/users", () => {
 			const res = await allUsersRequest(adminCookie);
 			expect(res.status).toBe(200);
 			expect(res.body.results).toBe(2);
+			expect(res.body.data.users).toBeDefined();
 		});
 	});
 });
