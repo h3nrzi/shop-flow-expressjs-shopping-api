@@ -1,8 +1,10 @@
 import { getUsersCountByDayRequest } from "@/__tests__/helpers/admin.helper";
 import {
+	getInvalidToken,
 	getUniqueUser,
 	signupRequest,
 } from "@/__tests__/helpers/auth.helper";
+import { updateMePasswordRequest } from "@/__tests__/helpers/users.helper";
 import { userRepository } from "@/core";
 
 let user: ReturnType<typeof getUniqueUser>;
@@ -44,35 +46,101 @@ beforeEach(async () => {
 
 const validationCases = [
 	{
-		description: "should return 400 if the period is invalid",
+		description: "If the period is invalid",
 		params: { period: "invalid" },
 		expectedMessage: "زمان وارد شده نامعتبر است",
 	},
 ];
 
 describe("GET /api/users/get-users-count", () => {
-	describe("Authorization", () => {
-		it("should return 401 if no token is provided", async () => {
+	describe("should return 401", () => {
+		it("If no token is provided", async () => {
 			const res = await getUsersCountByDayRequest("", "week");
 			expect(res.status).toBe(401);
+			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
 				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
 			);
 		});
 
-		it("should return 401 if the user is not an admin", async () => {
+		it("If token is invalid", async () => {
+			const res = await getUsersCountByDayRequest(
+				"jwt=invalid-token",
+				"week"
+			);
+			expect(res.status).toBe(401);
+			expect(res.body.errors[0].field).toBeNull();
+			expect(res.body.errors[0].message).toBe("توکن معتبر نیست");
+		});
+
+		it("If user for token does not exist", async () => {
+			const fakeToken = getInvalidToken();
+			const res = await getUsersCountByDayRequest(
+				`jwt=${fakeToken}`,
+				"week"
+			);
+			expect(res.status).toBe(401);
+			expect(res.body.errors[0].field).toBeNull();
+			expect(res.body.errors[0].message).toBe(
+				"کاربر متعلق به این توکن دیگر وجود ندارد!"
+			);
+		});
+
+		it("If user is inactive", async () => {
+			const user = getUniqueUser("inactive");
+			const signupRes = await signupRequest(user);
+			const cookie = signupRes.headers["set-cookie"][0];
+			const repoUser = await userRepository.findByEmail(
+				user.email
+			);
+			repoUser!.active = false;
+			await repoUser!.save({ validateBeforeSave: false });
+			const res = await getUsersCountByDayRequest(
+				cookie,
+				"week"
+			);
+			expect(res.status).toBe(401);
+			expect(res.body.errors[0].field).toBeNull();
+			expect(res.body.errors[0].message).toBe(
+				"کاربری که به این ایمیل مرتبط است غیرفعال شده!"
+			);
+		});
+
+		it("If user changed password after token was issued", async () => {
+			await updateMePasswordRequest(userCookie, {
+				passwordCurrent: "test123456",
+				password: "newpassword123",
+				passwordConfirmation: "newpassword123",
+			});
+
+			await new Promise(resolve => setTimeout(resolve, 500));
+
+			const res = await getUsersCountByDayRequest(
+				userCookie,
+				"week"
+			);
+
+			expect(res.status).toBe(401);
+			expect(res.body.errors[0].field).toBeNull();
+			expect(res.body.errors[0].message).toBe(
+				"کاربر اخیرا رمز عبور را تغییر داده است! لطفا دوباره وارد شوید."
+			);
+		});
+
+		it("If user's role is not admin", async () => {
 			const res = await getUsersCountByDayRequest(
 				userCookie,
 				"week"
 			);
 			expect(res.status).toBe(401);
+			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
 				"شما اجازه انجام این عمل را ندارید!"
 			);
 		});
 	});
 
-	describe("Validation", () => {
+	describe("should return 400", () => {
 		validationCases.forEach(
 			({ description, params, expectedMessage }) => {
 				it(description, async () => {
@@ -89,8 +157,8 @@ describe("GET /api/users/get-users-count", () => {
 		);
 	});
 
-	describe("Success", () => {
-		it("should return 200 and users count for week", async () => {
+	describe("should return 200", () => {
+		it("For week", async () => {
 			const res = await getUsersCountByDayRequest(
 				adminCookie,
 				"week"
@@ -101,7 +169,7 @@ describe("GET /api/users/get-users-count", () => {
 			);
 		});
 
-		it("should return 200 and users count for month", async () => {
+		it("For month", async () => {
 			const res = await getUsersCountByDayRequest(
 				adminCookie,
 				"month"
@@ -112,7 +180,7 @@ describe("GET /api/users/get-users-count", () => {
 			);
 		});
 
-		it("should return 200 and users count for year", async () => {
+		it("For year", async () => {
 			const res = await getUsersCountByDayRequest(
 				adminCookie,
 				"year"
@@ -123,7 +191,7 @@ describe("GET /api/users/get-users-count", () => {
 			);
 		});
 
-		it("should return 200 and users count for all", async () => {
+		it("For all", async () => {
 			const res = await getUsersCountByDayRequest(
 				adminCookie,
 				"all"
@@ -134,7 +202,7 @@ describe("GET /api/users/get-users-count", () => {
 			);
 		});
 
-		it("should return 200 and users count for main admin", async () => {
+		it("For main admin", async () => {
 			const res = await getUsersCountByDayRequest(
 				mainAdminCookie,
 				"week"
