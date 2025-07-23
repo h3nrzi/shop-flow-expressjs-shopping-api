@@ -131,13 +131,22 @@ describe("DELETE /api/users/:id", () => {
 			);
 		});
 
-		it("If an admin tries to delete another admin (not main admin)", async () => {
-			// admin tries to delete main admin
+		it("If an admin tries to delete another admin", async () => {
+			const res = await deleteUserRequest(adminCookie, adminId);
+			expect(res.status).toBe(401);
+			expect(res.body.errors[0].field).toBeNull();
+			expect(res.body.errors[0].message).toBe(
+				"شما نمی توانید حساب ادمین را حذف کنید فقط مدیر سیستم می تواند این کار را انجام دهد"
+			);
+		});
+
+		it("If an admin tries to delete the main admin", async () => {
 			const res = await deleteUserRequest(
 				adminCookie,
 				mainAdminId
 			);
 			expect(res.status).toBe(401);
+			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
 				"شما نمی توانید حساب ادمین را حذف کنید فقط مدیر سیستم می تواند این کار را انجام دهد"
 			);
@@ -155,7 +164,9 @@ describe("DELETE /api/users/:id", () => {
 				"شناسه کاربر معتبر نیست"
 			);
 		});
+	});
 
+	describe("should return 404", () => {
 		it("If user does not exist", async () => {
 			const nonExistentId =
 				new mongoose.Types.ObjectId().toString();
