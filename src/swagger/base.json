@@ -461,6 +461,62 @@
 						"example": true
 					}
 				}
+			},
+			"CreateProductDto": {
+				"type": "object",
+				"required": [
+					"name",
+					"description",
+					"price",
+					"countInStock",
+					"brand",
+					"category"
+				],
+				"properties": {
+					"name": {
+						"type": "string",
+						"example": "لپ تاپ Asus VivoBook"
+					},
+					"description": {
+						"type": "string",
+						"example": "لپ تاپ قدرتمند با پردازنده Intel Core i5"
+					},
+					"image": {
+						"type": "string",
+						"example": "https://example.com/laptop.jpg"
+					},
+					"images": {
+						"type": "array",
+						"items": {
+							"type": "string",
+							"example": "https://example.com/laptop2.jpg"
+						}
+					},
+					"price": {
+						"type": "number",
+						"example": 15000000
+					},
+					"countInStock": {
+						"type": "integer",
+						"example": 25
+					},
+					"brand": {
+						"type": "string",
+						"example": "Asus"
+					},
+					"category": {
+						"type": "string",
+						"example": "لپ تاپ"
+					},
+					"discount": {
+						"type": "number",
+						"example": 5
+					},
+					"isAvailable": {
+						"type": "boolean",
+						"example": true
+					}
+				}
 			}
 		},
 		"responses": {

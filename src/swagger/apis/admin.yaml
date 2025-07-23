@@ -25,7 +25,6 @@ paths:
                           $ref: '#/components/schemas/User'
         "401":
           $ref: '#/components/responses/Unauthorized'
-
     post:
       tags:
         - Admin
@@ -57,6 +56,43 @@ paths:
           $ref: '#/components/responses/ValidationError'
         "401":
           $ref: '#/components/responses/Unauthorized'
+
+  /api/products:
+    post:
+      tags:
+        - Admin
+      summary: Create a new product (admin only)
+      description: Creates a new product. Only accessible by admin users.
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProductDto'
+      responses:
+        "201":
+          description: Product created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      product:
+                        $ref: '#/components/schemas/Product'
+        "400":
+          $ref: '#/components/responses/ValidationError'
+        "401":
+          $ref: '#/components/responses/UnauthorizedCreateProduct'
+
 
   /api/users/{id}:
     get:
@@ -201,4 +237,73 @@ paths:
           $ref: '#/components/responses/ValidationError'
         "401":
           $ref: '#/components/responses/Unauthorized'
+
+
+components:
+  responses:
+    UnauthorizedCreateProduct:
+      description: Unauthorized. Possible reasons for 401 errors when creating a product.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: fail
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    field:
+                      type: string
+                      nullable: true
+                      example: null
+                    message:
+                      type: string
+                      example: "شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
+          examples:
+            NoToken:
+              summary: No token provided
+              value:
+                status: fail
+                errors:
+                  - field: null
+                    message: "شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
+            InvalidToken:
+              summary: Invalid token
+              value:
+                status: fail
+                errors:
+                  - field: null
+                    message: "توکن معتبر نیست"
+            UserNotExist:
+              summary: User for token does not exist
+              value:
+                status: fail
+                errors:
+                  - field: null
+                    message: "کاربر متعلق به این توکن دیگر وجود ندارد!"
+            UserInactive:
+              summary: User is inactive
+              value:
+                status: fail
+                errors:
+                  - field: null
+                    message: "کاربری که به این ایمیل مرتبط است غیرفعال شده!"
+            PasswordChanged:
+              summary: User changed password after token was issued
+              value:
+                status: fail
+                errors:
+                  - field: null
+                    message: "کاربر اخیرا رمز عبور را تغییر داده است! لطفا دوباره وارد شوید."
+            NotAdmin:
+              summary: User's role is not admin
+              value:
+                status: fail
+                errors:
+                  - field: null
+                    message: "شما اجازه انجام این عمل را ندارید!"
 
