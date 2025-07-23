@@ -1,10 +1,23 @@
+
+############################################
+########### USER ENDPOINTS #################
+############################################
+
 paths:
   /api/users:
+    #--------------------------------------------
+    #----------- GET ALL USERS ------------------
+    #--------------------------------------------
     get:
       tags:
         - Admin
-      summary: Get all users (admin only)
+      summary: Get all users 
       description: Returns a list of all users. Only accessible by admin users.
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/get-users-query-params'
       responses:
         "200":
           description: List of users
@@ -26,16 +39,22 @@ paths:
         "401":
           $ref: '#/components/responses/Unauthorized'
     post:
+      #--------------------------------------------
+      #----------- CREATE USER ------------------
+      #--------------------------------------------
       tags:
         - Admin
-      summary: Create a new user (admin only)
+      summary: Create a new user
       description: Creates a new user. Only accessible by admin users.
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateUserDto'
+              $ref: '#/components/Dtos/CreateUserDto'
       responses:
         "201":
           description: User created successfully
@@ -57,11 +76,53 @@ paths:
         "401":
           $ref: '#/components/responses/Unauthorized'
 
+############################################
+########### PRODUCT ENDPOINTS ##############
+############################################
+
   /api/products:
-    post:
+    #--------------------------------------------
+    #----------- GET ALL PRODUCTS ------------------
+    #--------------------------------------------
+    get:
       tags:
         - Admin
-      summary: Create a new product (admin only)
+      summary: Get all products
+      description: Returns a list of all products. Only accessible by admin users.
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/get-products-query-params' 
+      responses:
+        "200":
+          description: List of products
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  pagination:
+                    $ref: '#/components/schemas/pagination'
+                  data:
+                    type: object
+                    properties:
+                      products:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Product'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      #--------------------------------------------
+      #----------- CREATE PRODUCT ------------------
+      #--------------------------------------------
+      tags:
+        - Admin
+      summary: Create a new product
       description: Creates a new product. Only accessible by admin users.
       security:
         - cookieAuth: []
@@ -71,7 +132,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateProductDto'
+              $ref: '#/components/Dtos/CreateProductDto'
       responses:
         "201":
           description: Product created successfully
@@ -91,22 +152,23 @@ paths:
         "400":
           $ref: '#/components/responses/ValidationError'
         "401":
-          $ref: '#/components/responses/UnauthorizedCreateProduct'
+          $ref: '#/components/responses/Unauthorized'
 
 
   /api/users/{id}:
+    #--------------------------------------------
+    #----------- GET USER BY ID ------------------
+    #--------------------------------------------
     get:
       tags:
         - Admin
-      summary: Get user by ID (admin only)
+      summary: Get user by ID
       description: Returns a user by ID. Only accessible by admin users.
       parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-          description: User ID
+        - $ref: '#/components/parameters/get-user-by-id-path-params'
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
       responses:
         "200":
           description: User found
@@ -131,17 +193,18 @@ paths:
           $ref: '#/components/responses/NotFound'
 
     patch:
+      #--------------------------------------------
+      #----------- UPDATE USER BY ID ------------------
+      #--------------------------------------------
       tags:
         - Admin
-      summary: Update user by ID (admin only)
+      summary: Update user by ID
       description: Updates a user by ID. Only accessible by admin users. Only main admin can update other admins.
       parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-          description: User ID
+        - $ref: '#/components/parameters/get-user-by-id-path-params'
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -172,17 +235,18 @@ paths:
           $ref: '#/components/responses/NotFound'
 
     delete:
+      #--------------------------------------------
+      #----------- DELETE USER BY ID ------------------
+      #--------------------------------------------
       tags:
         - Admin
-      summary: Delete user by ID (admin only)
+      summary: Delete user by ID
       description: Deletes a user by ID. Only accessible by admin users. Only main admin can delete other admins.
       parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-          description: User ID
+        - $ref: '#/components/parameters/get-user-by-id-path-params'
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
       responses:
         "204":
           description: User deleted successfully
@@ -194,19 +258,19 @@ paths:
           $ref: '#/components/responses/NotFound'
 
   /api/users/get-users-count:
+    #--------------------------------------------
+    #----------- GET USERS COUNT ------------------
+    #--------------------------------------------
     get:
       tags:
         - Admin
-      summary: Get users count by period (admin only)
+      summary: Get users count by period
       description: Returns the number of users grouped by day/week/month/year/all. Only accessible by admin users.
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
       parameters:
-        - in: query
-          name: period
-          required: true
-          schema:
-            type: string
-            enum: [week, month, year, all]
-          description: Period to group user counts by
+        - $ref: '#/components/parameters/get-users-count-query-params'
       responses:
         "200":
           description: Users count by period
@@ -238,11 +302,345 @@ paths:
         "401":
           $ref: '#/components/responses/Unauthorized'
 
+############################################
+########### REFERENCES #####################
+############################################
 
 components:
+  Dtos:
+    CreateUserDto:
+      type: object
+      required:
+        - name
+        - email
+        - password
+        - passwordConfirmation
+      properties:
+        name:
+          type: string
+          example: John Doe
+        email:
+          type: string
+          example: john@example.com
+        password:
+          type: string
+          format: password
+          example: StrongPass123!
+        passwordConfirmation:
+          type: string
+          format: password
+          example: StrongPass123!
+        active:
+          type: boolean
+          example: true
+    UpdateUserDto:
+      type: object
+      properties:
+        name:
+          type: string
+          example: John Doe
+        email:
+          type: string
+          example: john@example.com
+        photo:
+          type: string
+          example: https://example.com/avatar.jpg
+        active:
+          type: boolean
+          example: true
+    CreateProductDto:
+      type: object
+      required:
+        - name
+        - description
+        - image
+        - price
+        - countInStock
+        - brand
+        - category
+      properties:
+        name:
+          type: string
+          example: لپ تاپ Asus VivoBook
+        description:
+          type: string
+          example: لپ تاپ قدرتمند با پردازنده Intel Core i5
+        image:
+          type: string
+          example: https://example.com/laptop.jpg
+        images:
+          type: array
+          items:
+            type: string
+            example: https://example.com/laptop2.jpg
+        price:
+          type: number
+          example: 15000000
+        countInStock:
+          type: integer
+          example: 25
+        brand:
+          type: string
+          example: Asus
+        category:
+          type: string
+          example: لپ تاپ
+        discount:
+          type: number
+          example: 5
+        isAvailable:
+          type: boolean
+          example: true
+  schemas:
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 60d21b4667d0d8992e610c85
+        name:
+          type: string
+          example: Product Name
+        slug:
+          type: string
+          example: product-name
+        description:
+          type: string
+          example: Product description
+        image:
+          type: string
+          example: https://example.com/image.jpg
+        images:
+          type: array
+          items:
+            type: string
+            example: https://example.com/image2.jpg
+        countInStock:
+          type: integer
+          example: 10
+        isAvailable:
+          type: boolean
+          example: true
+        brand:
+          type: string
+          example: Brand Name
+        category:
+          type: string
+          example: Category Name
+        rating:
+          type: number
+          example: 4.5
+        numReviews:
+          type: integer
+          example: 5
+        price:
+          type: number
+          example: 100000
+        discount:
+          type: number
+          example: 10
+        discountedPrice:
+          type: number
+          example: 90000
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 60d21b4667d0d8992e610c85
+        name:
+          type: string
+          example: User Name
+        email:
+          type: string
+          example: user@example.com
+        photo:
+          type: string
+          example: https://example.com/photo.jpg
+        role:
+          type: string
+          enum:
+            - user
+            - admin
+          example: user
+        active:
+          type: boolean
+          example: true
+    pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+          example: 1
+        pages:
+          type: integer
+          example: 10
+        limit:
+          type: integer
+          example: 10
+        total:
+          type: integer
+          example: 100
+        skip:
+          type: integer
+          example: 10
+  parameters:
+    get-users-query-params:
+      name: page
+      in: query
+      required: false
+      schema:
+        type: object
+        properties:
+          page:
+            type: integer
+            example: 1
+          limit:
+            type: integer
+            example: 10
+          sort:
+            type: string
+            enum: [asc, desc]
+            example: desc
+          search:
+            type: string
+            example: ""
+          name:
+            type: string
+            example: ""
+          email:
+            type: string
+            example: ""
+          phone:
+            type: string
+            example: ""
+          role:
+            type: string
+            enum: [admin, user]
+            example: admin
+          status:
+            type: string
+            enum: [active, inactive]
+            example: active
+          createdAt:
+            type: string
+            format: date
+            example: "2024-05-01"
+          updatedAt:
+            type: string
+            format: date
+            example: "2024-05-01"
+    get-users-count-query-params:
+      name: period
+      in: query
+      required: true
+      schema:
+        type: string
+        enum: [week, month, year, all]
+        example: week
+    get-products-query-params:
+      name: page
+      in: query
+      required: false
+      schema:
+        type: object
+        properties:
+          page:
+            type: integer
+            example: 1
+          limit:
+            type: integer
+            example: 10
+          sort:
+            type: string
+            enum: [asc, desc]
+            example: desc
+          search:
+            type: string
+            example: ""
+          brand:
+            type: string
+            example: ""
+          category:
+            type: string
+            example: ""
+          price:
+            type: number
+            example: 100000
+          discount:
+            type: number
+            example: 10000
+          discountedPrice:
+            type: number
+            example: 90000
+          isAvailable:
+            type: boolean
+            example: true
+          rating:
+            type: number
+            example: 4.5
+          numReviews:
+            type: integer
+            example: 100
+    get-user-by-id-path-params:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        example: 1234567890
+    get-product-by-id-path-params:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        example: 1234567890
   responses:
-    UnauthorizedCreateProduct:
-      description: Unauthorized. Possible reasons for 401 errors when creating a product.
+    ValidationError:
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: fail
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    field:
+                      type: string
+                      example: name
+                    message:
+                      type: string
+                      example: نام کاربر الزامی است
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: fail
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    field:
+                      type: string
+                      example: null
+                    message:
+                      type: string
+                      example: هیچ موردی با این شناسه یافت نشد
+    Unauthorized:
+      description: Unauthorized. Possible reasons for 401 errors.
       content:
         application/json:
           schema:
@@ -306,4 +704,3 @@ components:
                 errors:
                   - field: null
                     message: "شما اجازه انجام این عمل را ندارید!"
-
