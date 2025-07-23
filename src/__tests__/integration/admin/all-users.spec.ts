@@ -1,8 +1,14 @@
-import { allUsersRequest } from "@/__tests__/helpers/admin.helper";
 import {
+	allUsersRequest,
+	createProductRequest,
+} from "@/__tests__/helpers/admin.helper";
+import {
+	getInvalidToken,
 	getUniqueUser,
 	signupRequest,
 } from "@/__tests__/helpers/auth.helper";
+import { validProduct } from "@/__tests__/helpers/products.helper";
+import { updateMePasswordRequest } from "@/__tests__/helpers/users.helper";
 import { userRepository } from "@/core";
 
 let userCookie: string;
@@ -26,29 +32,84 @@ beforeEach(async () => {
 });
 
 describe("GET /api/users", () => {
-	describe("Authorization", () => {
-		it("should return 401 if no token is provided", async () => {
+	describe("should return 401", () => {
+		it("If no token is provided", async () => {
 			const res = await allUsersRequest("");
 			expect(res.status).toBe(401);
+			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
 				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
 			);
 		});
 
-		it("should return 401 if user's role is not admin", async () => {
+		it("If token is invalid", async () => {
+			const res = await allUsersRequest("jwt=invalid-token");
+			expect(res.status).toBe(401);
+			expect(res.body.errors[0].field).toBeNull();
+			expect(res.body.errors[0].message).toBe("توکن معتبر نیست");
+		});
+
+		it("If user for token does not exist", async () => {
+			const fakeToken = getInvalidToken();
+			const res = await allUsersRequest(`jwt=${fakeToken}`);
+			expect(res.status).toBe(401);
+			expect(res.body.errors[0].field).toBeNull();
+			expect(res.body.errors[0].message).toBe(
+				"کاربر متعلق به این توکن دیگر وجود ندارد!"
+			);
+		});
+
+		it("If user is inactive", async () => {
+			const user = getUniqueUser("inactive");
+			const signupRes = await signupRequest(user);
+			const cookie = signupRes.headers["set-cookie"][0];
+			const repoUser = await userRepository.findByEmail(
+				user.email
+			);
+			repoUser!.active = false;
+			await repoUser!.save({ validateBeforeSave: false });
+			const res = await allUsersRequest(cookie);
+			expect(res.status).toBe(401);
+			expect(res.body.errors[0].field).toBeNull();
+			expect(res.body.errors[0].message).toBe(
+				"کاربری که به این ایمیل مرتبط است غیرفعال شده!"
+			);
+		});
+
+		it("If user changed password after token was issued", async () => {
+			await updateMePasswordRequest(userCookie, {
+				passwordCurrent: "test123456",
+				password: "newpassword123",
+				passwordConfirmation: "newpassword123",
+			});
+
+			const res = await allUsersRequest(userCookie);
+
+			expect(res.status).toBe(401);
+			expect(res.body.errors[0].field).toBeNull();
+			expect(res.body.errors[0].message).toBe(
+				"کاربر اخیرا رمز عبور را تغییر داده است! لطفا دوباره وارد شوید."
+			);
+		});
+
+		it("If user's role is not admin", async () => {
 			const res = await allUsersRequest(userCookie);
 			expect(res.status).toBe(401);
+			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
 				"شما اجازه انجام این عمل را ندارید!"
 			);
 		});
 	});
 
-	describe("Success", () => {
-		it("should return 200 with all users", async () => {
+	describe("should return 200", () => {
+		it("If user is admin", async () => {
+			for (let i = 0; i < 2; i++) {
+				await createProductRequest(adminCookie, validProduct);
+			}
 			const res = await allUsersRequest(adminCookie);
 			expect(res.status).toBe(200);
-			expect(res.body.data.users).toBeDefined();
+			expect(res.body.results).toBe(2);
 		});
 	});
 });

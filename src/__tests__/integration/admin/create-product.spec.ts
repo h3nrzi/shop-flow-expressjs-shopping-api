@@ -96,7 +96,7 @@ describe("POST /api/admin/products", () => {
 			);
 		});
 
-		it("If user is not admin", async () => {
+		it("If user's role is not admin", async () => {
 			const res = await createProductRequest(
 				userCookie,
 				validProduct
