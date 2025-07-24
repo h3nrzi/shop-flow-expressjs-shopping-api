@@ -8,19 +8,19 @@ import { sendEmail } from "@/utils/email";
 
 const validationCases = [
 	{
-		testCaseName: "should return 400 if email is not provided",
+		testCaseName: "Email is not provided",
 		body: { email: "" },
 		error: "ایمیل کاربر الزامی است",
 	},
 	{
-		testCaseName: "should return 400 if email is not valid",
+		testCaseName: "Email is not valid",
 		body: { email: "user@test" },
 		error: "فرمت ایمیل وارد شده معتبر نیست",
 	},
 ];
 
 describe("POST /api/users/forgot-password", () => {
-	describe("validation dto", () => {
+	describe("should return 400, if", () => {
 		validationCases.forEach(({ testCaseName, body, error }) => {
 			it(testCaseName, async () => {
 				const res = await forgotPasswordRequest(body);
@@ -30,8 +30,8 @@ describe("POST /api/users/forgot-password", () => {
 		});
 	});
 
-	describe("business logic", () => {
-		it("should return 404 if user is not found", async () => {
+	describe("should return 404, if", () => {
+		it("User is not found", async () => {
 			const res = await forgotPasswordRequest({
 				email: "test@test.com",
 			});
@@ -40,8 +40,10 @@ describe("POST /api/users/forgot-password", () => {
 				"هیچ کاربری با این آدرس ایمیل وجود ندارد."
 			);
 		});
+	});
 
-		it("should return 401 if user is not active", async () => {
+	describe("should return 401, if", () => {
+		it("User is not active", async () => {
 			const user = getUniqueUser("user");
 			await signupRequest(user);
 			const userDoc = await userRepository.findByEmail(
@@ -59,8 +61,8 @@ describe("POST /api/users/forgot-password", () => {
 		});
 	});
 
-	describe("success", () => {
-		it("should send email and set passwordResetToken and passwordResetExpires", async () => {
+	describe("should return 200, if", () => {
+		it("User is found and active and email is valid", async () => {
 			const user = getUniqueUser("user");
 			await signupRequest(user);
 			const res = await forgotPasswordRequest({

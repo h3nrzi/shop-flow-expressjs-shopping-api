@@ -7,7 +7,7 @@ import { userRepository } from "@/core";
 
 const validationCases = [
 	{
-		testCaseName: "should return 400 if email is not provided",
+		testCaseName: "Email is not provided",
 		body: {
 			email: "",
 			password: "password",
@@ -15,7 +15,7 @@ const validationCases = [
 		error: "ایمیل کاربر الزامی است",
 	},
 	{
-		testCaseName: "should return 400 if email is not valid",
+		testCaseName: "Email is not valid",
 		body: {
 			email: "user@test",
 			password: "password",
@@ -23,8 +23,7 @@ const validationCases = [
 		error: "فرمت ایمیل وارد شده معتبر نیست",
 	},
 	{
-		testCaseName:
-			"should return 400 if password is not provided",
+		testCaseName: "Password is not provided",
 		body: {
 			email: "test@test.com",
 			password: "",
@@ -32,7 +31,7 @@ const validationCases = [
 		error: "رمز عبور کاربر الزامی است",
 	},
 	{
-		testCaseName: "should return 400 if password is not valid",
+		testCaseName: "Password is not valid",
 		body: {
 			email: "test@test.com",
 			password: 123 as unknown as string,
@@ -42,7 +41,7 @@ const validationCases = [
 ];
 
 describe("POST /api/users/signin", () => {
-	describe("validation dto", () => {
+	describe("should return 400, if", () => {
 		validationCases.forEach(({ testCaseName, body, error }) => {
 			it(testCaseName, async () => {
 				const res = await loginRequest(body);
@@ -52,17 +51,8 @@ describe("POST /api/users/signin", () => {
 		});
 	});
 
-	describe("business logic", () => {
-		it("should return 401 if email is not found", async () => {
-			const user = getUniqueUser("user");
-			const res = await loginRequest(user);
-			expect(res.status).toBe(401);
-			expect(res.body.errors[0].message).toBe(
-				"ایمیل یا رمز عبور اشتباه است!"
-			);
-		});
-
-		it("should return 401 if user is not active", async () => {
+	describe("should return 401, if", () => {
+		it("User is not active", async () => {
 			const user = getUniqueUser("user");
 			await signupRequest(user);
 			const userDoc = await userRepository.findByEmail(
@@ -77,7 +67,16 @@ describe("POST /api/users/signin", () => {
 			);
 		});
 
-		it("should return 401 if password is incorrect", async () => {
+		it("User's credentials are incorrect (email)", async () => {
+			const user = getUniqueUser("user");
+			const res = await loginRequest(user);
+			expect(res.status).toBe(401);
+			expect(res.body.errors[0].message).toBe(
+				"ایمیل یا رمز عبور اشتباه است!"
+			);
+		});
+
+		it("User's credentials are incorrect (password)", async () => {
 			const user = getUniqueUser("user");
 			await signupRequest(user);
 			const res = await loginRequest({
@@ -91,8 +90,8 @@ describe("POST /api/users/signin", () => {
 		});
 	});
 
-	describe("success", () => {
-		it("should return 200 and a cookie if login is successful", async () => {
+	describe("should return 200, if", () => {
+		it("Email is found, user is active and password is correct", async () => {
 			const user = getUniqueUser("user");
 			await signupRequest(user);
 			const res = await loginRequest(user);
