@@ -1,8 +1,13 @@
 import {
 	signupRequest,
 	getUniqueUser,
+	getInvalidToken,
 } from "@/__tests__/helpers/auth.helper";
-import { updateMeRequest } from "@/__tests__/helpers/users.helper";
+import {
+	updateMePasswordRequest,
+	updateMeRequest,
+} from "@/__tests__/helpers/users.helper";
+import { userRepository } from "@/core";
 
 let token: string;
 let user: {
@@ -39,21 +44,87 @@ beforeEach(async () => {
 });
 
 describe("PUT /api/users/update-me", () => {
-	describe("Authorization", () => {
-		it("should return 401 if user is not authenticated", async () => {
-			const res = await updateMeRequest("invalid-token", {
-				name: "new name",
+	describe("should return 401, if", () => {
+		it("No token is provided", async () => {
+			const res = await updateMeRequest("", {
 				email: "newemail@test.com",
 				photo: "https://pic.com",
 			});
 			expect(res.status).toBe(401);
+			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
 				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
 			);
 		});
+
+		it("Token is invalid", async () => {
+			const res = await updateMeRequest("jwt=invalid-token", {
+				email: "newemail@test.com",
+				photo: "https://pic.com",
+			});
+			expect(res.status).toBe(401);
+			expect(res.body.errors[0].field).toBeNull();
+			expect(res.body.errors[0].message).toBe("توکن معتبر نیست");
+		});
+
+		it("User for token does not exist", async () => {
+			const fakeToken = getInvalidToken();
+			const res = await updateMeRequest(`jwt=${fakeToken}`, {
+				email: "newemail@test.com",
+				photo: "https://pic.com",
+			});
+			expect(res.status).toBe(401);
+			expect(res.body.errors[0].field).toBeNull();
+			expect(res.body.errors[0].message).toBe(
+				"کاربر متعلق به این توکن دیگر وجود ندارد!"
+			);
+		});
+
+		it("User is inactive", async () => {
+			const user = getUniqueUser("inactive");
+			const signupRes = await signupRequest(user);
+			const cookie = signupRes.headers["set-cookie"][0];
+			const repoUser = await userRepository.findByEmail(
+				user.email
+			);
+			repoUser!.active = false;
+			await repoUser!.save({ validateBeforeSave: false });
+			const res = await updateMePasswordRequest(cookie, {
+				passwordCurrent: "password",
+				password: "newpassword",
+				passwordConfirmation: "newpassword",
+			});
+			expect(res.status).toBe(401);
+			expect(res.body.errors[0].field).toBeNull();
+			expect(res.body.errors[0].message).toBe(
+				"کاربری که به این ایمیل مرتبط است غیرفعال شده!"
+			);
+		});
+
+		// it("If user changed password after token was issued", async () => {
+		// 	await updateMePasswordRequest(token, {
+		// 		passwordCurrent: "test123456",
+		// 		password: "newpassword123",
+		// 		passwordConfirmation: "newpassword123",
+		// 	});
+
+		// 	await new Promise(resolve => setTimeout(resolve, 3000));
+
+		// 	const res = await updateMePasswordRequest(token, {
+		// 		passwordCurrent: "test123456",
+		// 		password: "newpassword123",
+		// 		passwordConfirmation: "newpassword123",
+		// 	});
+
+		// 	expect(res.status).toBe(401);
+		// 	expect(res.body.errors[0].field).toBeNull();
+		// 	expect(res.body.errors[0].message).toBe(
+		// 		"کاربر اخیرا رمز عبور را تغییر داده است! لطفا دوباره وارد شوید."
+		// 	);
+		// });
 	});
 
-	describe("Validation", () => {
+	describe("should return 400, if", () => {
 		validationCases.forEach(
 			({ description, body, expectedError }) => {
 				it(description, async () => {
@@ -66,8 +137,8 @@ describe("PUT /api/users/update-me", () => {
 		);
 	});
 
-	describe("Business Logics", () => {
-		it("should return 422 if password and passwordConfirmation are provided", async () => {
+	describe("should return 422, if", () => {
+		it("Password and passwordConfirmation are provided", async () => {
 			const res = await updateMeRequest(token, {
 				password: "newpassword",
 				passwordConfirmation: "newpassword",
@@ -79,8 +150,8 @@ describe("PUT /api/users/update-me", () => {
 		});
 	});
 
-	describe("Success", () => {
-		it("should update the user's name, email and photo", async () => {
+	describe("should return 200, if", () => {
+		it("Name, email and photo are updated successfully", async () => {
 			const res = await updateMeRequest(token, {
 				email: "newemail@test.com",
 				photo: "https://pic.com",
