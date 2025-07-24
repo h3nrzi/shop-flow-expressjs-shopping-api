@@ -21,10 +21,10 @@ Here are the frontend projects currently using this API:
 - 🌐 [Visit Azoghe](https://azogeh.onrender.com)
 - 🔗 [Azoghe Repository](https://github.com/m-mohammad-d/azogeh)
 <p>
-  <img src="azoghe1.jpeg" alt="Azoghe Screenshot 2" width="300"/>
-  <img src="azoghe2.jpeg" alt="Azoghe Screenshot 1" width="300"/>
-  <img src="azoghe3.jpeg" alt="Azoghe Screenshot 3" width="300"/>
-  <img src="azoghe4.jpeg" alt="Azoghe Screenshot 4" width="300"/>
+  <img src="pics/azoghe1.jpeg" alt="Azoghe Screenshot 2" width="300"/>
+  <img src="pics/azoghe2.jpeg" alt="Azoghe Screenshot 1" width="300"/>
+  <img src="pics/azoghe3.jpeg" alt="Azoghe Screenshot 3" width="300"/>
+  <img src="pics/azoghe4.jpeg" alt="Azoghe Screenshot 4" width="300"/>
 </p>
 
 ## CMS for Shop Flow
@@ -32,10 +32,10 @@ Here are the frontend projects currently using this API:
 To help frontend developers set up their initial database data, a CMS has been developed:
 
 <p>
-  <img src="cms1.png" alt="CMS Screenshot 1" width="300"/>
-  <img src="cms2.png" alt="CMS Screenshot 2" width="300"/>
-  <img src="cms3.png" alt="CMS Screenshot 3" width="300"/>
-  <img src="cms4.jpeg" alt="CMS Screenshot 4" width="300"/>
+  <img src="pics/cms1.png" alt="CMS Screenshot 1" width="300"/>
+  <img src="pics/cms2.png" alt="CMS Screenshot 2" width="300"/>
+  <img src="pics/cms3.png" alt="CMS Screenshot 3" width="300"/>
+  <img src="pics/cms4.jpeg" alt="CMS Screenshot 4" width="300"/>
 </p>
 
 ## License
