@@ -1,6 +1,10 @@
-# Shared schemas and responses are referenced from common.yaml
+######################################################
+################### USERS ENDPOINTS ###################
+######################################################
+
 paths:
   /api/users/get-me:
+    # ------------------------------------------------ GET ME ----------------------------------------------------
     get:
       tags:
         - Users
@@ -23,9 +27,10 @@ paths:
                       currentUser:
                         $ref: '#/components/schemas/User'
         "401":
-          $ref: './common.yaml#/components/responses/Unauthorized'
+          $ref: '#/components/responses/Unauthorized'
 
   /api/users/update-me:
+    # ------------------------------------------------ UPDATE ME ----------------------------------------------------
     patch:
       tags:
         - Users
@@ -36,7 +41,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateCurrentUserInfo'
+              $ref: '#/components/Dtos/UpdateCurrentUserInfoDto'
       responses:
         "200":
           description: User information updated successfully
@@ -54,9 +59,9 @@ paths:
                       updatedUser:
                         $ref: '#/components/schemas/User'
         "400":
-          $ref: './common.yaml#/components/responses/ValidationError'
+          $ref: '#/components/responses/ValidationError'
         "401":
-          $ref: './common.yaml#/components/responses/Unauthorized'
+          $ref: '#/components/responses/Unauthorized'
         "422":
           description: Password fields sent in update-me
           content:
@@ -80,6 +85,7 @@ paths:
                           example: "با این درخواست نمی توانید رمز عبور را آپدیت کنید"
 
   /api/users/update-me-password:
+    # ------------------------------------------------ UPDATE ME PASSWORD ----------------------------------------------------
     patch:
       tags:
         - Users
@@ -90,7 +96,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateCurrentUserPassword'
+              $ref: '#/components/Dtos/UpdateCurrentUserPasswordDto'
       responses:
         "200":
           description: Password updated successfully
@@ -109,9 +115,9 @@ paths:
                         type: string
                         example: "Password updated successfully."
         "400":
-          $ref: './common.yaml#/components/responses/ValidationError'
+          $ref: '#/components/responses/ValidationError'
         "401":
-          $ref: './common.yaml#/components/responses/Unauthorized'
+          $ref: '#/components/responses/Unauthorized'
         "403":
           description: Current password is incorrect
           content:
@@ -135,6 +141,7 @@ paths:
                           example: "رمز عبور فعلی شما اشتباه است"
 
   /api/users/delete-me:
+    # ------------------------------------------------ DELETE ME ----------------------------------------------------
     delete:
       tags:
         - Users
@@ -144,26 +151,138 @@ paths:
         "204":
           description: User deleted successfully
         "401":
-          $ref: './common.yaml#/components/responses/Unauthorized'
-        "401-alt":
-          description: if the token is provided belongs to user that is not exist
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: "fail"
-                  errors:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        field:
-                          type: string
-                          example: null
-                        message:
-                          type: string
-                          example: "کاربر متعلق به این توکن دیگر وجود ندارد!"
+          $ref: '#/components/responses/Unauthorized'
 
+######################################################
+################### REFERENCES #######################
+######################################################
+
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 1
+        name:
+          type: string
+          example: Hossein Rezaei
+        email:
+          type: string
+          example: hossein@example.com
+        photo:
+          type: string
+          example: https://example.com/avatar.jpg
+        role:
+          type: string
+          example: user
+        createdAt:
+          type: string
+          example: 2021-01-01T00:00:00.000Z
+        updatedAt:
+          type: string
+          example: 2021-01-01T00:00:00.000Z
+        isActive:
+          type: boolean
+          example: true
+  Dtos:
+    UpdateCurrentUserInfoDto:
+      type: object
+      properties:
+        name:
+          type: string
+          example: John Doe
+        email:
+          type: string
+          format: email
+          example: john.doe@example.com
+        photo:
+          type: string
+          format: uri
+          example: https://example.com/avatar.jpg
+    UpdateCurrentUserPasswordDto:
+      type: object
+      required:
+        - passwordCurrent
+        - password
+        - passwordConfirmation
+      properties:
+        passwordCurrent:
+          type: string
+          format: password
+          example: currentPassword123
+        password:
+          type: string
+          format: password
+          minLength: 8
+          example: newStrongPass123!
+        passwordConfirmation:
+          type: string
+          format: password
+          example: newStrongPass123!
+  responses:
+    ValidationError:
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: fail
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    field:
+                      type: string
+                      example: name
+                    message:
+                      type: string
+                      example: نام کاربر الزامی است
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: fail
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    field:
+                      type: string
+                      example: null
+                    message:
+                      type: string
+                      example: هیچ موردی با این شناسه یافت نشد
+    Unauthorized:
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  example: fail
+                errors:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      field:
+                        type: string
+                        example: null
+                      message:
+                        type: string
+                        example: "شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
