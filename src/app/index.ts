@@ -10,7 +10,10 @@ process.on("uncaughtException", (err: Error) => {
 	process.exit(1);
 });
 
+// Initialize database connection
 require("./db")();
+
+// Configure app
 require("./config")(app);
 require("./routes")(app);
 

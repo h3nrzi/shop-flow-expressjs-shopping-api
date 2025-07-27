@@ -4,14 +4,12 @@ module.exports = () => {
 	// Skip database connection in test environment
 	// Tests will use mongodb-memory-server instead
 	if (process.env.NODE_ENV === "test") {
-		return;
+		return Promise.resolve();
 	}
-	
-	mongoose
+
+	return mongoose
 		.connect(process.env.MONGODB_URL as string)
 		.then(conn =>
-			console.log(
-				`🔹MongoDB Connected: ${conn.connection.host}`,
-			),
+			console.log(`🔹MongoDB Connected: ${conn.connection.host}`)
 		);
 };
