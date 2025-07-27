@@ -13,14 +13,17 @@ export class UserController {
 	 ************* @description GET HANDLERS *************
 	 ******************************************************/
 
-	async findAllUsers(
-		req: Request,
-		res: Response
-	): Promise<void> {
-		const users = await this.userService.findAllUsers();
+	async findAllUsers(req: Request, res: Response) {
+		const { pagination, users } =
+			await this.userService.getAllUsers(
+				req.query,
+				req.body.initialFilter
+			);
+
 		res.status(200).json({
 			status: "success",
 			results: users.length,
+			pagination,
 			data: { users },
 		});
 	}

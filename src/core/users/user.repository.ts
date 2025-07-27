@@ -1,3 +1,4 @@
+import APIFeatures from "../../utils/apiFeatures";
 import { ICreateUserDto } from "./dtos/create-user.dto";
 import { IUpdateCurrentUserInfoDto } from "./dtos/update-currentuser-info.dto";
 import { IUpdateCurrentUserPasswordDto } from "./dtos/update-currentuser-password.dto";
@@ -11,8 +12,30 @@ export class UserRepository {
 	 ************* @description READ OPERATIONS *************
 	 ********************************************************/
 
-	async findAll(): Promise<IUserDoc[]> {
-		return this.userModel.find();
+	async findAll(
+		query: any,
+		initialFilter?: any
+	): Promise<{
+		pagination: any;
+		skip: number;
+		total: number;
+		users: IUserDoc[];
+	}> {
+		const features = new APIFeatures(
+			this.userModel as any,
+			query,
+			initialFilter
+		);
+		const { pagination, skip, total } = await features
+			.filter()
+			.search()
+			.sort()
+			.limitFields()
+			.pagination();
+
+		const users = await features.dbQuery;
+
+		return { pagination, skip, total, users };
 	}
 
 	async findById(

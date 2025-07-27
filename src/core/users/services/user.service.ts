@@ -17,8 +17,18 @@ export class UserService {
 	 ************* @description GET HANDLERS *************
 	 ******************************************************/
 
-	async findAllUsers(): Promise<IUserDoc[]> {
-		return this.userRepository.findAll();
+	async getAllUsers(
+		query: any,
+		initialFilter?: any
+	): Promise<{ pagination: any; users: IUserDoc[] }> {
+		const { pagination, skip, total, users } =
+			await this.userRepository.findAll(query, initialFilter);
+
+		if (query.page && skip >= total) {
+			throw new NotFoundError("این صفحه وجود ندارد");
+		}
+
+		return { pagination, users };
 	}
 
 	async findUserById(
