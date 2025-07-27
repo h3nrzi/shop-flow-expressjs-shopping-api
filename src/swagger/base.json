@@ -160,29 +160,6 @@
 						"example": "2023-01-01T10:00:00.000Z"
 					}
 				}
-			},
-			"Review": {
-				"type": "object",
-				"properties": {
-					"id": {
-						"type": "string",
-						"example": "60d21b4667d0d8992e610c85"
-					},
-					"comment": {
-						"type": "string",
-						"example": "خیلی عالی بود!"
-					},
-					"rating": {
-						"type": "integer",
-						"example": 5
-					},
-					"user": {
-						"$ref": "#/components/schemas/User"
-					},
-					"product": {
-						"$ref": "#/components/schemas/Product"
-					}
-				}
 			}
 		}
 	}

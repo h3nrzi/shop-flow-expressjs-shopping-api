@@ -1,0 +1,564 @@
+######################################################
+################### REVIEWS ENDPOINTS ###############
+######################################################
+
+paths:
+  /api/products/{productId}/reviews:
+    # ------------------------------------------------ GET ALL REVIEWS ----------------------------------------------------
+    get:
+      tags:
+        - Reviews
+      summary: Get all reviews for a product
+      description: Returns a paginated list of reviews for a specific product. Supports filtering, sorting, and field selection.
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/productId'
+        - $ref: '#/components/parameters/reviewsQueryParams'
+      responses:
+        "200":
+          description: Reviews retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  results:
+                    type: integer
+                    example: 10
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+                  data:
+                    type: object
+                    properties:
+                      reviews:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Review'
+        "400":
+          $ref: '#/components/responses/ValidationError'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "404":
+          description: Product not found or page exceeds total pages
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: null
+                        message:
+                          type: string
+                          example: "این صفحه وجود ندارد"
+
+    # ------------------------------------------------ CREATE REVIEW ----------------------------------------------------
+    post:
+      tags:
+        - Reviews
+      summary: Create a new review for a product
+      description: Creates a new review for a specific product. User must be authenticated and can only create one review per product.
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/productId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/Dtos/CreateReviewDto'
+      responses:
+        "201":
+          description: Review created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      review:
+                        $ref: '#/components/schemas/Review'
+        "400":
+          $ref: '#/components/responses/ValidationError'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "404":
+          $ref: '#/components/responses/NotFound'
+
+  /api/products/{productId}/reviews/{id}:
+    # ------------------------------------------------ GET REVIEW BY ID ----------------------------------------------------
+    get:
+      tags:
+        - Reviews
+      summary: Get a specific review by ID
+      description: Returns a single review by its ID for a specific product
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/productId'
+        - $ref: '#/components/parameters/reviewId'
+      responses:
+        "200":
+          description: Review retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      review:
+                        $ref: '#/components/schemas/Review'
+        "400":
+          $ref: '#/components/responses/ValidationError'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "404":
+          description: Review or product not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: null
+                        message:
+                          type: string
+                          example: "نظری با این شناسه یافت نشد"
+
+    # ------------------------------------------------ UPDATE REVIEW ----------------------------------------------------
+    patch:
+      tags:
+        - Reviews
+      summary: Update a review
+      description: Updates an existing review. Only the review author can update their own review.
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/productId'
+        - $ref: '#/components/parameters/reviewId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/Dtos/UpdateReviewDto'
+      responses:
+        "200":
+          description: Review updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      review:
+                        $ref: '#/components/schemas/Review'
+        "400":
+          $ref: '#/components/responses/ValidationError'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          description: User cannot update another user's review
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: null
+                        message:
+                          type: string
+                          example: "شما اجازه انجام این عمل را ندارید!"
+        "404":
+          description: Review or product not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: null
+                        message:
+                          type: string
+                          example: "نظری با این شناسه یافت نشد"
+
+    # ------------------------------------------------ DELETE REVIEW ----------------------------------------------------
+    delete:
+      tags:
+        - Reviews
+      summary: Delete a review
+      description: Deletes an existing review. Only the review author can delete their own review.
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/productId'
+        - $ref: '#/components/parameters/reviewId'
+      responses:
+        "204":
+          description: Review deleted successfully
+        "400":
+          $ref: '#/components/responses/ValidationError'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          description: User cannot delete another user's review
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: null
+                        message:
+                          type: string
+                          example: "شما اجازه انجام این عمل را ندارید!"
+        "404":
+          description: Review or product not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: null
+                        message:
+                          type: string
+                          example: "نظری با این شناسه یافت نشد"
+
+######################################################
+################### REFERENCES #######################
+######################################################
+
+components:
+  schemas:
+    Review:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "60d21b4667d0d8992e610c85"
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+          example: 4
+        comment:
+          type: string
+          example: "محصول بسیار خوبی است و کیفیت عالی دارد"
+        user:
+          type: object
+          properties:
+            _id:
+              type: string
+              example: "60d21b4667d0d8992e610c86"
+            name:
+              type: string
+              example: "حسین رضایی"
+            email:
+              type: string
+              example: "hossein@example.com"
+        product:
+          type: object
+          properties:
+            _id:
+              type: string
+              example: "60d21b4667d0d8992e610c87"
+            name:
+              type: string
+              example: "لپ تاپ Asus VivoBook"
+            price:
+              type: number
+              example: 15000000
+            description:
+              type: string
+              example: "لپ تاپ قدرتمند با پردازنده Intel Core i5"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2021-06-22T14:30:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2021-06-22T14:30:00.000Z"
+
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+          example: 1
+        limit:
+          type: integer
+          example: 10
+        totalPages:
+          type: integer
+          example: 5
+        totalResults:
+          type: integer
+          example: 50
+        hasNextPage:
+          type: boolean
+          example: true
+        hasPrevPage:
+          type: boolean
+          example: false
+
+  Dtos:
+    CreateReviewDto:
+      type: object
+      required:
+        - rating
+        - comment
+      properties:
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+          example: 4
+          description: "امتیاز محصول از 1 تا 5"
+        comment:
+          type: string
+          example: "محصول بسیار خوبی است و کیفیت عالی دارد"
+          description: "نظر در مورد محصول"
+
+    UpdateReviewDto:
+      type: object
+      properties:
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+          example: 5
+          description: "امتیاز جدید محصول از 1 تا 5"
+        comment:
+          type: string
+          example: "نظر به‌روزرسانی شده در مورد محصول"
+          description: "نظر جدید در مورد محصول"
+
+  parameters:
+    productId:
+      name: productId
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: '^[0-9a-fA-F]{24}$'
+        example: "60d21b4667d0d8992e610c87"
+      description: "شناسه محصول (ObjectId)"
+
+    reviewId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: '^[0-9a-fA-F]{24}$'
+        example: "60d21b4667d0d8992e610c85"
+      description: "شناسه نظر (ObjectId)"
+
+    reviewsQueryParams:
+      name: query
+      in: query
+      required: false
+      style: deepObject
+      explode: true
+      schema:
+        type: object
+        properties:
+          page:
+            type: integer
+            minimum: 1
+            example: 1
+            description: "شماره صفحه"
+          limit:
+            type: integer
+            minimum: 1
+            maximum: 100
+            example: 10
+            description: "تعداد نتایج در هر صفحه"
+          sort:
+            type: string
+            example: "-createdAt"
+            description: "مرتب‌سازی بر اساس فیلد (- برای نزولی)"
+          fields:
+            type: string
+            example: "rating,comment"
+            description: "فیلدهای مورد نظر برای نمایش"
+          rating:
+            type: integer
+            minimum: 1
+            maximum: 5
+            example: 5
+            description: "فیلتر بر اساس امتیاز"
+          rating[gte]:
+            type: integer
+            minimum: 1
+            maximum: 5
+            example: 3
+            description: "امتیاز بیشتر یا مساوی"
+          rating[lte]:
+            type: integer
+            minimum: 1
+            maximum: 5
+            example: 4
+            description: "امتیاز کمتر یا مساوی"
+
+  responses:
+    ValidationError:
+      description: خطای اعتبارسنجی
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: fail
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    field:
+                      type: string
+                      example: rating
+                    message:
+                      type: string
+                      example: "امتیاز الزامی است"
+
+    NotFound:
+      description: منبع یافت نشد
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: fail
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    field:
+                      type: string
+                      example: null
+                    message:
+                      type: string
+                      example: "هیچ موردی با این شناسه یافت نشد"
+
+    Unauthorized:
+      description: عدم احراز هویت
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: fail
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    field:
+                      type: string
+                      example: null
+                    message:
+                      type: string
+                      example: "شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
+          examples:
+            NoToken:
+              summary: عدم ارسال توکن
+              value:
+                status: fail
+                errors:
+                  - field: null
+                    message: "شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
+            InvalidToken:
+              summary: توکن نامعتبر
+              value:
+                status: fail
+                errors:
+                  - field: null
+                    message: "کاربر متعلق به این توکن دیگر وجود ندارد!"
