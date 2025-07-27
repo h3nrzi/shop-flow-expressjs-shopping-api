@@ -18,11 +18,10 @@ export class UserService {
 	 ******************************************************/
 
 	async getAllUsers(
-		query: any,
-		initialFilter?: any
+		query: any
 	): Promise<{ pagination: any; users: IUserDoc[] }> {
 		const { pagination, skip, total, users } =
-			await this.userRepository.findAll(query, initialFilter);
+			await this.userRepository.findAll(query);
 
 		if (query.page && skip >= total) {
 			throw new NotFoundError("این صفحه وجود ندارد");

@@ -7,10 +7,7 @@ import { IProductDoc, IProductModel } from "./product.interface";
 class ProductRepository {
 	constructor(private readonly productModel: IProductModel) {}
 
-	async getAll(
-		query: any,
-		initialFilter?: any
-	): Promise<{
+	async getAll(query: any): Promise<{
 		pagination: any;
 		skip: number;
 		total: number;
@@ -18,8 +15,7 @@ class ProductRepository {
 	}> {
 		const features = new APIFeatures(
 			this.productModel as any,
-			query,
-			initialFilter
+			query
 		);
 		const { pagination, skip, total } = await features
 			.filter()

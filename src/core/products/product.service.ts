@@ -11,11 +11,10 @@ export class ProductService {
 	) {}
 
 	async getAllProducts(
-		query: any,
-		initialFilter?: any
+		query: any
 	): Promise<{ pagination: any; products: IProductDoc[] }> {
 		const { pagination, skip, total, products } =
-			await this.productRepository.getAll(query, initialFilter);
+			await this.productRepository.getAll(query);
 
 		if (query.page && skip >= total) {
 			throw new NotFoundError("این صفحه وجود ندارد");

@@ -18,11 +18,10 @@ export class OrderService {
 	 ******************************************************** */
 
 	async getAllOrders(
-		query: any,
-		initialFilter?: any
+		query: any
 	): Promise<{ pagination: any; orders: OrderDoc[] }> {
 		const { pagination, skip, total, orders } =
-			await this.orderRepository.findAll(query, initialFilter);
+			await this.orderRepository.findAll(query);
 
 		if (query.page && skip >= total) {
 			throw new NotFoundError("این صفحه وجود ندارد");

@@ -12,10 +12,7 @@ export class OrderController {
 
 	async getAllOrders(req: Request, res: Response) {
 		const { pagination, orders } =
-			await this.orderService.getAllOrders(
-				req.query,
-				req.body.initialFilter
-			);
+			await this.orderService.getAllOrders(req.query);
 
 		res.status(200).json({
 			status: "success",

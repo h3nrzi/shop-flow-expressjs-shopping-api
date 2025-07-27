@@ -15,10 +15,7 @@ export class UserController {
 
 	async findAllUsers(req: Request, res: Response) {
 		const { pagination, users } =
-			await this.userService.getAllUsers(
-				req.query,
-				req.body.initialFilter
-			);
+			await this.userService.getAllUsers(req.query);
 
 		res.status(200).json({
 			status: "success",

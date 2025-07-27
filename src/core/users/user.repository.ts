@@ -12,10 +12,7 @@ export class UserRepository {
 	 ************* @description READ OPERATIONS *************
 	 ********************************************************/
 
-	async findAll(
-		query: any,
-		initialFilter?: any
-	): Promise<{
+	async findAll(query: any): Promise<{
 		pagination: any;
 		skip: number;
 		total: number;
@@ -23,8 +20,7 @@ export class UserRepository {
 	}> {
 		const features = new APIFeatures(
 			this.userModel as any,
-			query,
-			initialFilter
+			query
 		);
 		const { pagination, skip, total } = await features
 			.filter()

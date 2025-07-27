@@ -6,10 +6,7 @@ export class ProductController {
 
 	async getAllProducts(req: Request, res: Response) {
 		const { pagination, products } =
-			await this.productService.getAllProducts(
-				req.query,
-				req.body.initialFilter
-			);
+			await this.productService.getAllProducts(req.query);
 
 		res.status(200).json({
 			status: "success",
