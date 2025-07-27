@@ -12,15 +12,12 @@ export class ReviewService {
 		private readonly productRepository: ProductRepository
 	) {}
 
-	async getAllReviews(
-		query: any,
-		initialFilter?: any
-	): Promise<{
+	async getAllReviews(query: any): Promise<{
 		pagination: any;
 		reviews: IReviewDoc[];
 	}> {
 		const { pagination, skip, total, reviews } =
-			await this.reviewRepository.getAll(query, initialFilter);
+			await this.reviewRepository.getAll(query);
 
 		if (query.page && skip >= total) {
 			throw new NotFoundError("این صفحه وجود ندارد");
