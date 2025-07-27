@@ -281,7 +281,7 @@ describe("Review Rating Calculations Integration Tests", () => {
 			);
 
 			// Step 2: Add third review [4, 3, 5] -> average = 4
-			const review3Res = await createReviewRequest(
+			await createReviewRequest(
 				product._id.toString(),
 				{ rating: 5, comment: "Excellent" },
 				cookies[2]
@@ -442,7 +442,7 @@ describe("Review Rating Calculations Integration Tests", () => {
 			);
 
 			// Update review on first product shouldn't affect second
-			const firstProductReviews = await createReviewRequest(
+			await createReviewRequest(
 				product._id.toString(),
 				{ rating: 1, comment: "Changed mind" },
 				cookies[4]

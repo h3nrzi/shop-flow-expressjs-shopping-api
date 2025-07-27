@@ -4,7 +4,6 @@ import {
 	getUniqueUser,
 	signupRequest,
 } from "@/__tests__/helpers/auth.helper";
-import { updateMePasswordRequest } from "@/__tests__/helpers/users.helper";
 import { userRepository } from "@/core";
 import mongoose from "mongoose";
 

@@ -188,7 +188,7 @@ describe("PATCH /api/products/:productId/reviews/:id", () => {
 	describe("should return 403, if", () => {
 		it("user tries to update another user's review", async () => {
 			// Create another user
-			const { user: anotherUser, cookie: anotherCookie } =
+			const { user: anotherUser } =
 				await createTestUserAndGetCookie("reviewer2");
 
 			// Create review by another user
@@ -397,8 +397,9 @@ describe("PATCH /api/products/:productId/reviews/:id", () => {
 
 		it("product average rating is recalculated correctly with multiple reviews", async () => {
 			// Create second review with rating 5
-			const { user: user2, cookie: cookie2 } =
-				await createTestUserAndGetCookie("reviewer2");
+			const { user: user2 } = await createTestUserAndGetCookie(
+				"reviewer2"
+			);
 			await createTestReview(
 				product._id.toString(),
 				user2._id.toString(),

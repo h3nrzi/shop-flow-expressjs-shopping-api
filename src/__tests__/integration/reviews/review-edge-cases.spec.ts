@@ -264,7 +264,7 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 		});
 
 		it("handles invalid ObjectId formats for review", async () => {
-			const review = await createTestReview(
+			await createTestReview(
 				product._id.toString(),
 				user._id.toString(),
 				{ rating: 4, comment: "Test" }

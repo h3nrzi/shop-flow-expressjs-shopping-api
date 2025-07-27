@@ -260,7 +260,7 @@ describe("GET /api/products/:productId/reviews/:id", () => {
 
 		it("returns review created by different user", async () => {
 			// Create another user and their review
-			const { user: anotherUser, cookie: anotherCookie } =
+			const { user: anotherUser } =
 				await createTestUserAndGetCookie("reviewer2");
 
 			const anotherReview = await createTestReview(

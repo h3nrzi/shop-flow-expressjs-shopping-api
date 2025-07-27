@@ -111,10 +111,7 @@ describe("GET /api/products/:productId/reviews", () => {
 
 		it("returns all reviews for a product", async () => {
 			// Create 3 reviews for the product
-			const reviews = await createMultipleTestReviews(
-				product._id.toString(),
-				3
-			);
+			await createMultipleTestReviews(product._id.toString(), 3);
 
 			const res = await getAllReviewsRequest(
 				product._id.toString(),

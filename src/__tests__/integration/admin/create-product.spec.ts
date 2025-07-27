@@ -5,7 +5,6 @@ import {
 	signupRequest,
 } from "@/__tests__/helpers/auth.helper";
 import { validProduct } from "@/__tests__/helpers/products.helper";
-import { updateMePasswordRequest } from "@/__tests__/helpers/users.helper";
 import { userRepository } from "@/core";
 
 let userCookie: string;
