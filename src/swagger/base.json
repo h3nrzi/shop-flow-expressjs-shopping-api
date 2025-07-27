@@ -43,6 +43,10 @@
 		{
 			"name": "Admin",
 			"description": "Admin related endpoints"
+		},
+		{
+			"name": "Uploads",
+			"description": "File upload related endpoints"
 		}
 	],
 	"components": {
