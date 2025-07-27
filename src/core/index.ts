@@ -33,12 +33,15 @@ export const reviewRepository = new ReviewRepository(Review);
 // Services Injection
 export const orderService = new OrderService(
 	orderRepository,
-	productRepository,
+	productRepository
 );
 export const productService = new ProductService(
-	productRepository,
+	productRepository
 );
-export const reviewService = new ReviewService(reviewRepository);
+export const reviewService = new ReviewService(
+	reviewRepository,
+	productRepository
+);
 export const userService = new UserService(userRepository);
 export const authService = new AuthService(userRepository);
 export const uploadService = new UploadService();
@@ -47,14 +50,14 @@ export const viewService = new ViewService(Product);
 // Controllers Injection
 export const orderController = new OrderController(orderService);
 export const productController = new ProductController(
-	productService,
+	productService
 );
 export const reviewController = new ReviewController(
-	reviewService,
+	reviewService
 );
 export const userController = new UserController(userService);
 export const authController = new AuthController(authService);
 export const uploadController = new UploadController(
-	uploadService,
+	uploadService
 );
 export const viewController = new ViewController(viewService);

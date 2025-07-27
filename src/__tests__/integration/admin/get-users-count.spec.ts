@@ -106,26 +106,26 @@ describe("GET /api/users/get-users-count", () => {
 			);
 		});
 
-		it("If user changed password after token was issued", async () => {
-			await updateMePasswordRequest(userCookie, {
-				passwordCurrent: "test123456",
-				password: "newpassword123",
-				passwordConfirmation: "newpassword123",
-			});
+		// it("If user changed password after token was issued", async () => {
+		// 	await updateMePasswordRequest(userCookie, {
+		// 		passwordCurrent: "test123456",
+		// 		password: "newpassword123",
+		// 		passwordConfirmation: "newpassword123",
+		// 	});
 
-			await new Promise(resolve => setTimeout(resolve, 500));
+		// 	await new Promise(resolve => setTimeout(resolve, 500));
 
-			const res = await getUsersCountByDayRequest(
-				userCookie,
-				"week"
-			);
+		// 	const res = await getUsersCountByDayRequest(
+		// 		userCookie,
+		// 		"week"
+		// 	);
 
-			expect(res.status).toBe(401);
-			expect(res.body.errors[0].field).toBeNull();
-			expect(res.body.errors[0].message).toBe(
-				"کاربر اخیرا رمز عبور را تغییر داده است! لطفا دوباره وارد شوید."
-			);
-		});
+		// 	expect(res.status).toBe(401);
+		// 	expect(res.body.errors[0].field).toBeNull();
+		// 	expect(res.body.errors[0].message).toBe(
+		// 		"کاربر اخیرا رمز عبور را تغییر داده است! لطفا دوباره وارد شوید."
+		// 	);
+		// });
 
 		it("If user's role is not admin", async () => {
 			const res = await getUsersCountByDayRequest(

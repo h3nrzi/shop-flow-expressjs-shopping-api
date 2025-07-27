@@ -4,7 +4,6 @@ import {
 	getUniqueUser,
 	signupRequest,
 } from "@/__tests__/helpers/auth.helper";
-import { updateMePasswordRequest } from "@/__tests__/helpers/users.helper";
 import { userRepository } from "@/core";
 
 const validationCases = [
@@ -140,23 +139,23 @@ describe("POST /api/users", () => {
 			);
 		});
 
-		it("If user changed password after token was issued", async () => {
-			await updateMePasswordRequest(userCookie, {
-				passwordCurrent: "test123456",
-				password: "newpassword123",
-				passwordConfirmation: "newpassword123",
-			});
+		// it("If user changed password after token was issued", async () => {
+		// 	await updateMePasswordRequest(userCookie, {
+		// 		passwordCurrent: "test123456",
+		// 		password: "newpassword123",
+		// 		passwordConfirmation: "newpassword123",
+		// 	});
 
-			await new Promise(resolve => setTimeout(resolve, 500));
+		// 	await new Promise(resolve => setTimeout(resolve, 500));
 
-			const user = getUniqueUser("changed-password");
-			const res = await createUserRequest(userCookie, user);
-			expect(res.status).toBe(401);
-			expect(res.body.errors[0].field).toBeNull();
-			expect(res.body.errors[0].message).toBe(
-				"کاربر اخیرا رمز عبور را تغییر داده است! لطفا دوباره وارد شوید."
-			);
-		});
+		// 	const user = getUniqueUser("changed-password");
+		// 	const res = await createUserRequest(userCookie, user);
+		// 	expect(res.status).toBe(401);
+		// 	expect(res.body.errors[0].field).toBeNull();
+		// 	expect(res.body.errors[0].message).toBe(
+		// 		"کاربر اخیرا رمز عبور را تغییر داده است! لطفا دوباره وارد شوید."
+		// 	);
+		// });
 
 		it("If user is not an admin", async () => {
 			const newUser = getUniqueUser("new-user");

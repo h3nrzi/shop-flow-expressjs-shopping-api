@@ -21,10 +21,11 @@ router.get(
 	"/:id",
 	param("id").isMongoId().withMessage("شناسه نظر معتبر نیست"),
 	validateRequest,
-	reviewController.getReviewById.bind(reviewController),
+	reviewController.getReviewById.bind(reviewController)
 );
 
 router.post("/", [
+	reviewMiddleware.beforeCreate,
 	body("rating")
 		.isInt({ min: 1, max: 5 })
 		.withMessage("امتیاز الزامی است"),
@@ -34,11 +35,11 @@ router.post("/", [
 		.withMessage("شناسه محصول الزامی است"),
 	body("user").isMongoId().withMessage("شناسه کاربر الزامی است"),
 	validateRequest,
-	reviewMiddleware.beforeCreate,
 	reviewController.createReview.bind(reviewController),
 ]);
 
 router.patch("/:id", [
+	reviewMiddleware.beforeUpdate,
 	param("id").isMongoId().withMessage("شناسه نظر معتبر نیست"),
 	body("rating")
 		.optional()
@@ -48,12 +49,7 @@ router.patch("/:id", [
 		.optional()
 		.isString()
 		.withMessage("فرمت نظر معتبر نیست"),
-	body("product")
-		.optional()
-		.isMongoId()
-		.withMessage("فرمت شناسه محصول معتبر نیست"),
 	validateRequest,
-	reviewMiddleware.beforeUpdate,
 	reviewController.updateReview.bind(reviewController),
 ]);
 
@@ -61,7 +57,7 @@ router.delete(
 	"/:id",
 	param("id").isMongoId().withMessage("شناسه نظر معتبر نیست"),
 	validateRequest,
-	reviewController.deleteReview.bind(reviewController),
+	reviewController.deleteReview.bind(reviewController)
 );
 
 export { router as reviewRouter };

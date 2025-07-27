@@ -3,15 +3,17 @@ import { IReviewDoc } from "./review.interface";
 import { NotFoundError } from "../../errors/not-found-error";
 import { ICreateReviewDto } from "./dtos/create-review.dto";
 import { IUpdateReviewDto } from "./dtos/update-review.dto";
+import ProductRepository from "../products/product.repository";
 
 export class ReviewService {
 	constructor(
 		private readonly reviewRepository: ReviewRepository,
+		private readonly productRepository: ProductRepository
 	) {}
 
 	async getAllReviews(
 		query: any,
-		initialFilter?: any,
+		initialFilter?: any
 	): Promise<{
 		pagination: any;
 		reviews: IReviewDoc[];
@@ -38,14 +40,23 @@ export class ReviewService {
 	}
 
 	async createReview(
-		createReviewDto: ICreateReviewDto,
+		createReviewDto: ICreateReviewDto
 	): Promise<IReviewDoc> {
+		const product = await this.productRepository.getOne(
+			createReviewDto.product
+		);
+		if (!product) {
+			throw new NotFoundError(
+				"آیدی محصول ارائه برای درج نظر وجود ندارد."
+			);
+		}
+
 		return this.reviewRepository.create(createReviewDto);
 	}
 
 	async updateReview(
 		id: string,
-		updateReviewDto: IUpdateReviewDto,
+		updateReviewDto: IUpdateReviewDto
 	): Promise<IReviewDoc | null> {
 		// check if review exists, if not throw error
 		await this.getReviewById(id);

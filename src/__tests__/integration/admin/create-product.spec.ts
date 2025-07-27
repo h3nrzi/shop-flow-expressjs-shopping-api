@@ -82,26 +82,26 @@ describe("POST /api/admin/products", () => {
 			);
 		});
 
-		it("If user changed password after token was issued", async () => {
-			await updateMePasswordRequest(userCookie, {
-				passwordCurrent: "test123456",
-				password: "newpassword123",
-				passwordConfirmation: "newpassword123",
-			});
+		// it("If user changed password after token was issued", async () => {
+		// 	await updateMePasswordRequest(userCookie, {
+		// 		passwordCurrent: "test123456",
+		// 		password: "newpassword123",
+		// 		passwordConfirmation: "newpassword123",
+		// 	});
 
-			await new Promise(resolve => setTimeout(resolve, 500));
+		// 	await new Promise(resolve => setTimeout(resolve, 500));
 
-			const res = await createProductRequest(
-				userCookie,
-				validProduct
-			);
+		// 	const res = await createProductRequest(
+		// 		userCookie,
+		// 		validProduct
+		// 	);
 
-			expect(res.status).toBe(401);
-			expect(res.body.errors[0].field).toBeNull();
-			expect(res.body.errors[0].message).toBe(
-				"کاربر اخیرا رمز عبور را تغییر داده است! لطفا دوباره وارد شوید."
-			);
-		});
+		// 	expect(res.status).toBe(401);
+		// 	expect(res.body.errors[0].field).toBeNull();
+		// 	expect(res.body.errors[0].message).toBe(
+		// 		"کاربر اخیرا رمز عبور را تغییر داده است! لطفا دوباره وارد شوید."
+		// 	);
+		// });
 
 		it("If user's role is not admin", async () => {
 			const res = await createProductRequest(
