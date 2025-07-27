@@ -1,4 +1,4 @@
-import { FilterQuery } from "mongoose";
+import APIFeatures from "../../utils/apiFeatures";
 import { CreateOrderDto } from "./dtos/create-order.dto";
 import { UpdateOrderDto } from "./dtos/update-order.dto";
 import { OrderDoc, OrderModel } from "./order.interface";
@@ -11,9 +11,29 @@ export class OrderRepository {
 	 ******************************************************** */
 
 	async findAll(
-		query: FilterQuery<OrderDoc>,
-	): Promise<OrderDoc[]> {
-		return this.orderModel.find(query);
+		query: any,
+		initialFilter?: any
+	): Promise<{
+		pagination: any;
+		skip: number;
+		total: number;
+		orders: OrderDoc[];
+	}> {
+		const features = new APIFeatures(
+			this.orderModel as any,
+			query,
+			initialFilter
+		);
+		const { pagination, skip, total } = await features
+			.filter()
+			.search()
+			.sort()
+			.limitFields()
+			.pagination();
+
+		const orders = await features.dbQuery;
+
+		return { pagination, skip, total, orders };
 	}
 
 	async findAllTops(limit: number): Promise<OrderDoc[]> {
@@ -59,7 +79,7 @@ export class OrderRepository {
 
 	async create(
 		payload: CreateOrderDto,
-		userId: string,
+		userId: string
 	): Promise<OrderDoc> {
 		return this.orderModel.create({
 			...payload,
@@ -73,7 +93,7 @@ export class OrderRepository {
 
 	async updateById(
 		orderId: string,
-		payload: UpdateOrderDto,
+		payload: UpdateOrderDto
 	): Promise<OrderDoc | null> {
 		return this.orderModel.findByIdAndUpdate(orderId, payload, {
 			new: true,
