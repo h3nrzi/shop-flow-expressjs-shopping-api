@@ -166,11 +166,41 @@ export const createTestUserAndGetCookie = async (
 	const signupResponse = await signupRequest(user);
 	const cookie = signupResponse.headers["set-cookie"][0];
 	const userDoc = await userRepository.findByEmail(user.email);
-	return { user: userDoc!, cookie, userData: user };
+	if (!userDoc || !userDoc._id) {
+		throw new Error("Failed to create test user");
+	}
+	// Convert to plain object to ensure _id is accessible
+	const plainUser = userDoc.toObject
+		? userDoc.toObject()
+		: userDoc;
+	return { user: plainUser, cookie, userData: user };
 };
 
 export const createTestProduct = async () => {
-	return await productRepository.createOne(validProduct);
+	const product = await productRepository.createOne(
+		validProduct
+	);
+	if (!product) {
+		throw new Error(
+			"Failed to create test product - product is null"
+		);
+	}
+	if (!product._id) {
+		console.log("Product created but _id is missing:", product);
+		throw new Error(
+			"Failed to create test product - _id is missing"
+		);
+	}
+	// Ensure _id is accessible by converting to plain object or accessing directly
+	const result = product.toObject ? product.toObject() : product;
+	if (!result._id) {
+		console.log("Result after toObject:", result);
+		console.log("Original product:", product);
+		throw new Error(
+			"Failed to create test product - _id lost after conversion"
+		);
+	}
+	return result;
 };
 
 export const createTestReview = async (
@@ -178,11 +208,16 @@ export const createTestReview = async (
 	userId: string,
 	reviewData = validReview
 ) => {
-	return await reviewRepository.create({
+	const review = await reviewRepository.create({
 		...reviewData,
 		product: productId,
 		user: userId,
 	});
+	if (!review || !review._id) {
+		throw new Error("Failed to create test review");
+	}
+	// Convert to plain object to ensure _id is accessible
+	return review.toObject ? review.toObject() : review;
 };
 
 export const createMultipleTestReviews = async (

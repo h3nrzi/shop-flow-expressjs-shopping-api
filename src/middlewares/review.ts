@@ -25,9 +25,16 @@ const beforeUpdate: RequestHandler = (req, res, next) => {
 	next();
 };
 
+const beforeDelete: RequestHandler = (req, res, next) => {
+	// Add productId to the request for validation
+	req.body.productId = req.params.productId;
+	next();
+};
+
 const reviewMiddleware = {
 	beforeGetAll,
 	beforeCreate,
 	beforeUpdate,
+	beforeDelete,
 };
 export default reviewMiddleware;

@@ -6,7 +6,7 @@ export class ReviewController {
 
 	async getAllReviews(
 		req: Request,
-		res: Response,
+		res: Response
 	): Promise<void> {
 		const { pagination, reviews } =
 			await this.reviewService.getAllReviews(req.query);
@@ -21,7 +21,7 @@ export class ReviewController {
 
 	async getReviewById(
 		req: Request,
-		res: Response,
+		res: Response
 	): Promise<void> {
 		const { id } = req.params;
 		const review = await this.reviewService.getReviewById(id);
@@ -34,10 +34,10 @@ export class ReviewController {
 
 	async createReview(
 		req: Request,
-		res: Response,
+		res: Response
 	): Promise<void> {
 		const review = await this.reviewService.createReview(
-			req.body,
+			req.body
 		);
 
 		res.status(201).json({
@@ -48,12 +48,12 @@ export class ReviewController {
 
 	async updateReview(
 		req: Request,
-		res: Response,
+		res: Response
 	): Promise<void> {
 		const { id } = req.params;
 		const review = await this.reviewService.updateReview(
 			id,
-			req.body,
+			req.body
 		);
 
 		res.status(200).json({
@@ -64,14 +64,14 @@ export class ReviewController {
 
 	async deleteReview(
 		req: Request,
-		res: Response,
+		res: Response
 	): Promise<void> {
 		const { id } = req.params;
-		await this.reviewService.deleteReview(id);
+		const { productId } = req.body;
+		const userId = req.user._id;
 
-		res.status(204).json({
-			status: "success",
-			data: null,
-		});
+		await this.reviewService.deleteReview(id, productId, userId);
+
+		res.status(204).send();
 	}
 }

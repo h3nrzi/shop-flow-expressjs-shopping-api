@@ -53,11 +53,14 @@ router.patch("/:id", [
 	reviewController.updateReview.bind(reviewController),
 ]);
 
-router.delete(
-	"/:id",
+router.delete("/:id", [
+	reviewMiddleware.beforeDelete,
+	param("productId")
+		.isMongoId()
+		.withMessage("شناسه نظر معتبر نیست"),
 	param("id").isMongoId().withMessage("شناسه نظر معتبر نیست"),
 	validateRequest,
-	reviewController.deleteReview.bind(reviewController)
-);
+	reviewController.deleteReview.bind(reviewController),
+]);
 
 export { router as reviewRouter };
