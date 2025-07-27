@@ -17,6 +17,7 @@ export class OrderController {
 		res.status(200).json({
 			status: "success",
 			results: orders.length,
+			length: orders.length,
 			pagination,
 			data: { orders },
 		});
@@ -32,6 +33,7 @@ export class OrderController {
 		res.status(200).json({
 			status: "success",
 			results: orders.length,
+			length: orders.length,
 			pagination,
 			data: { orders },
 		});
@@ -151,7 +153,8 @@ export class OrderController {
 			req.user.id,
 			req.user.role
 		);
-		res.status(204).json({
+		res.status(204);
+		res.json({
 			status: "success",
 		});
 	};

@@ -81,6 +81,16 @@ export class OrderRepository {
 		payload: CreateOrderDto,
 		userId: string
 	): Promise<OrderDoc> {
+		// Validate that orderItems exists and is an array
+		if (
+			!payload.orderItems ||
+			!Array.isArray(payload.orderItems)
+		) {
+			throw new Error(
+				"orderItems is required and must be an array"
+			);
+		}
+
 		return this.orderModel.create({
 			...payload,
 			user: userId,

@@ -1,5 +1,6 @@
 import { RequestHandler } from "express";
 import { NotAuthorizedError } from "../errors/not-authorized-error";
+import { ForbiddenError } from "../errors/forbidden-error";
 import verifyToken from "../utils/verifyToken";
 import { userRepository } from "../core";
 
@@ -50,7 +51,7 @@ const protect: RequestHandler = async (req, res, next) => {
 const restrictTo = (...roles: string[]): RequestHandler => {
 	return (req, res, next) => {
 		if (!roles.includes(req.user.role)) {
-			throw new NotAuthorizedError(
+			throw new ForbiddenError(
 				"شما اجازه انجام این عمل را ندارید!"
 			);
 		}

@@ -81,6 +81,33 @@ export class OrderService {
 		createOrderDto: CreateOrderDto,
 		userId: string
 	): Promise<OrderDoc> {
+		// Validate orderItems
+		if (
+			!createOrderDto.orderItems ||
+			!Array.isArray(createOrderDto.orderItems) ||
+			createOrderDto.orderItems.length === 0
+		) {
+			throw new BadRequestError("آیتم های سفارش الزامی است");
+		}
+
+		// Validate each order item
+		for (const item of createOrderDto.orderItems) {
+			if (!item.productId) {
+				throw new BadRequestError("شناسه محصول الزامی است");
+			}
+			if (!item.qty || item.qty <= 0) {
+				throw new BadRequestError("تعداد محصولات الزامی است");
+			}
+
+			// Check if product exists
+			const product = await this.productRepository.getOne(
+				item.productId
+			);
+			if (!product) {
+				throw new NotFoundError("محصولی با این شناسه یافت نشد");
+			}
+		}
+
 		return this.orderRepository.create(createOrderDto, userId);
 	}
 
