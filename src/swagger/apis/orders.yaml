@@ -561,7 +561,7 @@ components:
 
   responses:
     ValidationError:
-      description: خطای اعتبارسنجی
+      description: Validation error
       content:
         application/json:
           schema:
@@ -605,7 +605,7 @@ components:
                       example: "هیچ موردی با این شناسه یافت نشد"
 
     Unauthorized:
-      description: عدم احراز هویت
+      description: Unauthorized
       content:
         application/json:
           schema:

@@ -10,6 +10,9 @@ paths:
         - Users
       summary: Retrieve current user information
       description: Gets the data for the currently authenticated user
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
       responses:
         "200":
           description: User information retrieved successfully
@@ -36,6 +39,9 @@ paths:
         - Users
       summary: Update current user information
       description: Updates the information of the currently authenticated user
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -59,7 +65,26 @@ paths:
                       updatedUser:
                         $ref: '#/components/schemas/User'
         "400":
-          $ref: '#/components/responses/ValidationError'
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: email
+                        message:
+                          type: string
+                          example: "فرمت ایمیل صحیح نیست"
         "401":
           $ref: '#/components/responses/Unauthorized'
         "422":
@@ -91,6 +116,9 @@ paths:
         - Users
       summary: Update current user's password
       description: Updates the password of the currently authenticated user
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -111,11 +139,29 @@ paths:
                   data:
                     type: object
                     properties:
-                      message:
-                        type: string
-                        example: "Password updated successfully."
+                      user:
+                        $ref: '#/components/schemas/User'
         "400":
-          $ref: '#/components/responses/ValidationError'
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: password
+                        message:
+                          type: string
+                          example: "رمز عبور و تایید رمز عبور مطابقت ندارند"
         "401":
           $ref: '#/components/responses/Unauthorized'
         "403":
@@ -147,6 +193,9 @@ paths:
         - Users
       summary: Delete current user
       description: Deletes the currently authenticated user account
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
       responses:
         "204":
           description: User deleted successfully

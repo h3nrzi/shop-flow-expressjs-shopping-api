@@ -869,8 +869,8 @@ components:
                     message:
                       type: string
                       example: هیچ موردی با این شناسه یافت نشد
-    Unauthorized:
-      description: Unauthorized. Possible reasons for 401 errors.
+    UnauthorizedWithAdminAuthorization:
+      description: Unauthorized
       content:
         application/json:
           schema:
@@ -934,3 +934,61 @@ components:
                 errors:
                   - field: null
                     message: "شما اجازه انجام این عمل را ندارید!"
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: fail
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    field:
+                      type: string
+                      nullable: true
+                      example: null
+                    message:
+                      type: string
+                      example: "شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
+          examples:
+            NoToken:
+              summary: No token provided
+              value:
+                status: fail
+                errors:
+                  - field: null
+                    message: "شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
+            InvalidToken:
+              summary: Invalid token
+              value:
+                status: fail
+                errors:
+                  - field: null
+                    message: "توکن معتبر نیست"
+            UserNotExist:
+              summary: User for token does not exist
+              value:
+                status: fail
+                errors:
+                  - field: null
+                    message: "کاربر متعلق به این توکن دیگر وجود ندارد!"
+            UserInactive:
+              summary: User is inactive
+              value:
+                status: fail
+                errors:
+                  - field: null
+                    message: "کاربری که به این ایمیل مرتبط است غیرفعال شده!"
+            PasswordChanged:
+              summary: User changed password after token was issued
+              value:
+                status: fail
+                errors:
+                  - field: null
+                    message: "کاربر اخیرا رمز عبور را تغییر داده است! لطفا دوباره وارد شوید."
