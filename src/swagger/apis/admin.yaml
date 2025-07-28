@@ -81,41 +81,6 @@ paths:
 ############################################
 
   /api/products:
-    #--------------------------------------------
-    #----------- GET ALL PRODUCTS ------------------
-    #--------------------------------------------
-    get:
-      tags:
-        - Admin
-      summary: Get all products
-      description: Returns a list of all products. Only accessible by admin users.
-      security:
-        - cookieAuth: []
-        - bearerAuth: []
-      parameters:
-        - $ref: '#/components/parameters/get-products-query-params' 
-      responses:
-        "200":
-          description: List of products
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: success
-                  pagination:
-                    $ref: '#/components/schemas/pagination'
-                  data:
-                    type: object
-                    properties:
-                      products:
-                        type: array
-                        items:
-                          $ref: '#/components/schemas/Product'
-        "401":
-          $ref: '#/components/responses/Unauthorized'
     post:
       #--------------------------------------------
       #----------- CREATE PRODUCT ------------------

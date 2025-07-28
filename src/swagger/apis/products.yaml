@@ -9,9 +9,111 @@ paths:
       tags:
         - Products
       summary: Get all products
-      description: Returns a paginated list of products. Supports filtering, sorting, and search functionality. This endpoint is public and doesn't require authentication.
+      description: Returns a paginated list of products. Supports filtering, sorting, and search functionality.
       parameters:
-        - $ref: '#/components/parameters/productsQueryParams'
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+            example: 1
+          required: false
+          description: شماره صفحه برای صفحه‌بندی نتایج
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            example: 10
+          required: false
+          description: تعداد نتایج در هر صفحه
+        - in: query
+          name: sort
+          schema:
+            type: string
+            enum: [-price, price, -rating, rating, -numReviews, numReviews, -createdAt, createdAt, -updatedAt, updatedAt, -countInStock, countInStock, ...]
+            example: desc
+          required: false
+          description: ترتیب مرتب‌سازی نتایج (صعودی یا نزولی)
+        - in: query
+          name: search
+          schema:
+            type: string
+            example: لپ تاپ
+          required: false
+          description: جستجو در نام  
+        - in: query
+          name: brand
+          schema:
+            type: string
+            example: Asus
+          required: false
+          description: فیلتر محصولات بر اساس برند
+        - in: query
+          name: category
+          schema:
+            type: string
+            example: لپ تاپ
+          required: false
+          description: فیلتر محصولات بر اساس دسته‌بندی
+        - in: query
+          name: isAvailable
+          schema:
+            type: boolean
+            example: true
+          required: false
+          description: فیلتر محصولات بر اساس موجود بودن
+        - in: query
+          name: countInStock
+          schema:
+            type: integer
+            minimum: 0
+            example: 10
+          required: false
+          description: فیلتر بر اساس تعداد موجود در انبار
+        - in: query
+          name: rating , rating[gt] , rating[lt] , rating[gte] , rating[lte]
+          schema:
+            type: number
+            minimum: 0
+            maximum: 5
+            example: 4.5
+          required: false
+          description: فیلتر بر اساس امتیاز محصول
+        - in: query
+          name: numReviews , numReviews[gt] , numReviews[lt] , numReviews[gte] , numReviews[lte]
+          schema:
+            type: integer
+            minimum: 0
+            example: 10
+          required: false
+          description: فیلتر بر اساس تعداد نظرات کاربران
+        - in: query
+          name: price , price[gt] , price[lt] , price[gte] , price[lte]
+          schema:
+            type: number
+            minimum: 0
+            example: 1000000
+          required: false
+          description: فیلتر بر اساس قیمت محصول (به تومان)
+        - in: query
+          name: discount , discount[gt] , discount[lt] , discount[gte] , discount[lte]
+          schema:
+            type: number
+            minimum: 0
+            maximum: 100
+            example: 10
+          required: false
+          description: فیلتر بر اساس درصد تخفیف
+        - in: query
+          name: discountedPrice , discountedPrice[gt] , discountedPrice[lt] , discountedPrice[gte] , discountedPrice[lte]
+          schema:
+            type: number
+            minimum: 0
+            example: 900000
+          required: false
+          description: فیلتر بر اساس قیمت با تخفیف (به تومان)
       responses:
         "200":
           description: Products retrieved successfully
@@ -42,9 +144,15 @@ paths:
       tags:
         - Products
       summary: Get a product by ID
-      description: Returns a single product by its ID. This endpoint is public and doesn't require authentication.
+      description: Returns a single product by its ID.
       parameters:
-        - $ref: '#/components/parameters/productId'
+        - in: path
+          name: id
+          schema:
+            type: string
+            example: "60d21b4667d0d8992e610c85"
+          required: true
+          description: شناسه محصول
       responses:
         "200":
           description: Product retrieved successfully
@@ -129,91 +237,5 @@ components:
           type: string
           format: date-time
           example: "2021-06-22T14:30:00.000Z"
-
-
-  parameters:
-    productId:
-      name: id
-      in: path
-      required: true
-      schema:
-        type: string
-        pattern: '^[0-9a-fA-F]{24}$'
-        example: "60d21b4667d0d8992e610c85"
-      description: "شناسه محصول (ObjectId)"
-
-    productsQueryParams:
-      name: query
-      in: query
-      required: false
-      style: deepObject
-      explode: true
-      schema:
-        type: object
-        properties:
-          page:
-            type: integer
-            minimum: 1
-            example: 1
-            description: "شماره صفحه"
-          limit:
-            type: integer
-            minimum: 1
-            maximum: 100
-            example: 10
-            description: "تعداد نتایج در هر صفحه"
-          sort:
-            type: string
-            enum: [asc, desc]
-            example: "desc"
-            description: "ترتیب مرتب‌سازی"
-          search:
-            type: string
-            example: "لپ تاپ"
-            description: "جستجو در نام و توضیحات محصول"
-          brand:
-            type: string
-            example: "Asus"
-            description: "فیلتر بر اساس برند"
-          category:
-            type: string
-            example: "لپ تاپ"
-            description: "فیلتر بر اساس دسته‌بندی"
-          isAvailable:
-            type: boolean
-            example: true
-            description: "فیلتر بر اساس در دسترس بودن"
-          countInStock:
-            type: integer
-            minimum: 0
-            example: 10
-            description: "فیلتر بر اساس تعداد موجود در انبار"
-          rating:
-            type: number
-            minimum: 0
-            maximum: 5
-            example: 4.5
-            description: "فیلتر بر اساس امتیاز"
-          numReviews:
-            type: integer
-            minimum: 0
-            example: 10
-            description: "فیلتر بر اساس تعداد نظرات"
-          price:
-            type: number
-            minimum: 0
-            example: 1000000
-            description: "فیلتر بر اساس قیمت"
-          discount:
-            type: number
-            minimum: 0
-            maximum: 100
-            example: 10
-            description: "فیلتر بر اساس درصد تخفیف"
-          discountedPrice:
-            type: number
-            minimum: 0
-            example: 900000
-            description: "فیلتر بر اساس قیمت با تخفیف"
 
 
