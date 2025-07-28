@@ -583,7 +583,7 @@ components:
                       example: "آیتم‌های سفارش الزامی است"
 
     NotFound:
-      description: منبع یافت نشد
+      description: Resource not found
       content:
         application/json:
           schema:

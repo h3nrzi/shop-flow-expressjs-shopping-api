@@ -382,22 +382,6 @@
 					"skip": {
 						"type": "integer",
 						"example": 0
-					},
-					"totalResults": {
-						"type": "integer",
-						"example": 100
-					},
-					"totalPages": {
-						"type": "integer",
-						"example": 10
-					},
-					"hasNextPage": {
-						"type": "boolean",
-						"example": true
-					},
-					"hasPrevPage": {
-						"type": "boolean",
-						"example": false
 					}
 				}
 			}
