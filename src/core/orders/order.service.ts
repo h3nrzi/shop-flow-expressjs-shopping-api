@@ -87,13 +87,13 @@ export class OrderService {
 			!Array.isArray(createOrderDto.orderItems) ||
 			createOrderDto.orderItems.length === 0
 		) {
-			throw new BadRequestError("آیتم های سفارش الزامی است");
+			throw new BadRequestError("شناسه محصول معتبر نیست");
 		}
 
 		// Validate each order item
 		for (const item of createOrderDto.orderItems) {
 			if (!item.productId) {
-				throw new BadRequestError("شناسه محصول الزامی است");
+				throw new BadRequestError("شناسه محصول معتبر نیست");
 			}
 			if (!item.qty || item.qty <= 0) {
 				throw new BadRequestError("تعداد محصولات الزامی است");
