@@ -324,10 +324,129 @@ paths:
       tags:
         - Admin
       summary: Get all orders (Admin only)
-      description: Returns a list of all orders from all users. Only accessible by admin users.
+      description: Returns a paginated list of all orders from all users. Supports filtering, sorting, and search functionality. Only accessible by admin users.
       security:
         - cookieAuth: []
         - bearerAuth: []
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+            example: 1
+          required: false
+          description: شماره صفحه برای صفحه‌بندی نتایج
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            example: 10
+          required: false
+          description: تعداد نتایج در هر صفحه
+        - in: query
+          name: sort
+          schema:
+            type: string
+            enum: [-totalPrice, totalPrice, -itemsPrice, itemsPrice, -shippingPrice, shippingPrice, -taxPrice, taxPrice, -createdAt, createdAt, -updatedAt, updatedAt, -paidAt, paidAt, -deliveredAt, deliveredAt, -isPaid, isPaid, -isDelivered, isDelivered]
+            example: -createdAt
+          required: false
+          description: ترتیب مرتب‌سازی نتایج (صعودی یا نزولی)
+        - in: query
+          name: user
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{24}$'
+            example: "60d21b4667d0d8992e610c86"
+          required: false
+          description: فیلتر سفارشات بر اساس شناسه کاربر
+        - in: query
+          name: paymentMethod
+          schema:
+            type: string
+            example: "Credit Card"
+          required: false
+          description: فیلتر سفارشات بر اساس روش پرداخت
+        - in: query
+          name: isPaid
+          schema:
+            type: boolean
+            example: true
+          required: false
+          description: فیلتر سفارشات بر اساس وضعیت پرداخت
+        - in: query
+          name: isDelivered
+          schema:
+            type: boolean
+            example: false
+          required: false
+          description: فیلتر سفارشات بر اساس وضعیت تحویل
+        - in: query
+          name: totalPrice , totalPrice[gt] , totalPrice[lt] , totalPrice[gte] , totalPrice[lte]
+          schema:
+            type: number
+            minimum: 0
+            example: 230000
+          required: false
+          description: فیلتر بر اساس قیمت کل سفارش (به تومان)
+        - in: query
+          name: itemsPrice , itemsPrice[gt] , itemsPrice[lt] , itemsPrice[gte] , itemsPrice[lte]
+          schema:
+            type: number
+            minimum: 0
+            example: 200000
+          required: false
+          description: فیلتر بر اساس قیمت کالاها (به تومان)
+        - in: query
+          name: shippingPrice , shippingPrice[gt] , shippingPrice[lt] , shippingPrice[gte] , shippingPrice[lte]
+          schema:
+            type: number
+            minimum: 0
+            example: 20000
+          required: false
+          description: فیلتر بر اساس هزینه ارسال (به تومان)
+        - in: query
+          name: taxPrice , taxPrice[gt] , taxPrice[lt] , taxPrice[gte] , taxPrice[lte]
+          schema:
+            type: number
+            minimum: 0
+            example: 10000
+          required: false
+          description: فیلتر بر اساس مالیات (به تومان)
+        - in: query
+          name: createdAt , createdAt[gt] , createdAt[lt] , createdAt[gte] , createdAt[lte]
+          schema:
+            type: string
+            format: date-time
+            example: "2023-01-01T10:00:00.000Z"
+          required: false
+          description: فیلتر بر اساس تاریخ ایجاد سفارش
+        - in: query
+          name: updatedAt , updatedAt[gt] , updatedAt[lt] , updatedAt[gte] , updatedAt[lte]
+          schema:
+            type: string
+            format: date-time
+            example: "2023-01-01T10:00:00.000Z"
+          required: false
+          description: فیلتر بر اساس تاریخ آپدیت سفارش
+        - in: query
+          name: paidAt , paidAt[gt] , paidAt[lt] , paidAt[gte] , paidAt[lte]
+          schema:
+            type: string
+            format: date-time
+            example: "2023-01-01T12:00:00.000Z"
+          required: false
+          description: فیلتر بر اساس تاریخ پرداخت
+        - in: query
+          name: deliveredAt , deliveredAt[gt] , deliveredAt[lt] , deliveredAt[gte] , deliveredAt[lte]
+          schema:
+            type: string
+            format: date-time
+            example: "2023-01-02T12:00:00.000Z"
+          required: false
+          description: فیلتر بر اساس تاریخ تحویل
       responses:
         "200":
           description: List of all orders
@@ -339,9 +458,11 @@ paths:
                   status:
                     type: string
                     example: success
-                  length:
+                  results:
                     type: integer
                     example: 10
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
                   data:
                     type: object
                     properties:

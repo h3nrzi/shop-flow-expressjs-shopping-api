@@ -15,7 +15,100 @@ paths:
         - bearerAuth: []
       parameters:
         - $ref: '#/components/parameters/productId'
-        - $ref: '#/components/parameters/reviewsQueryParams'
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+            example: 1
+          required: false
+          description: شماره صفحه برای صفحه‌بندی نتایج
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            example: 10
+          required: false
+          description: تعداد نتایج در هر صفحه
+        - in: query
+          name: sort
+          schema:
+            type: string
+            enum: [-rating, rating, -createdAt, createdAt, -updatedAt, updatedAt]
+            example: -createdAt
+          required: false
+          description: ترتیب مرتب‌سازی نتایج (صعودی یا نزولی)
+        - in: query
+          name: rating
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 5
+            example: 4
+          required: false
+          description: فیلتر بر اساس امتیاز دقیق
+        - in: query
+          name: rating[gt]
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 5
+            example: 3
+          required: false
+          description: فیلتر امتیاز بیشتر از
+        - in: query
+          name: rating[lt]
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 5
+            example: 5
+          required: false
+          description: فیلتر امتیاز کمتر از
+        - in: query
+          name: rating[gte]
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 5
+            example: 3
+          required: false
+          description: فیلتر امتیاز بیشتر یا مساوی
+        - in: query
+          name: rating[lte]
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 5
+            example: 4
+          required: false
+          description: فیلتر امتیاز کمتر یا مساوی
+        - in: query
+          name: user
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{24}$'
+            example: "60d21b4667d0d8992e610c86"
+          required: false
+          description: فیلتر بر اساس شناسه کاربر نویسنده نظر
+        - in: query
+          name: createdAt , createdAt[gt] , createdAt[lt] , createdAt[gte] , createdAt[lte]
+          schema:
+            type: string
+            format: date-time
+            example: "2021-06-22T14:30:00.000Z"
+          required: false
+          description: فیلتر بر اساس تاریخ ایجاد نظر
+        - in: query
+          name: updatedAt , updatedAt[gt] , updatedAt[lt] , updatedAt[gte] , updatedAt[lte]
+          schema:
+            type: string
+            format: date-time
+            example: "2021-06-22T14:30:00.000Z"
+          required: false
+          description: فیلتر بر اساس تاریخ آپدیت نظر
       responses:
         "200":
           description: Reviews retrieved successfully
@@ -413,49 +506,3 @@ components:
         example: "60d21b4667d0d8992e610c85"
       description: "شناسه نظر (ObjectId)"
 
-    reviewsQueryParams:
-      name: query
-      in: query
-      required: false
-      style: deepObject
-      explode: true
-      schema:
-        type: object
-        properties:
-          page:
-            type: integer
-            minimum: 1
-            example: 1
-            description: "شماره صفحه"
-          limit:
-            type: integer
-            minimum: 1
-            maximum: 100
-            example: 10
-            description: "تعداد نتایج در هر صفحه"
-          sort:
-            type: string
-            example: "-createdAt"
-            description: "مرتب‌سازی بر اساس فیلد (- برای نزولی)"
-          fields:
-            type: string
-            example: "rating,comment"
-            description: "فیلدهای مورد نظر برای نمایش"
-          rating:
-            type: integer
-            minimum: 1
-            maximum: 5
-            example: 5
-            description: "فیلتر بر اساس امتیاز"
-          rating[gte]:
-            type: integer
-            minimum: 1
-            maximum: 5
-            example: 3
-            description: "امتیاز بیشتر یا مساوی"
-          rating[lte]:
-            type: integer
-            minimum: 1
-            maximum: 5
-            example: 4
-            description: "امتیاز کمتر یا مساوی"
