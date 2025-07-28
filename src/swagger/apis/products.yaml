@@ -130,24 +130,6 @@ components:
           format: date-time
           example: "2021-06-22T14:30:00.000Z"
 
-    Pagination:
-      type: object
-      properties:
-        page:
-          type: integer
-          example: 1
-        limit:
-          type: integer
-          example: 10
-        total:
-          type: integer
-          example: 100
-        pages:
-          type: integer
-          example: 10
-        skip:
-          type: integer
-          example: 0
 
   parameters:
     productId:
@@ -234,27 +216,4 @@ components:
             example: 900000
             description: "فیلتر بر اساس قیمت با تخفیف"
 
-  responses:
-
-    NotFound:
-      description: محصول یافت نشد
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              status:
-                type: string
-                example: fail
-              errors:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    field:
-                      type: string
-                      example: null
-                    message:
-                      type: string
-                      example: "هیچ موردی با این شناسه یافت نشد"
 

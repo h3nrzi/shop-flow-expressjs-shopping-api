@@ -63,6 +63,195 @@
 			}
 		},
 		"schemas": {
+			"User": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"example": "60d21b4667d0d8992e610c85"
+					},
+					"name": {
+						"type": "string",
+						"example": "حسین رضایی"
+					},
+					"email": {
+						"type": "string",
+						"example": "hossein@example.com"
+					},
+					"photo": {
+						"type": "string",
+						"example": "https://example.com/avatar.jpg"
+					},
+					"role": {
+						"type": "string",
+						"enum": [
+							"user",
+							"admin"
+						],
+						"example": "user"
+					},
+					"active": {
+						"type": "boolean",
+						"example": true
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"example": "2021-01-01T00:00:00.000Z"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time",
+						"example": "2021-01-01T00:00:00.000Z"
+					}
+				}
+			},
+			"Product": {
+				"type": "object",
+				"properties": {
+					"_id": {
+						"type": "string",
+						"example": "60d21b4667d0d8992e610c85"
+					},
+					"name": {
+						"type": "string",
+						"example": "لپ تاپ Asus VivoBook"
+					},
+					"slug": {
+						"type": "string",
+						"example": "laptop-asus-vivobook"
+					},
+					"description": {
+						"type": "string",
+						"example": "لپ تاپ قدرتمند با پردازنده Intel Core i5"
+					},
+					"image": {
+						"type": "string",
+						"example": "https://example.com/laptop.jpg"
+					},
+					"images": {
+						"type": "array",
+						"items": {
+							"type": "string",
+							"example": "https://example.com/laptop2.jpg"
+						}
+					},
+					"countInStock": {
+						"type": "integer",
+						"example": 25
+					},
+					"isAvailable": {
+						"type": "boolean",
+						"example": true
+					},
+					"brand": {
+						"type": "string",
+						"example": "Asus"
+					},
+					"category": {
+						"type": "string",
+						"example": "لپ تاپ"
+					},
+					"rating": {
+						"type": "number",
+						"example": 4.5
+					},
+					"numReviews": {
+						"type": "integer",
+						"example": 10
+					},
+					"price": {
+						"type": "number",
+						"example": 15000000
+					},
+					"discount": {
+						"type": "number",
+						"example": 5
+					},
+					"discountedPrice": {
+						"type": "number",
+						"nullable": true,
+						"example": 14250000
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"example": "2021-06-22T14:30:00.000Z"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time",
+						"example": "2021-06-22T14:30:00.000Z"
+					}
+				}
+			},
+			"Review": {
+				"type": "object",
+				"properties": {
+					"_id": {
+						"type": "string",
+						"example": "60d21b4667d0d8992e610c85"
+					},
+					"rating": {
+						"type": "integer",
+						"minimum": 1,
+						"maximum": 5,
+						"example": 4
+					},
+					"comment": {
+						"type": "string",
+						"example": "محصول بسیار خوبی است و کیفیت عالی دارد"
+					},
+					"user": {
+						"type": "object",
+						"properties": {
+							"_id": {
+								"type": "string",
+								"example": "60d21b4667d0d8992e610c86"
+							},
+							"name": {
+								"type": "string",
+								"example": "حسین رضایی"
+							},
+							"email": {
+								"type": "string",
+								"example": "hossein@example.com"
+							}
+						}
+					},
+					"product": {
+						"type": "object",
+						"properties": {
+							"_id": {
+								"type": "string",
+								"example": "60d21b4667d0d8992e610c87"
+							},
+							"name": {
+								"type": "string",
+								"example": "لپ تاپ Asus VivoBook"
+							},
+							"price": {
+								"type": "number",
+								"example": 15000000
+							},
+							"description": {
+								"type": "string",
+								"example": "لپ تاپ قدرتمند با پردازنده Intel Core i5"
+							}
+						}
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"example": "2021-06-22T14:30:00.000Z"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time",
+						"example": "2021-06-22T14:30:00.000Z"
+					}
+				}
+			},
 			"OrderItem": {
 				"type": "object",
 				"properties": {
@@ -81,6 +270,11 @@
 			},
 			"ShippingAddress": {
 				"type": "object",
+				"required": [
+					"province",
+					"city",
+					"street"
+				],
 				"properties": {
 					"province": {
 						"type": "string",
@@ -104,7 +298,8 @@
 						"example": "60d21b4667d0d8992e610c85"
 					},
 					"user": {
-						"$ref": "#/components/schemas/User"
+						"type": "string",
+						"example": "60d21b4667d0d8992e610c86"
 					},
 					"orderItems": {
 						"type": "array",
@@ -117,7 +312,7 @@
 					},
 					"paymentMethod": {
 						"type": "string",
-						"example": "online"
+						"example": "Credit Card"
 					},
 					"itemsPrice": {
 						"type": "number",
@@ -162,6 +357,47 @@
 						"type": "string",
 						"format": "date-time",
 						"example": "2023-01-01T10:00:00.000Z"
+					}
+				}
+			},
+			"Pagination": {
+				"type": "object",
+				"properties": {
+					"page": {
+						"type": "integer",
+						"example": 1
+					},
+					"limit": {
+						"type": "integer",
+						"example": 10
+					},
+					"total": {
+						"type": "integer",
+						"example": 100
+					},
+					"pages": {
+						"type": "integer",
+						"example": 10
+					},
+					"skip": {
+						"type": "integer",
+						"example": 0
+					},
+					"totalResults": {
+						"type": "integer",
+						"example": 100
+					},
+					"totalPages": {
+						"type": "integer",
+						"example": 10
+					},
+					"hasNextPage": {
+						"type": "boolean",
+						"example": true
+					},
+					"hasPrevPage": {
+						"type": "boolean",
+						"example": false
 					}
 				}
 			}

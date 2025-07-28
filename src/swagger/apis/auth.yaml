@@ -181,34 +181,6 @@ paths:
 ######################################################
 
 components:
-  schemas:
-    User:
-      type: object
-      properties:
-        id:
-          type: string
-          example: 1
-        name:
-          type: string
-          example: Hossein Rezaei
-        email:
-          type: string
-          example: hossein@example.com
-        photo:
-          type: string
-          example: https://example.com/avatar.jpg
-        role:
-          type: string
-          example: user
-        createdAt:
-          type: string
-          example: 2021-01-01T00:00:00.000Z
-        updatedAt:
-          type: string
-          example: 2021-01-01T00:00:00.000Z
-        isActive:
-          type: boolean
-          example: true
   Dtos:
     SignupDto:
       type: object
@@ -267,68 +239,3 @@ components:
           type: string
           format: password
           example: NewStrongPass123!
-
-  responses:
-    ValidationError:
-      description: Validation error
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              status:
-                type: string
-                example: fail
-              errors:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    field:
-                      type: string
-                      example: name
-                    message:
-                      type: string
-                      example: نام کاربر الزامی است
-    NotFound:
-      description: Resource not found
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              status:
-                type: string
-                example: fail
-              errors:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    field:
-                      type: string
-                      example: null
-                    message:
-                      type: string
-                      example: هیچ موردی با این شناسه یافت نشد
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              status:
-                type: string
-                example: fail
-              errors:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    field:
-                      type: string
-                      example: null
-                    message:
-                      type: string
-                      example: "شما وارد نشده اید! لطفا برای دسترسی وارد شوید"

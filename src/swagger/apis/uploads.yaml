@@ -87,27 +87,3 @@ paths:
 ######################################################
 ################### REFERENCES #######################
 ######################################################
-
-components:
-  responses:
-    Unauthorized:
-      description: Unauthorized - User not authenticated or token invalid
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              status:
-                type: string
-                example: fail
-              errors:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    field:
-                      type: string
-                      example: null
-                    message:
-                      type: string
-                      example: "شما وارد نشده اید! لطفا برای دسترسی وارد شوید"

@@ -1,0 +1,627 @@
+######################################################
+################### ORDERS ENDPOINTS ################
+######################################################
+
+paths:
+  /api/orders:
+    # ------------------------------------------------ CREATE ORDER ----------------------------------------------------
+    post:
+      tags:
+        - Orders
+      summary: Create a new order
+      description: Creates a new order for the authenticated user
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/Dtos/CreateOrderDto'
+      responses:
+        "201":
+          description: Order created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      order:
+                        $ref: '#/components/schemas/Order'
+        "400":
+          $ref: '#/components/responses/ValidationError'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "404":
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/NotFound'
+
+    # ------------------------------------------------ GET ALL ORDERS (ADMIN) ----------------------------------------------------
+    get:
+      tags:
+        - Admin
+      summary: Get all orders (Admin only)
+      description: Returns a list of all orders from all users. Only accessible by admin users.
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of all orders
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  length:
+                    type: integer
+                    example: 10
+                  data:
+                    type: object
+                    properties:
+                      orders:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Order'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          description: Access denied - Admin only
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: null
+                        message:
+                          type: string
+                          example: "شما اجازه انجام این عمل را ندارید!"
+
+  /api/orders/get-myorders:
+    # ------------------------------------------------ GET CURRENT USER ORDERS ----------------------------------------------------
+    get:
+      tags:
+        - Orders
+      summary: Get current user's orders
+      description: Returns all orders for the authenticated user
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      responses:
+        "200":
+          description: User's orders retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  length:
+                    type: integer
+                    example: 3
+                  data:
+                    type: object
+                    properties:
+                      orders:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Order'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/orders/top-selling-products:
+    # ------------------------------------------------ GET TOP SELLING PRODUCTS ----------------------------------------------------
+    get:
+      tags:
+        - Orders
+      summary: Get top selling products
+      description: Returns the top 10 best-selling products based on order quantities
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Top selling products retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  result:
+                    type: integer
+                    example: 10
+                  data:
+                    type: object
+                    properties:
+                      orders:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            totalSold:
+                              type: integer
+                              example: 25
+                            product:
+                              type: array
+                              items:
+                                $ref: '#/components/schemas/Product'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/orders/{id}:
+    # ------------------------------------------------ GET ORDER BY ID ----------------------------------------------------
+    get:
+      tags:
+        - Orders
+      summary: Get order by ID
+      description: Returns a specific order by ID. Users can only access their own orders, admins can access any order.
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/orderId'
+      responses:
+        "200":
+          description: Order retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      order:
+                        $ref: '#/components/schemas/Order'
+        "400":
+          $ref: '#/components/responses/ValidationError'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          description: Access denied - Cannot access other user's order
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: null
+                        message:
+                          type: string
+                          example: "شما اجازه انجام این عمل را ندارید!"
+        "404":
+          $ref: '#/components/responses/NotFound'
+
+    # ------------------------------------------------ UPDATE ORDER (ADMIN) ----------------------------------------------------
+    patch:
+      tags:
+        - Admin
+      summary: Update order (Admin only)
+      description: Updates an existing order. Only accessible by admin users.
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/orderId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/Dtos/UpdateOrderDto'
+      responses:
+        "200":
+          description: Order updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      order:
+                        $ref: '#/components/schemas/Order'
+        "400":
+          $ref: '#/components/responses/ValidationError'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          description: Access denied - Admin only
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: null
+                        message:
+                          type: string
+                          example: "شما اجازه انجام این عمل را ندارید!"
+        "404":
+          $ref: '#/components/responses/NotFound'
+
+    # ------------------------------------------------ DELETE ORDER (ADMIN) ----------------------------------------------------
+    delete:
+      tags:
+        - Admin
+      summary: Delete order (Admin only)
+      description: Deletes an existing order. Only accessible by admin users.
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/orderId'
+      responses:
+        "204":
+          description: Order deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+        "400":
+          $ref: '#/components/responses/ValidationError'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          description: Access denied - Admin only
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: null
+                        message:
+                          type: string
+                          example: "شما اجازه انجام این عمل را ندارید!"
+        "404":
+          $ref: '#/components/responses/NotFound'
+
+  /api/orders/{id}/pay:
+    # ------------------------------------------------ UPDATE ORDER TO PAID ----------------------------------------------------
+    patch:
+      tags:
+        - Orders
+      summary: Update order to paid
+      description: Marks an order as paid. Users can only update their own orders, admins can update any order.
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/orderId'
+      responses:
+        "200":
+          description: Order marked as paid successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      order:
+                        $ref: '#/components/schemas/Order'
+        "400":
+          $ref: '#/components/responses/ValidationError'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          description: Access denied - Cannot update other user's order
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: null
+                        message:
+                          type: string
+                          example: "شما اجازه انجام این عمل را ندارید!"
+        "404":
+          $ref: '#/components/responses/NotFound'
+
+  /api/orders/{id}/deliver:
+    # ------------------------------------------------ UPDATE ORDER TO DELIVERED (ADMIN) ----------------------------------------------------
+    patch:
+      tags:
+        - Admin
+      summary: Update order to delivered (Admin only)
+      description: Marks an order as delivered. Only accessible by admin users.
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/orderId'
+      responses:
+        "200":
+          description: Order marked as delivered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      order:
+                        $ref: '#/components/schemas/Order'
+        "400":
+          $ref: '#/components/responses/ValidationError'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          description: Access denied - Admin only
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: null
+                        message:
+                          type: string
+                          example: "شما اجازه انجام این عمل را ندارید!"
+        "404":
+          $ref: '#/components/responses/NotFound'
+
+######################################################
+################### REFERENCES #######################
+######################################################
+
+components:
+  Dtos:
+    CreateOrderDto:
+      type: object
+      required:
+        - orderItems
+        - shippingAddress
+        - paymentMethod
+        - itemsPrice
+        - shippingPrice
+        - taxPrice
+        - totalPrice
+      properties:
+        orderItems:
+          type: array
+          items:
+            type: object
+            required:
+              - productId
+              - qty
+            properties:
+              productId:
+                type: string
+                pattern: '^[0-9a-fA-F]{24}$'
+                example: "60d21b4667d0d8992e610c85"
+              qty:
+                type: integer
+                minimum: 1
+                example: 2
+        shippingAddress:
+          $ref: '#/components/schemas/ShippingAddress'
+        paymentMethod:
+          type: string
+          example: "Credit Card"
+        itemsPrice:
+          type: number
+          minimum: 0
+          example: 200000
+        shippingPrice:
+          type: number
+          minimum: 0
+          example: 20000
+        taxPrice:
+          type: number
+          minimum: 0
+          example: 10000
+        totalPrice:
+          type: number
+          minimum: 0
+          example: 230000
+
+    UpdateOrderDto:
+      type: object
+      properties:
+        orderItems:
+          type: array
+          items:
+            type: object
+            properties:
+              productId:
+                type: string
+                pattern: '^[0-9a-fA-F]{24}$'
+                example: "60d21b4667d0d8992e610c85"
+              qty:
+                type: integer
+                minimum: 1
+                example: 3
+        shippingAddress:
+          $ref: '#/components/schemas/ShippingAddress'
+        paymentMethod:
+          type: string
+          example: "PayPal"
+        itemsPrice:
+          type: number
+          minimum: 0
+          example: 150000
+        shippingPrice:
+          type: number
+          minimum: 0
+          example: 15000
+        taxPrice:
+          type: number
+          minimum: 0
+          example: 8000
+        totalPrice:
+          type: number
+          minimum: 0
+          example: 173000
+
+  parameters:
+    orderId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: '^[0-9a-fA-F]{24}$'
+        example: "60d21b4667d0d8992e610c85"
+      description: "شناسه سفارش (ObjectId)"
+
+  responses:
+    ValidationError:
+      description: خطای اعتبارسنجی
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: fail
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    field:
+                      type: string
+                      example: orderItems
+                    message:
+                      type: string
+                      example: "آیتم‌های سفارش الزامی است"
+
+    NotFound:
+      description: منبع یافت نشد
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: fail
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    field:
+                      type: string
+                      example: null
+                    message:
+                      type: string
+                      example: "هیچ موردی با این شناسه یافت نشد"
+
+    Unauthorized:
+      description: عدم احراز هویت
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: fail
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    field:
+                      type: string
+                      example: null
+                    message:
+                      type: string
+                      example: "شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
