@@ -76,49 +76,6 @@ paths:
         "401":
           $ref: '#/components/responses/Unauthorized'
 
-############################################
-########### PRODUCT ENDPOINTS ##############
-############################################
-
-  /api/products:
-    post:
-      #--------------------------------------------
-      #----------- CREATE PRODUCT ------------------
-      #--------------------------------------------
-      tags:
-        - Admin
-      summary: Create a new product
-      description: Creates a new product. Only accessible by admin users.
-      security:
-        - cookieAuth: []
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/Dtos/CreateProductDto'
-      responses:
-        "201":
-          description: Product created successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: success
-                  data:
-                    type: object
-                    properties:
-                      product:
-                        $ref: '#/components/schemas/Product'
-        "400":
-          $ref: '#/components/responses/ValidationError'
-        "401":
-          $ref: '#/components/responses/Unauthorized'
-
 
   /api/users/{id}:
     #--------------------------------------------
@@ -309,6 +266,51 @@ paths:
           $ref: '#/components/responses/ValidationError'
         "401":
           $ref: '#/components/responses/Unauthorized'
+
+
+############################################
+########### PRODUCT ENDPOINTS ##############
+############################################
+
+  /api/products:
+    post:
+      #--------------------------------------------
+      #----------- CREATE PRODUCT ------------------
+      #--------------------------------------------
+      tags:
+        - Admin
+      summary: Create a new product
+      description: Creates a new product. Only accessible by admin users.
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/Dtos/CreateProductDto'
+      responses:
+        "201":
+          description: Product created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      product:
+                        $ref: '#/components/schemas/Product'
+        "400":
+          $ref: '#/components/responses/ValidationError'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+
 
 ############################################
 ########### ORDER ENDPOINTS ###############

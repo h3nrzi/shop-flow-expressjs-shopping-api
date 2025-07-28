@@ -7,6 +7,10 @@ import { validateRequest } from "../../middlewares/validate-request";
 
 const router = express.Router();
 
+router
+	.route("/top-selling-products")
+	.get(orderController.getAllTopsOrders.bind(orderController));
+
 /************************************************************************
  *********  @description Protect all routes below to users only *********
  ************************************************************************/
@@ -53,12 +57,8 @@ router
 	.route("/get-myorders")
 	.get(
 		orderMiddleware.getMyOrders,
-		orderController.getCurrentUserOrders.bind(orderController),
+		orderController.getCurrentUserOrders.bind(orderController)
 	);
-
-router
-	.route("/top-selling-products")
-	.get(orderController.getAllTopsOrders.bind(orderController));
 
 router
 	.route("/:id")

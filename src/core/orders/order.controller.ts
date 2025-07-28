@@ -17,7 +17,6 @@ export class OrderController {
 		res.status(200).json({
 			status: "success",
 			results: orders.length,
-			length: orders.length,
 			pagination,
 			data: { orders },
 		});
@@ -33,7 +32,6 @@ export class OrderController {
 		res.status(200).json({
 			status: "success",
 			results: orders.length,
-			length: orders.length,
 			pagination,
 			data: { orders },
 		});
@@ -61,7 +59,7 @@ export class OrderController {
 		const orders = await this.orderService.getAllTopsOrders(10);
 		res.status(200).json({
 			status: "success",
-			result: orders.length,
+			results: orders.length,
 			data: { orders },
 		});
 	};

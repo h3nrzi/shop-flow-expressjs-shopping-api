@@ -39,66 +39,6 @@ paths:
           $ref: '#/components/responses/ValidationError'
         "401":
           $ref: '#/components/responses/Unauthorized'
-        "404":
-          description: Product not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/responses/NotFound'
-
-    # ------------------------------------------------ GET ALL ORDERS (ADMIN) ----------------------------------------------------
-    get:
-      tags:
-        - Admin
-      summary: Get all orders (Admin only)
-      description: Returns a list of all orders from all users. Only accessible by admin users.
-      security:
-        - cookieAuth: []
-        - bearerAuth: []
-      responses:
-        "200":
-          description: List of all orders
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: success
-                  length:
-                    type: integer
-                    example: 10
-                  data:
-                    type: object
-                    properties:
-                      orders:
-                        type: array
-                        items:
-                          $ref: '#/components/schemas/Order'
-        "401":
-          $ref: '#/components/responses/Unauthorized'
-        "403":
-          description: Access denied - Admin only
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: fail
-                  errors:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        field:
-                          type: string
-                          example: null
-                        message:
-                          type: string
-                          example: "شما اجازه انجام این عمل را ندارید!"
 
   /api/orders/get-myorders:
     # ------------------------------------------------ GET CURRENT USER ORDERS ----------------------------------------------------
@@ -141,9 +81,6 @@ paths:
         - Orders
       summary: Get top selling products
       description: Returns the top 10 best-selling products based on order quantities
-      security:
-        - cookieAuth: []
-        - bearerAuth: []
       responses:
         "200":
           description: Top selling products retrieved successfully
@@ -155,7 +92,7 @@ paths:
                   status:
                     type: string
                     example: success
-                  result:
+                  results:
                     type: integer
                     example: 10
                   data:
@@ -173,8 +110,6 @@ paths:
                               type: array
                               items:
                                 $ref: '#/components/schemas/Product'
-        "401":
-          $ref: '#/components/responses/Unauthorized'
 
   /api/orders/{id}:
     # ------------------------------------------------ GET ORDER BY ID ----------------------------------------------------
@@ -204,8 +139,6 @@ paths:
                     properties:
                       order:
                         $ref: '#/components/schemas/Order'
-        "400":
-          $ref: '#/components/responses/ValidationError'
         "401":
           $ref: '#/components/responses/Unauthorized'
         "403":
@@ -230,47 +163,7 @@ paths:
                           type: string
                           example: "شما اجازه انجام این عمل را ندارید!"
         "404":
-          $ref: '#/components/responses/NotFound'
-
-    # ------------------------------------------------ UPDATE ORDER (ADMIN) ----------------------------------------------------
-    patch:
-      tags:
-        - Admin
-      summary: Update order (Admin only)
-      description: Updates an existing order. Only accessible by admin users.
-      security:
-        - cookieAuth: []
-        - bearerAuth: []
-      parameters:
-        - $ref: '#/components/parameters/orderId'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/Dtos/UpdateOrderDto'
-      responses:
-        "200":
-          description: Order updated successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: success
-                  data:
-                    type: object
-                    properties:
-                      order:
-                        $ref: '#/components/schemas/Order'
-        "400":
-          $ref: '#/components/responses/ValidationError'
-        "401":
-          $ref: '#/components/responses/Unauthorized'
-        "403":
-          description: Access denied - Admin only
+          description: Order not found
           content:
             application/json:
               schema:
@@ -289,59 +182,7 @@ paths:
                           example: null
                         message:
                           type: string
-                          example: "شما اجازه انجام این عمل را ندارید!"
-        "404":
-          $ref: '#/components/responses/NotFound'
-
-    # ------------------------------------------------ DELETE ORDER (ADMIN) ----------------------------------------------------
-    delete:
-      tags:
-        - Admin
-      summary: Delete order (Admin only)
-      description: Deletes an existing order. Only accessible by admin users.
-      security:
-        - cookieAuth: []
-        - bearerAuth: []
-      parameters:
-        - $ref: '#/components/parameters/orderId'
-      responses:
-        "204":
-          description: Order deleted successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: success
-        "400":
-          $ref: '#/components/responses/ValidationError'
-        "401":
-          $ref: '#/components/responses/Unauthorized'
-        "403":
-          description: Access denied - Admin only
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: fail
-                  errors:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        field:
-                          type: string
-                          example: null
-                        message:
-                          type: string
-                          example: "شما اجازه انجام این عمل را ندارید!"
-        "404":
-          $ref: '#/components/responses/NotFound'
+                          example: "سفارش مورد نظر یافت نشد"
 
   /api/orders/{id}/pay:
     # ------------------------------------------------ UPDATE ORDER TO PAID ----------------------------------------------------
@@ -371,8 +212,6 @@ paths:
                     properties:
                       order:
                         $ref: '#/components/schemas/Order'
-        "400":
-          $ref: '#/components/responses/ValidationError'
         "401":
           $ref: '#/components/responses/Unauthorized'
         "403":
@@ -397,42 +236,7 @@ paths:
                           type: string
                           example: "شما اجازه انجام این عمل را ندارید!"
         "404":
-          $ref: '#/components/responses/NotFound'
-
-  /api/orders/{id}/deliver:
-    # ------------------------------------------------ UPDATE ORDER TO DELIVERED (ADMIN) ----------------------------------------------------
-    patch:
-      tags:
-        - Admin
-      summary: Update order to delivered (Admin only)
-      description: Marks an order as delivered. Only accessible by admin users.
-      security:
-        - cookieAuth: []
-        - bearerAuth: []
-      parameters:
-        - $ref: '#/components/parameters/orderId'
-      responses:
-        "200":
-          description: Order marked as delivered successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: success
-                  data:
-                    type: object
-                    properties:
-                      order:
-                        $ref: '#/components/schemas/Order'
-        "400":
-          $ref: '#/components/responses/ValidationError'
-        "401":
-          $ref: '#/components/responses/Unauthorized'
-        "403":
-          description: Access denied - Admin only
+          description: Order not found
           content:
             application/json:
               schema:
@@ -448,12 +252,7 @@ paths:
                       properties:
                         field:
                           type: string
-                          example: null
-                        message:
-                          type: string
-                          example: "شما اجازه انجام این عمل را ندارید!"
-        "404":
-          $ref: '#/components/responses/NotFound'
+                          example: "سفارش مورد نظر یافت نشد"
 
 ######################################################
 ################### REFERENCES #######################
@@ -557,7 +356,7 @@ components:
         type: string
         pattern: '^[0-9a-fA-F]{24}$'
         example: "60d21b4667d0d8992e610c85"
-      description: "شناسه سفارش (ObjectId)"
+      description: "شناسه سفارش"
 
   responses:
     ValidationError:
