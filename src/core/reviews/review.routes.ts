@@ -7,11 +7,6 @@ import { validateRequest } from "../../middlewares/validate-request";
 
 const router = express.Router({ mergeParams: true });
 
-/************************************************************************
- *********  @description Protect all routes below to users only *********
- ************************************************************************/
-router.use(authMiddleware.protect);
-
 router.get("/", [
 	reviewMiddleware.beforeGetAll,
 	reviewController.getAllReviews.bind(reviewController),
@@ -23,6 +18,11 @@ router.get(
 	validateRequest,
 	reviewController.getReviewById.bind(reviewController)
 );
+
+/************************************************************************
+ *********  @description Protect all routes below to users only *********
+ ************************************************************************/
+router.use(authMiddleware.protect);
 
 router.post("/", [
 	reviewMiddleware.beforeCreate,

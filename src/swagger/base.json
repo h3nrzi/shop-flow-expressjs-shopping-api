@@ -33,20 +33,20 @@
 			"description": "Products related endpoints"
 		},
 		{
-			"name": "Orders",
-			"description": "Orders related endpoints"
-		},
-		{
 			"name": "Reviews",
 			"description": "Reviews related endpoints"
 		},
 		{
-			"name": "Admin",
-			"description": "Admin related endpoints"
+			"name": "Orders",
+			"description": "Orders related endpoints"
 		},
 		{
 			"name": "Uploads",
 			"description": "File upload related endpoints"
+		},
+		{
+			"name": "Admin",
+			"description": "Admin related endpoints"
 		}
 	],
 	"components": {

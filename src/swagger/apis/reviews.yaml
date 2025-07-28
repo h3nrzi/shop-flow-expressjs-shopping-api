@@ -10,9 +10,6 @@ paths:
         - Reviews
       summary: Get all reviews for a product
       description: Returns a paginated list of reviews for a specific product. Supports filtering, sorting, and field selection.
-      security:
-        - cookieAuth: []
-        - bearerAuth: []
       parameters:
         - $ref: '#/components/parameters/productId'
         - in: query
@@ -132,12 +129,8 @@ paths:
                         type: array
                         items:
                           $ref: '#/components/schemas/Review'
-        "400":
-          $ref: '#/components/responses/ValidationError'
-        "401":
-          $ref: '#/components/responses/Unauthorized'
         "404":
-          description: Product not found or page exceeds total pages
+          description: Page exceeds total pages
           content:
             application/json:
               schema:
@@ -192,11 +185,28 @@ paths:
                       review:
                         $ref: '#/components/schemas/Review'
         "400":
-          $ref: '#/components/responses/ValidationError'
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: rating
+                        message:
+                          type: string
+                          example: "امتیاز باید بین 1 تا 5 باشد"
         "401":
           $ref: '#/components/responses/Unauthorized'
-        "404":
-          $ref: '#/components/responses/NotFound'
 
   /api/products/{productId}/reviews/{id}:
     # ------------------------------------------------ GET REVIEW BY ID ----------------------------------------------------
@@ -205,9 +215,6 @@ paths:
         - Reviews
       summary: Get a specific review by ID
       description: Returns a single review by its ID for a specific product
-      security:
-        - cookieAuth: []
-        - bearerAuth: []
       parameters:
         - $ref: '#/components/parameters/productId'
         - $ref: '#/components/parameters/reviewId'
@@ -227,8 +234,6 @@ paths:
                     properties:
                       review:
                         $ref: '#/components/schemas/Review'
-        "400":
-          $ref: '#/components/responses/ValidationError'
         "401":
           $ref: '#/components/responses/Unauthorized'
         "404":
@@ -288,7 +293,26 @@ paths:
                       review:
                         $ref: '#/components/schemas/Review'
         "400":
-          $ref: '#/components/responses/ValidationError'
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: rating
+                        message:
+                          type: string
+                          example: "امتیاز باید بین 1 تا 5 باشد"
         "401":
           $ref: '#/components/responses/Unauthorized'
         "403":
@@ -349,8 +373,6 @@ paths:
       responses:
         "204":
           description: Review deleted successfully
-        "400":
-          $ref: '#/components/responses/ValidationError'
         "401":
           $ref: '#/components/responses/Unauthorized'
         "403":
@@ -494,7 +516,7 @@ components:
         type: string
         pattern: '^[0-9a-fA-F]{24}$'
         example: "60d21b4667d0d8992e610c87"
-      description: "شناسه محصول (ObjectId)"
+      description: "شناسه محصول"
 
     reviewId:
       name: id
@@ -504,5 +526,5 @@ components:
         type: string
         pattern: '^[0-9a-fA-F]{24}$'
         example: "60d21b4667d0d8992e610c85"
-      description: "شناسه نظر (ObjectId)"
+      description: "شناسه نظر"
 

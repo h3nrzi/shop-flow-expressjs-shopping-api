@@ -137,6 +137,27 @@ paths:
                         type: array
                         items:
                           $ref: '#/components/schemas/Product'
+        "404":
+          description: Page exceeds total pages
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: null
+                        message:
+                          type: string
+                          example: "این صفحه وجود ندارد"
 
   /api/products/{id}:
     # ------------------------------------------------ GET PRODUCT BY ID ----------------------------------------------------
