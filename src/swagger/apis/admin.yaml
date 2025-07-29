@@ -1,23 +1,20 @@
-
 ############################################
 ########### USER ENDPOINTS #################
 ############################################
 
 paths:
   /api/users:
-    #--------------------------------------------
-    #----------- GET ALL USERS ------------------
-    #--------------------------------------------
     get:
+      #----------- GET ALL USERS ------------------
       tags:
         - Admin
-      summary: Get all users 
+      summary: Get all users
       description: Returns a list of all users. Only accessible by admin users.
       security:
         - cookieAuth: []
         - bearerAuth: []
       parameters:
-        - $ref: '#/components/parameters/get-users-query-params'
+        - $ref: "#/components/parameters/get-users-query-params"
       responses:
         "200":
           description: List of users
@@ -35,13 +32,11 @@ paths:
                       users:
                         type: array
                         items:
-                          $ref: '#/components/schemas/User'
+                          $ref: "#/components/schemas/User"
         "401":
-          $ref: '#/components/responses/Unauthorized'
+          $ref: "#/components/responses/UnauthorizedWithAdminAuthorization"
     post:
-      #--------------------------------------------
       #----------- CREATE USER ------------------
-      #--------------------------------------------
       tags:
         - Admin
       summary: Create a new user
@@ -54,7 +49,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/Dtos/CreateUserDto'
+              $ref: "#/components/Dtos/CreateUserDto"
       responses:
         "201":
           description: User created successfully
@@ -70,24 +65,40 @@ paths:
                     type: object
                     properties:
                       user:
-                        $ref: '#/components/schemas/User'
+                        $ref: "#/components/schemas/User"
         "400":
-          $ref: '#/components/responses/ValidationError'
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: name
+                        message:
+                          type: string
+                          example: نام کاربر الزامی است
         "401":
-          $ref: '#/components/responses/Unauthorized'
-
+          $ref: "#/components/responses/Unauthorized"
 
   /api/users/{id}:
-    #--------------------------------------------
-    #----------- GET USER BY ID ------------------
-    #--------------------------------------------
     get:
+      #----------- GET USER BY ID ------------------
       tags:
         - Admin
       summary: Get user by ID
       description: Returns a user by ID. Only accessible by admin users.
       parameters:
-        - $ref: '#/components/parameters/get-user-by-id-path-params'
+        - $ref: "#/components/parameters/get-user-by-id-path-params"
       security:
         - cookieAuth: []
         - bearerAuth: []
@@ -106,24 +117,20 @@ paths:
                     type: object
                     properties:
                       user:
-                        $ref: '#/components/schemas/User'
-        "400":
-          $ref: '#/components/responses/ValidationError'
+                        $ref: "#/components/schemas/User"
         "401":
-          $ref: '#/components/responses/Unauthorized'
+          $ref: "#/components/responses/UnauthorizedWithAdminAuthorization"
         "404":
-          $ref: '#/components/responses/NotFound'
+          $ref: "#/components/responses/NotFound"
 
     patch:
-      #--------------------------------------------
-      #----------- UPDATE USER BY ID ------------------
-      #--------------------------------------------
       tags:
+        #----------- UPDATE USER BY ID ------------------
         - Admin
       summary: Update user by ID
       description: Updates a user by ID. Only accessible by admin users. Only main admin can update other admins.
       parameters:
-        - $ref: '#/components/parameters/get-user-by-id-path-params'
+        - $ref: "#/components/parameters/get-user-by-id-path-params"
       security:
         - cookieAuth: []
         - bearerAuth: []
@@ -132,7 +139,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/Dtos/UpdateUserDto'
+              $ref: "#/components/Dtos/UpdateUserDto"
       responses:
         "200":
           description: User updated successfully
@@ -148,11 +155,30 @@ paths:
                     type: object
                     properties:
                       user:
-                        $ref: '#/components/schemas/User'
+                        $ref: "#/components/schemas/User"
         "400":
-          $ref: '#/components/responses/ValidationError'
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: email
+                        message:
+                          type: string
+                          example: فرمت ایمیل نامعتبر است
         "401":
-          $ref: '#/components/responses/Unauthorized'
+          $ref: "#/components/responses/Unauthorized"
         "401-alt":
           description: Unauthorized. An admin tries to update another admin or the main admin
           content:
@@ -175,28 +201,24 @@ paths:
                           type: string
                           example: "شما نمی توانید حساب ادمین را آپدیت کنید فقط مدیر سیستم می تواند این کار را انجام دهد"
         "404":
-          $ref: '#/components/responses/NotFound'
+          $ref: "#/components/responses/NotFound"
 
     delete:
-      #--------------------------------------------
-      #----------- DELETE USER BY ID ------------------
-      #--------------------------------------------
       tags:
+        #----------- DELETE USER BY ID ------------------
         - Admin
       summary: Delete user by ID
       description: Deletes a user by ID. Only accessible by admin users. Only main admin can delete other admins.
       parameters:
-        - $ref: '#/components/parameters/get-user-by-id-path-params'
+        - $ref: "#/components/parameters/get-user-by-id-path-params"
       security:
         - cookieAuth: []
         - bearerAuth: []
       responses:
         "204":
           description: User deleted successfully
-        "400":
-          $ref: '#/components/responses/ValidationError'
         "401":
-          $ref: '#/components/responses/Unauthorized'
+          $ref: "#/components/responses/Unauthorized"
         "401-alt":
           description: Unauthorized. An admin tries to delete another admin or the main admin
           content:
@@ -219,14 +241,11 @@ paths:
                           type: string
                           example: "شما نمی توانید حساب ادمین را حذف کنید فقط مدیر سیستم می تواند این کار را انجام دهد"
         "404":
-          $ref: '#/components/responses/NotFound'
-
+          $ref: "#/components/responses/NotFound"
 
   /api/users/get-users-count:
-    #--------------------------------------------
-    #----------- GET USERS COUNT ------------------
-    #--------------------------------------------
     get:
+      #----------- GET USERS COUNT ------------------
       tags:
         - Admin
       summary: Get users count by period
@@ -235,7 +254,7 @@ paths:
         - cookieAuth: []
         - bearerAuth: []
       parameters:
-        - $ref: '#/components/parameters/get-users-count-query-params'
+        - $ref: "#/components/parameters/get-users-count-query-params"
       responses:
         "200":
           description: Users count by period
@@ -263,20 +282,36 @@ paths:
                               type: integer
                               example: 5
         "400":
-          $ref: '#/components/responses/ValidationError'
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: period
+                        message:
+                          type: string
+                          example: زمان وارد شده نامعتبر است
         "401":
-          $ref: '#/components/responses/Unauthorized'
+          $ref: "#/components/responses/UnauthorizedWithAdminAuthorization"
 
-
-############################################
-########### PRODUCT ENDPOINTS ##############
-############################################
+  ############################################
+  ########### PRODUCT ENDPOINTS ##############
+  ############################################
 
   /api/products:
     post:
-      #--------------------------------------------
       #----------- CREATE PRODUCT ------------------
-      #--------------------------------------------
       tags:
         - Admin
       summary: Create a new product
@@ -289,7 +324,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/Dtos/CreateProductDto'
+              $ref: "#/components/Dtos/CreateProductDto"
       responses:
         "201":
           description: Product created successfully
@@ -305,25 +340,41 @@ paths:
                     type: object
                     properties:
                       product:
-                        $ref: '#/components/schemas/Product'
+                        $ref: "#/components/schemas/Product"
         "400":
-          $ref: '#/components/responses/ValidationError'
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: category
+                        message:
+                          type: string
+                          example: دسته بندی الزامی است
         "401":
-          $ref: '#/components/responses/Unauthorized'
+          $ref: "#/components/responses/UnauthorizedWithAdminAuthorization"
 
-
-############################################
-########### ORDER ENDPOINTS ###############
-############################################
+  ############################################
+  ########### ORDER ENDPOINTS ###############
+  ############################################
 
   /api/orders:
-    #--------------------------------------------
     #----------- GET ALL ORDERS (ADMIN) --------
-    #--------------------------------------------
     get:
       tags:
         - Admin
-      summary: Get all orders (Admin only)
+      summary: Get all orders
       description: Returns a paginated list of all orders from all users. Supports filtering, sorting, and search functionality. Only accessible by admin users.
       security:
         - cookieAuth: []
@@ -350,7 +401,29 @@ paths:
           name: sort
           schema:
             type: string
-            enum: [-totalPrice, totalPrice, -itemsPrice, itemsPrice, -shippingPrice, shippingPrice, -taxPrice, taxPrice, -createdAt, createdAt, -updatedAt, updatedAt, -paidAt, paidAt, -deliveredAt, deliveredAt, -isPaid, isPaid, -isDelivered, isDelivered]
+            enum:
+              [
+                -totalPrice,
+                totalPrice,
+                -itemsPrice,
+                itemsPrice,
+                -shippingPrice,
+                shippingPrice,
+                -taxPrice,
+                taxPrice,
+                -createdAt,
+                createdAt,
+                -updatedAt,
+                updatedAt,
+                -paidAt,
+                paidAt,
+                -deliveredAt,
+                deliveredAt,
+                -isPaid,
+                isPaid,
+                -isDelivered,
+                isDelivered,
+              ]
             example: -createdAt
           required: false
           description: ترتیب مرتب‌سازی نتایج (صعودی یا نزولی)
@@ -358,7 +431,7 @@ paths:
           name: user
           schema:
             type: string
-            pattern: '^[0-9a-fA-F]{24}$'
+            pattern: "^[0-9a-fA-F]{24}$"
             example: "60d21b4667d0d8992e610c86"
           required: false
           description: فیلتر سفارشات بر اساس شناسه کاربر
@@ -462,58 +535,35 @@ paths:
                     type: integer
                     example: 10
                   pagination:
-                    $ref: '#/components/schemas/Pagination'
+                    $ref: "#/components/schemas/Pagination"
                   data:
                     type: object
                     properties:
                       orders:
                         type: array
                         items:
-                          $ref: '#/components/schemas/Order'
+                          $ref: "#/components/schemas/Order"
         "401":
-          $ref: '#/components/responses/Unauthorized'
-        "403":
-          description: Access denied - Admin only
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: fail
-                  errors:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        field:
-                          type: string
-                          example: null
-                        message:
-                          type: string
-                          example: "شما اجازه انجام این عمل را ندارید!"
+          $ref: "#/components/responses/UnauthorizedWithAdminAuthorization"
 
   /api/orders/{id}:
-    #--------------------------------------------
     #----------- UPDATE ORDER (ADMIN) ----------
-    #--------------------------------------------
     patch:
       tags:
         - Admin
-      summary: Update order (Admin only)
+      summary: Update order
       description: Updates an existing order. Only accessible by admin users.
       security:
         - cookieAuth: []
         - bearerAuth: []
       parameters:
-        - $ref: '#/components/parameters/get-order-by-id-path-params'
+        - $ref: "#/components/parameters/get-order-by-id-path-params"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/Dtos/UpdateOrderDto'
+              $ref: "#/components/Dtos/UpdateOrderDto"
       responses:
         "200":
           description: Order updated successfully
@@ -529,13 +579,9 @@ paths:
                     type: object
                     properties:
                       order:
-                        $ref: '#/components/schemas/Order'
+                        $ref: "#/components/schemas/Order"
         "400":
-          $ref: '#/components/responses/ValidationError'
-        "401":
-          $ref: '#/components/responses/Unauthorized'
-        "403":
-          description: Access denied - Admin only
+          description: Validation error
           content:
             application/json:
               schema:
@@ -551,26 +597,26 @@ paths:
                       properties:
                         field:
                           type: string
-                          example: null
+                          example: orderItems
                         message:
                           type: string
-                          example: "شما اجازه انجام این عمل را ندارید!"
+                          example: آیتم های سفارش الزامی است
         "404":
-          $ref: '#/components/responses/NotFound'
+          $ref: "#/components/responses/NotFound"
+        "401":
+          $ref: "#/components/responses/UnauthorizedWithAdminAuthorization"
 
-    #--------------------------------------------
-    #----------- DELETE ORDER (ADMIN) ----------
-    #--------------------------------------------
+      #----------- DELETE ORDER (ADMIN) ----------
     delete:
       tags:
         - Admin
-      summary: Delete order (Admin only)
+      summary: Delete order
       description: Deletes an existing order. Only accessible by admin users.
       security:
         - cookieAuth: []
         - bearerAuth: []
       parameters:
-        - $ref: '#/components/parameters/get-order-by-id-path-params'
+        - $ref: "#/components/parameters/get-order-by-id-path-params"
       responses:
         "204":
           description: Order deleted successfully
@@ -582,48 +628,24 @@ paths:
                   status:
                     type: string
                     example: success
-        "400":
-          $ref: '#/components/responses/ValidationError'
+
         "401":
-          $ref: '#/components/responses/Unauthorized'
-        "403":
-          description: Access denied - Admin only
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: fail
-                  errors:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        field:
-                          type: string
-                          example: null
-                        message:
-                          type: string
-                          example: "شما اجازه انجام این عمل را ندارید!"
+          $ref: "#/components/responses/UnauthorizedWithAdminAuthorization"
         "404":
-          $ref: '#/components/responses/NotFound'
+          $ref: "#/components/responses/NotFound"
 
   /api/orders/{id}/deliver:
-    #--------------------------------------------
     #----------- UPDATE ORDER TO DELIVERED -----
-    #--------------------------------------------
     patch:
       tags:
         - Admin
-      summary: Update order to delivered (Admin only)
+      summary: Update order to delivered
       description: Marks an order as delivered. Only accessible by admin users.
       security:
         - cookieAuth: []
         - bearerAuth: []
       parameters:
-        - $ref: '#/components/parameters/get-order-by-id-path-params'
+        - $ref: "#/components/parameters/get-order-by-id-path-params"
       responses:
         "200":
           description: Order marked as delivered successfully
@@ -639,34 +661,11 @@ paths:
                     type: object
                     properties:
                       order:
-                        $ref: '#/components/schemas/Order'
-        "400":
-          $ref: '#/components/responses/ValidationError'
+                        $ref: "#/components/schemas/Order"
         "401":
-          $ref: '#/components/responses/Unauthorized'
-        "403":
-          description: Access denied - Admin only
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: fail
-                  errors:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        field:
-                          type: string
-                          example: null
-                        message:
-                          type: string
-                          example: "شما اجازه انجام این عمل را ندارید!"
+          $ref: "#/components/responses/UnauthorizedWithAdminAuthorization"
         "404":
-          $ref: '#/components/responses/NotFound'
+          $ref: "#/components/responses/NotFound"
 
 ############################################
 ########### REFERENCES #####################
@@ -767,14 +766,14 @@ components:
             properties:
               productId:
                 type: string
-                pattern: '^[0-9a-fA-F]{24}$'
+                pattern: "^[0-9a-fA-F]{24}$"
                 example: "60d21b4667d0d8992e610c85"
               qty:
                 type: integer
                 minimum: 1
                 example: 3
         shippingAddress:
-          $ref: '#/components/schemas/ShippingAddress'
+          $ref: "#/components/schemas/ShippingAddress"
         paymentMethod:
           type: string
           example: "PayPal"
@@ -912,30 +911,9 @@ components:
       required: true
       schema:
         type: string
-        pattern: '^[0-9a-fA-F]{24}$'
+        pattern: "^[0-9a-fA-F]{24}$"
         example: "60d21b4667d0d8992e610c85"
   responses:
-    ValidationError:
-      description: Validation error
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              status:
-                type: string
-                example: fail
-              errors:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    field:
-                      type: string
-                      example: name
-                    message:
-                      type: string
-                      example: نام کاربر الزامی است
     NotFound:
       description: Resource not found
       content:
