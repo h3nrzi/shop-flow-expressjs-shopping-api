@@ -67,6 +67,16 @@ export class AuthController {
 		});
 	}
 
+	async refreshToken(
+		req: Request,
+		res: Response
+	): Promise<void> {
+		const user = await this.authService.refreshToken(
+			req.cookies.refreshToken
+		);
+		createSendTokenAndResponse(user, 200, res);
+	}
+
 	/************************************************************
 	 ************* @description PATCH HANDLERS ******************
 	 ************************************************************/
@@ -78,16 +88,6 @@ export class AuthController {
 		const user = await this.authService.resetPassword(
 			req.body as IResetPasswordDto,
 			req.query.resetToken as string
-		);
-		createSendTokenAndResponse(user, 200, res);
-	}
-
-	async refreshToken(
-		req: Request,
-		res: Response
-	): Promise<void> {
-		const user = await this.authService.refreshToken(
-			req.cookies.refreshToken
 		);
 		createSendTokenAndResponse(user, 200, res);
 	}
