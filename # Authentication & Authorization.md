@@ -62,6 +62,60 @@ Shop Flow implements JWT-based authentication with refresh tokens for enhanced s
    - New access token generated and returned
    - Process repeats until refresh token expires (7 days)
 
+   ```mermaid
+   sequenceDiagram
+       participant Client
+       participant API Server
+       participant Database
+
+       Note over Client, API Server: Pre-condition: Client has an expired Access Token and a valid Refresh Token.
+
+       Client->>API Server: 1. GET /api/protected-resource (with expired Access Token)
+       activate API Server
+
+       Note over API Server: `protect` middleware validates token.
+       API Server-->>Client: 2. 401 Unauthorized (Access Token expired)
+       deactivate API Server
+
+       Note over Client: Client's logic detects 401 and initiates token refresh.
+
+       Client->>API Server: 3. POST /auth/refresh-token (with Refresh Token from cookie)
+       activate API Server
+
+       Note over API Server: AuthService validates the refresh token.
+       API Server->>Database: 4. Find user by refresh token & check expiration/status
+       activate Database
+       Database-->>API Server: 5. Return user document (token is valid)
+       deactivate Database
+
+       Note over API Server: Token is valid. Generate new tokens (Rotation).
+       API Server->>API Server: 6. Generate new Access Token (15m)
+       API Server->>API Server: 7. Generate new Refresh Token (7d)
+
+       API Server->>Database: 8. Update user with new hashed Refresh Token & expiry
+       activate Database
+       Database-->>API Server: 9. Confirm update
+       deactivate Database
+
+       API Server-->>Client: 10. 200 OK (with new Access Token in body/header and new Refresh Token in cookie)
+       deactivate API Server
+
+       Note over Client: Client stores new tokens and retries original request.
+
+       Client->>API Server: 11. GET /api/protected-resource (with new Access Token)
+       activate API Server
+
+       Note over API Server: `protect` middleware validates new token.
+       API Server->>Database: 12. Find user by ID from token payload
+       activate Database
+       Database-->>API Server: 13. Return user document
+       deactivate Database
+
+       Note over API Server: User is valid and authorized.
+       API Server-->>Client: 14. 200 OK (with requested resource data)
+       deactivate API Server
+   ```
+
 7. **Logout Process**
    - Client calls `/auth/logout`
    - Refresh token removed from database
