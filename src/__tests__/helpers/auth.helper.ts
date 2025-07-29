@@ -51,6 +51,14 @@ export const resetPasswordRequest = async (
 		.send(body);
 };
 
+export const refreshTokenRequest = async (
+	cookie?: string
+): Promise<Response> => {
+	const req = request(app).post("/api/users/refresh-token");
+	if (cookie) req.set("Cookie", cookie);
+	return await req.send();
+};
+
 // ===============================================
 // ============ Helper Functions =================
 // ===============================================

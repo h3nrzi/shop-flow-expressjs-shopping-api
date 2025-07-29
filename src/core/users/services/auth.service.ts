@@ -3,6 +3,7 @@ import { InternalServerError } from "../../../errors/internal-server-error";
 import { NotAuthorizedError } from "../../../errors/not-authorized-error";
 import { NotFoundError } from "../../../errors/not-found-error";
 import { sendEmail } from "../../../utils/email";
+import { verifyRefreshToken } from "../../../utils/refreshToken";
 import { IForgotPasswordDto } from "../dtos/forgot.password.dto";
 import { ILoginDto } from "../dtos/login.dto";
 import { IResetPasswordDto } from "../dtos/reset.password.dto";
@@ -134,5 +135,29 @@ export class AuthService {
 		const updatedUser = await user.save();
 
 		return updatedUser;
+	}
+
+	async refreshToken(refreshToken: string): Promise<IUserDoc> {
+		if (!refreshToken) {
+			throw new NotAuthorizedError("توکن تازه‌سازی ارائه نشده است");
+		}
+
+		// Verify refresh token
+		const decoded = (await verifyRefreshToken(refreshToken)) as {
+			id: string;
+		};
+
+		// Find user and validate refresh token
+		const user = await this.userRepository.findById(decoded.id);
+		if (!user || user.refreshToken !== refreshToken || 
+			!user.refreshTokenExpires || user.refreshTokenExpires < new Date()) {
+			throw new NotAuthorizedError("توکن تازه‌سازی نامعتبر یا منقضی شده است");
+		}
+
+		if (!user.active) {
+			throw new NotAuthorizedError("حساب کاربری غیرفعال است");
+		}
+
+		return user;
 	}
 }

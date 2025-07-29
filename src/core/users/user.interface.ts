@@ -7,17 +7,23 @@ export interface IUserDoc extends mongoose.Document {
 	photo?: string;
 	role: "user" | "admin"; // default: user
 	active: boolean; // default: true
+
 	password: string;
 	passwordConfirmation?: string;
 	passwordChangedAt?: Date;
+
 	passwordResetToken?: String;
 	passwordResetExpires?: Number;
 
+	refreshToken?: string;
+	refreshTokenExpires?: Date;
+
 	// Instance methods
 	correctPassword: (
-		candidate_password: string,
+		candidate_password: string
 	) => Promise<boolean>;
 	signToken: () => string;
+	signRefreshToken: () => string;
 	changePasswordAfter: (jwtTimeStamp: number) => boolean;
 	createPasswordResetToken: () => string;
 }

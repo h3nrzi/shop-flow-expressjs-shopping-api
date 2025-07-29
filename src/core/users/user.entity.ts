@@ -45,6 +45,8 @@ const userSchema = new Schema<IUserDoc>(
 		passwordChangedAt: { type: Date },
 		passwordResetToken: { type: String },
 		passwordResetExpires: { type: Date },
+		refreshToken: { type: String },
+		refreshTokenExpires: { type: Date },
 	},
 	{
 		toJSON: {
@@ -65,6 +67,12 @@ const userSchema = new Schema<IUserDoc>(
 userSchema.methods.signToken = function (): string {
 	return jwt.sign({ id: this._id }, process.env.JWT_SECRET!, {
 		expiresIn: process.env.JWT_EXPIRES_IN,
+	});
+};
+
+userSchema.methods.signRefreshToken = function (): string {
+	return jwt.sign({ id: this._id }, process.env.JWT_REFRESH_SECRET!, {
+		expiresIn: process.env.JWT_REFRESH_EXPIRES_IN,
 	});
 };
 

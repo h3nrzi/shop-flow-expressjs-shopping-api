@@ -95,6 +95,11 @@ router.patch("/reset-password", [
 	authController.resetPassword.bind(authController),
 ]);
 
+router.post(
+	"/refresh-token",
+	authController.refreshToken.bind(authController)
+);
+
 /************************************************************************
  *********  @description Protect all routes below to users only *********
  ************************************************************************/

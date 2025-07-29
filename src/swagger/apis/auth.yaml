@@ -268,6 +268,79 @@ paths:
                           type: string
                           example: "توکن نامعتبر است یا منقضی شده است!"
 
+  /api/users/refresh-token:
+    # ------------------------------------------------ REFRESH TOKEN -----------------------------------------
+    post:
+      tags:
+        - Auth
+      summary: Refresh access token
+      description: Generates a new access token using the refresh token from cookies
+      responses:
+        "200":
+          description: New access token generated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: '#/components/schemas/User'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: null
+                        message:
+                          type: string
+              examples:
+                NoRefreshToken:
+                  summary: No refresh token provided
+                  value:
+                    status: fail
+                    errors:
+                      - field: null
+                        message: "توکن تازه‌سازی ارائه نشده است"
+                InvalidRefreshToken:
+                  summary: Invalid refresh token
+                  value:
+                    status: fail
+                    errors:
+                      - field: null
+                        message: "توکن تازه‌سازی معتبر نیست"
+                UserInactive:
+                  summary: User account is inactive
+                  value:
+                    status: fail
+                    errors:
+                      - field: null
+                        message: "حساب کاربری غیرفعال است"
+                TokenExpired:
+                  summary: Refresh token expired
+                  value:
+                    status: fail
+                    errors:
+                      - field: null
+                        message: "توکن تازه‌سازی نامعتبر یا منقضی شده است"
+
 
 ######################################################
 ################### REFERENCES #######################

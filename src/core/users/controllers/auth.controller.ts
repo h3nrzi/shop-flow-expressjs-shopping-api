@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import ms from "ms";
 import createSendTokenAndResponse from "../../../utils/createSendTokenAndResponse";
 import { IForgotPasswordDto } from "../dtos/forgot.password.dto";
 import { ILoginDto } from "../dtos/login.dto";
@@ -29,10 +28,22 @@ export class AuthController {
 	}
 
 	async logout(req: Request, res: Response): Promise<void> {
+		// Clear refresh token from database if user is authenticated
+		if (req.user) {
+			req.user.refreshToken = undefined;
+			req.user.refreshTokenExpires = undefined;
+			await req.user.save({ validateBeforeSave: false });
+		}
+
+		// Clear cookies
 		res.cookie("jwt", "", {
-			expires: new Date(
-				Date.now() + ms(process.env.JWT_COOKIE_EXPIRES_IN!)
-			),
+			expires: new Date(Date.now() - 1000),
+			secure: process.env.NODE_ENV === "production",
+			httpOnly: true,
+			sameSite: "lax",
+		});
+		res.cookie("refreshToken", "", {
+			expires: new Date(Date.now() - 1000),
 			secure: process.env.NODE_ENV === "production",
 			httpOnly: true,
 			sameSite: "lax",
@@ -67,6 +78,16 @@ export class AuthController {
 		const user = await this.authService.resetPassword(
 			req.body as IResetPasswordDto,
 			req.query.resetToken as string
+		);
+		createSendTokenAndResponse(user, 200, res);
+	}
+
+	async refreshToken(
+		req: Request,
+		res: Response
+	): Promise<void> {
+		const user = await this.authService.refreshToken(
+			req.cookies.refreshToken
 		);
 		createSendTokenAndResponse(user, 200, res);
 	}

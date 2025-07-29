@@ -8,18 +8,33 @@ const createSendTokenAndResponse = (
 	statusCode: number,
 	res: Response,
 ) => {
-	const token = user.signToken();
+	const accessToken = user.signToken();
+	const refreshToken = user.signRefreshToken();
 
-	res.cookie("jwt", token, {
+	// Set access token cookie
+	res.cookie("jwt", accessToken, {
 		httpOnly: true,
 		secure: process.env.NODE_ENV === "production",
 		sameSite: "strict",
 		maxAge: ms(process.env.JWT_COOKIE_EXPIRES_IN!),
 	});
 
+	// Set refresh token cookie
+	res.cookie("refreshToken", refreshToken, {
+		httpOnly: true,
+		secure: process.env.NODE_ENV === "production",
+		sameSite: "strict",
+		maxAge: ms(process.env.JWT_REFRESH_COOKIE_EXPIRES_IN!),
+	});
+
+	// Store refresh token in database
+	user.refreshToken = refreshToken;
+	user.refreshTokenExpires = new Date(Date.now() + ms(process.env.JWT_REFRESH_EXPIRES_IN!));
+	user.save({ validateBeforeSave: false });
+
 	return res
 		.status(statusCode)
-		.header("x-auth-token", token)
+		.header("x-auth-token", accessToken)
 		.json({
 			status: "success",
 			data: {
