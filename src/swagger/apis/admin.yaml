@@ -14,7 +14,97 @@ paths:
         - cookieAuth: []
         - bearerAuth: []
       parameters:
-        - $ref: "#/components/parameters/get-users-query-params"
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+            example: 1
+          required: false
+          description: شماره صفحه برای صفحه‌بندی نتایج
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            example: 10
+          required: false
+          description: تعداد نتایج در هر صفحه
+        - in: query
+          name: sort
+          schema:
+            type: string
+            enum:
+              [
+                -name,
+                name,
+                -email,
+                email,
+                -role,
+                role,
+                -active,
+                active,
+                -createdAt,
+                createdAt,
+                -updatedAt,
+                updatedAt,
+              ]
+            example: -createdAt
+          required: false
+          description: ترتیب مرتب‌سازی نتایج (صعودی یا نزولی)
+        - in: query
+          name: search
+          schema:
+            type: string
+            example: "john"
+          required: false
+          description: جستجو در نام و ایمیل کاربران
+        - in: query
+          name: name
+          schema:
+            type: string
+            example: "John Doe"
+          required: false
+          description: فیلتر بر اساس نام کاربر
+        - in: query
+          name: email
+          schema:
+            type: string
+            example: "john@example.com"
+          required: false
+          description: فیلتر بر اساس ایمیل کاربر
+        - in: query
+          name: role
+          schema:
+            type: string
+            enum: [admin, user]
+            example: "user"
+          required: false
+          description: فیلتر بر اساس نقش کاربر
+        - in: query
+          name: active
+          schema:
+            type: boolean
+            example: true
+          required: false
+          description: فیلتر بر اساس وضعیت فعال بودن کاربر
+        - in: query
+          name: createdAt , createdAt[gt] , createdAt[lt] , createdAt[gte] , createdAt[lte]
+          schema:
+            type: string
+            format: date-time
+            example: "2023-01-01T10:00:00.000Z"
+          required: false
+          description: فیلتر بر اساس تاریخ ایجاد کاربر
+        - in: query
+          name: updatedAt , updatedAt[gt] , updatedAt[lt] , updatedAt[gte] , updatedAt[lte]
+          schema:
+            type: string
+            format: date-time
+            example: "2023-01-01T10:00:00.000Z"
+          required: false
+          description: فیلتر بر اساس تاریخ آپدیت کاربر
       responses:
         "200":
           description: List of users
@@ -26,6 +116,11 @@ paths:
                   status:
                     type: string
                     example: success
+                  results:
+                    type: integer
+                    example: 10
+                  pagination:
+                    $ref: "#/components/schemas/Pagination"
                   data:
                     type: object
                     properties:
@@ -310,6 +405,193 @@ paths:
   ############################################
 
   /api/products:
+    get:
+      #----------- GET ALL PRODUCTS (ADMIN) --------
+      tags:
+        - Admin
+      summary: Get all products
+      description: Returns a paginated list of all products. Supports filtering, sorting, and search functionality. Only accessible by admin users.
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+            example: 1
+          required: false
+          description: شماره صفحه برای صفحه‌بندی نتایج
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            example: 10
+          required: false
+          description: تعداد نتایج در هر صفحه
+        - in: query
+          name: sort
+          schema:
+            type: string
+            enum:
+              [
+                -name,
+                name,
+                -price,
+                price,
+                -discountedPrice,
+                discountedPrice,
+                -discount,
+                discount,
+                -countInStock,
+                countInStock,
+                -rating,
+                rating,
+                -numReviews,
+                numReviews,
+                -brand,
+                brand,
+                -category,
+                category,
+                -isAvailable,
+                isAvailable,
+                -createdAt,
+                createdAt,
+                -updatedAt,
+                updatedAt,
+              ]
+            example: -createdAt
+          required: false
+          description: ترتیب مرتب‌سازی نتایج (صعودی یا نزولی)
+        - in: query
+          name: search
+          schema:
+            type: string
+            example: "لپ تاپ"
+          required: false
+          description: جستجو در نام و توضیحات محصول
+        - in: query
+          name: name
+          schema:
+            type: string
+            example: "لپ تاپ Asus"
+          required: false
+          description: فیلتر بر اساس نام محصول
+        - in: query
+          name: brand
+          schema:
+            type: string
+            example: "Asus"
+          required: false
+          description: فیلتر بر اساس برند محصول
+        - in: query
+          name: category
+          schema:
+            type: string
+            example: "لپ تاپ"
+          required: false
+          description: فیلتر بر اساس دسته‌بندی محصول
+        - in: query
+          name: isAvailable
+          schema:
+            type: boolean
+            example: true
+          required: false
+          description: فیلتر بر اساس وضعیت در دسترس بودن محصول
+        - in: query
+          name: price , price[gt] , price[lt] , price[gte] , price[lte]
+          schema:
+            type: number
+            minimum: 0
+            example: 15000000
+          required: false
+          description: فیلتر بر اساس قیمت محصول (به تومان)
+        - in: query
+          name: discountedPrice , discountedPrice[gt] , discountedPrice[lt] , discountedPrice[gte] , discountedPrice[lte]
+          schema:
+            type: number
+            minimum: 0
+            example: 14250000
+          required: false
+          description: فیلتر بر اساس قیمت بعد از تخفیف (به تومان)
+        - in: query
+          name: discount , discount[gt] , discount[lt] , discount[gte] , discount[lte]
+          schema:
+            type: number
+            minimum: 0
+            maximum: 100
+            example: 5
+          required: false
+          description: فیلتر بر اساس درصد تخفیف
+        - in: query
+          name: countInStock , countInStock[gt] , countInStock[lt] , countInStock[gte] , countInStock[lte]
+          schema:
+            type: integer
+            minimum: 0
+            example: 25
+          required: false
+          description: فیلتر بر اساس تعداد موجودی انبار
+        - in: query
+          name: rating , rating[gt] , rating[lt] , rating[gte] , rating[lte]
+          schema:
+            type: number
+            minimum: 0
+            maximum: 5
+            example: 4.5
+          required: false
+          description: فیلتر بر اساس امتیاز محصول
+        - in: query
+          name: numReviews , numReviews[gt] , numReviews[lt] , numReviews[gte] , numReviews[lte]
+          schema:
+            type: integer
+            minimum: 0
+            example: 100
+          required: false
+          description: فیلتر بر اساس تعداد نظرات
+        - in: query
+          name: createdAt , createdAt[gt] , createdAt[lt] , createdAt[gte] , createdAt[lte]
+          schema:
+            type: string
+            format: date-time
+            example: "2023-01-01T10:00:00.000Z"
+          required: false
+          description: فیلتر بر اساس تاریخ ایجاد محصول
+        - in: query
+          name: updatedAt , updatedAt[gt] , updatedAt[lt] , updatedAt[gte] , updatedAt[lte]
+          schema:
+            type: string
+            format: date-time
+            example: "2023-01-01T10:00:00.000Z"
+          required: false
+          description: فیلتر بر اساس تاریخ آپدیت محصول
+      responses:
+        "200":
+          description: List of all products
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  results:
+                    type: integer
+                    example: 10
+                  pagination:
+                    $ref: "#/components/schemas/Pagination"
+                  data:
+                    type: object
+                    properties:
+                      products:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/Product"
+        "401":
+          $ref: "#/components/responses/UnauthorizedWithAdminAuthorization"
     post:
       #----------- CREATE PRODUCT ------------------
       tags:
