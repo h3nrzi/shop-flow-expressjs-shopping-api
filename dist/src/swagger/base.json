@@ -15,7 +15,7 @@
 			"description": "Local development server"
 		},
 		{
-			"url": "https://shop-flow.render.com",
+			"url": "https://shop-flow-eg6b.onrender.com",
 			"description": "Production server"
 		}
 	],

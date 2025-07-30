@@ -26,7 +26,7 @@ module.exports = (app: Express) => {
 
 	// Serving Static Files
 	app.use(
-		express.static(path.join(path.resolve(), "src", "public")),
+		express.static(path.join(path.resolve(), "src", "public"))
 	);
 	// app.use(express.static(path.join(path.resolve(), "client", "dist")))
 
@@ -54,7 +54,7 @@ module.exports = (app: Express) => {
 					],
 				},
 			},
-		}),
+		})
 	);
 
 	// CORS Configuration
@@ -106,6 +106,6 @@ module.exports = (app: Express) => {
 				"discount",
 				"discountedPrice",
 			],
-		}),
+		})
 	);
 };
