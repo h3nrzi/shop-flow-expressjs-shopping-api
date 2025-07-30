@@ -315,21 +315,14 @@ Ensure all environment variables are properly configured for production:
 
 ## 📝 License
 
-This project is licensed under the ISC License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the ISC License - see the [LICENSE](licence) file for details.
 
 ## 👨‍💻 Author
 
 **Hossein Rezaei**
 
 - Email: rezaeig22@gmail.com
-- GitHub: [h3nrzi](https://github.com/h3nrzi)
-
-## 🙏 Acknowledgments
-
-- Express.js team for the excellent web framework
-- MongoDB team for the robust database solution
-- Jest team for the comprehensive testing framework
-- All open-source contributors who made this project possible
+- Telegram: [@h3nrzi](https://t.me/h3nrzi)
 
 ---
 

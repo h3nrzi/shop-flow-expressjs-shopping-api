@@ -57,7 +57,7 @@ export class UserRepository {
 
 ### 4. Dependency Injection
 
-The project uses manual dependency injection through a central [`index.ts`](src/core/index.ts) file:
+The project uses manual dependency injection through a central [`index.ts`](../src/core/index.ts) file:
 
 ```typescript
 // Repositories Injection
@@ -79,10 +79,10 @@ export const authController = new AuthController(authService);
 
 **Purpose**: Application configuration, setup, and bootstrapping
 
-- [`index.ts`](src/app/index.ts) - Main application entry point
-- [`config.ts`](src/app/config.ts) - Express middleware configuration
-- [`routes.ts`](src/app/routes.ts) - Route registration
-- [`db.ts`](src/app/db.ts) - Database connection setup
+- [`index.ts`](../src/app/index.ts) - Main application entry point
+- [`config.ts`](../src/app/config.ts) - Express middleware configuration
+- [`routes.ts`](../src/app/routes.ts) - Route registration
+- [`db.ts`](../src/app/db.ts) - Database connection setup
 
 **Key Features**:
 
@@ -153,26 +153,26 @@ userSchema.methods.correctPassword = async function (
 
 Cross-cutting concerns implemented as Express middleware:
 
-- [`auth.ts`](src/middlewares/auth.ts) - Authentication and authorization
-- [`error-handler.ts`](src/middlewares/error-handler.ts) - Global error handling
-- [`validate-request.ts`](src/middlewares/validate-request.ts) - Request validation
-- [`security.ts`](src/middlewares/security.ts) - Security utilities
-- [`upload.ts`](src/middlewares/upload.ts) - File upload handling
+- [`auth.ts`](../src/middlewares/auth.ts) - Authentication and authorization
+- [`error-handler.ts`](../src/middlewares/error-handler.ts) - Global error handling
+- [`validate-request.ts`](../src/middlewares/validate-request.ts) - Request validation
+- [`security.ts`](../src/middlewares/security.ts) - Security utilities
+- [`upload.ts`](../src/middlewares/upload.ts) - File upload handling
 
 #### Error Handling (`src/errors/`)
 
-Custom error classes extending a base [`CustomError`](src/errors/custom-error.ts):
+Custom error classes extending a base [`CustomError`](../src/errors/custom-error.ts):
 
-- [`NotFoundError`](src/errors/not-found-error.ts) - 404 errors
-- [`BadRequestError`](src/errors/bad-request-error.ts) - 400 errors
-- [`NotAuthorizedError`](src/errors/not-authorized-error.ts) - 401 errors
-- [`ForbiddenError`](src/errors/forbidden-error.ts) - 403 errors
+- [`NotFoundError`](../src/errors/not-found-error.ts) - 404 errors
+- [`BadRequestError`](../src/errors/bad-request-error.ts) - 400 errors
+- [`NotAuthorizedError`](../src/errors/not-authorized-error.ts) - 401 errors
+- [`ForbiddenError`](../src/errors/forbidden-error.ts) - 403 errors
 
 ## Design Patterns Used
 
 ### 1. **Factory Pattern**
 
-Used in the dependency injection setup in [`src/core/index.ts`](src/core/index.ts)
+Used in the dependency injection setup in [`src/core/index.ts`](../src/core/index.ts)
 
 ### 2. **Strategy Pattern**
 
@@ -260,7 +260,7 @@ NODE_ENV=development
 
 ### Application Configuration
 
-Configuration is centralized in [`src/app/config.ts`](src/app/config.ts):
+Configuration is centralized in [`src/app/config.ts`](../src/app/config.ts):
 
 - Security headers (Helmet)
 - CORS configuration
@@ -284,28 +284,6 @@ Configuration is centralized in [`src/app/config.ts`](src/app/config.ts):
 - **Products ↔ Reviews**: One-to-Many
 - **Orders ↔ Products**: Many-to-Many (through order items)
 - **Users ↔ Reviews**: One-to-Many
-
-## Scalability Considerations
-
-### Horizontal Scaling
-
-- Stateless application design
-- Database connection pooling
-- Caching strategies ready for implementation
-
-### Vertical Scaling
-
-- Efficient query patterns
-- Proper indexing
-- Memory-efficient operations
-
-### Microservices Ready
-
-- Clear domain boundaries
-- Loose coupling between modules
-- API-first design
-
-## Security Architecture
 
 ### Authentication Flow
 
@@ -404,25 +382,3 @@ src/swagger/
 - **Validation**: Input validation at multiple layers
 - **Documentation**: Comprehensive API documentation
 - **Testing**: Test-driven development approach
-
-## Future Considerations
-
-### Microservices Migration
-
-The current architecture supports easy extraction of domains into separate services:
-
-1. **Domain Boundaries**: Already well-defined
-2. **API Contracts**: Clear interfaces between domains
-3. **Database Separation**: Each domain can have its own database
-4. **Communication**: REST APIs or message queues
-
-### Event-Driven Architecture
-
-Ready for event-driven patterns:
-
-1. **Domain Events**: Business events within domains
-2. **Event Sourcing**: Audit trail and state reconstruction
-3. **CQRS**: Command Query Responsibility Segregation
-4. **Message Queues**: Asynchronous processing
-
-This architecture provides a solid foundation for a scalable, maintainable e-commerce application with clear separation of concerns and room for future growth.

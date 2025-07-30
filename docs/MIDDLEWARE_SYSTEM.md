@@ -19,7 +19,7 @@ Shop Flow implements a comprehensive middleware system that handles cross-cuttin
 
 ### 1. Authentication & Authorization
 
-#### File: [`src/middlewares/auth.ts`](src/middlewares/auth.ts)
+#### File: [`src/middlewares/auth.ts`](../src/middlewares/auth.ts)
 
 **Purpose**: Handles user authentication and role-based authorization
 
@@ -134,7 +134,7 @@ router.patch(
 
 ### 2. Security Middleware
 
-#### File: [`src/middlewares/security.ts`](src/middlewares/security.ts)
+#### File: [`src/middlewares/security.ts`](../src/middlewares/security.ts)
 
 **Purpose**: Protects against XSS attacks through data sanitization
 
@@ -179,7 +179,7 @@ export const sanitizeXSS: RequestHandler = (req, res, next) => {
 
 ### 3. Validation Middleware
 
-#### File: [`src/middlewares/validate-request.ts`](src/middlewares/validate-request.ts)
+#### File: [`../src/middlewares/validate-request.ts`](src/middlewares/validate-request.ts)
 
 **Purpose**: Validates request data using express-validator
 
@@ -285,7 +285,7 @@ router.post(
 
 #### Order Middleware
 
-**File**: [`src/middlewares/order.ts`](src/middlewares/order.ts)
+**File**: [`src/middlewares/order.ts`](../src/middlewares/order.ts)
 
 **Purpose**: Preprocesses order-related requests
 
@@ -737,5 +737,3 @@ describe("Protected Routes", () => {
 - **Documentation**: Comment complex logic
 - **Modularity**: Separate concerns into different files
 - **Testing**: Comprehensive test coverage
-
-This middleware system provides a robust, secure, and maintainable foundation for handling cross-cutting concerns in the Shop Flow application.

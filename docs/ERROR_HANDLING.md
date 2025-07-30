@@ -2,7 +2,7 @@
 
 ## Overview
 
-Shop Flow implements a comprehensive error handling system based on custom error classes that extend a base [`CustomError`](src/errors/custom-error.ts) class. The system provides consistent error responses, proper HTTP status codes, and localized error messages in Persian.
+Shop Flow implements a comprehensive error handling system based on custom error classes that extend a base [`CustomError`](../src/errors/custom-error.ts) class. The system provides consistent error responses, proper HTTP status codes, and localized error messages in Persian.
 
 ## Architecture
 
@@ -52,7 +52,7 @@ All errors follow a consistent JSON response structure:
 
 ### 1. BadRequestError (400)
 
-**File**: [`src/errors/bad-request-error.ts`](src/errors/bad-request-error.ts)
+**File**: [`src/errors/bad-request-error.ts`](../src/errors/bad-request-error.ts)
 
 **Purpose**: General client-side errors, invalid requests
 
@@ -75,7 +75,7 @@ export class BadRequestError extends CustomError {
 
 ### 2. NotAuthorizedError (401)
 
-**File**: [`src/errors/not-authorized-error.ts`](src/errors/not-authorized-error.ts)
+**File**: [`src/errors/not-authorized-error.ts`](../src/errors/not-authorized-error.ts)
 
 **Purpose**: Authentication failures
 
@@ -105,7 +105,7 @@ export class NotAuthorizedError extends CustomError {
 
 ### 3. ForbiddenError (403)
 
-**File**: [`src/errors/forbidden-error.ts`](src/errors/forbidden-error.ts)
+**File**: [`src/errors/forbidden-error.ts`](../src/errors/forbidden-error.ts)
 
 **Purpose**: Authorization failures (authenticated but insufficient permissions)
 
@@ -132,7 +132,7 @@ export class ForbiddenError extends CustomError {
 
 ### 4. NotFoundError (404)
 
-**File**: [`src/errors/not-found-error.ts`](src/errors/not-found-error.ts)
+**File**: [`src/errors/not-found-error.ts`](../src/errors/not-found-error.ts)
 
 **Purpose**: Resource not found errors
 
@@ -162,7 +162,7 @@ export class NotFoundError extends CustomError {
 
 ### 5. UnprocessableEntityError (422)
 
-**File**: [`src/errors/unprocessable-entity-error.ts`](src/errors/unprocessable-entity-error.ts)
+**File**: [`src/errors/unprocessable-entity-error.ts`](../src/errors/unprocessable-entity-error.ts)
 
 **Purpose**: Semantic errors in well-formed requests
 
@@ -188,7 +188,7 @@ export class UnprocessableEntityError extends CustomError {
 
 ### 6. RequestValidationError (400)
 
-**File**: [`src/errors/request-validation-error.ts`](src/errors/request-validation-error.ts)
+**File**: [`src/errors/request-validation-error.ts`](../src/errors/request-validation-error.ts)
 
 **Purpose**: Input validation errors from express-validator
 
@@ -218,7 +218,7 @@ export class RequestValidationError extends CustomError {
 
 ### 7. InternalServerError (500)
 
-**File**: [`src/errors/internal-server-error.ts`](src/errors/internal-server-error.ts)
+**File**: [`src/errors/internal-server-error.ts`](../src/errors/internal-server-error.ts)
 
 **Purpose**: Server-side errors and unexpected failures
 
@@ -242,7 +242,7 @@ export class InternalServerError extends CustomError {
 
 ## Global Error Handler
 
-The [`errorHandler`](src/middlewares/error-handler.ts) middleware provides centralized error processing:
+The [`errorHandler`](../src/middlewares/error-handler.ts) middleware provides centralized error processing:
 
 ```typescript
 export const errorHandler: ErrorRequestHandler = (
@@ -424,7 +424,7 @@ export const validateRequest: RequestHandler = (
 
 ### 4. **Async Error Handling**
 
-The project uses [`express-async-errors`](package.json) to automatically catch async errors:
+The project uses [`express-async-errors`](../package.json) to automatically catch async errors:
 
 ```typescript
 // No need for try-catch blocks in route handlers
@@ -528,40 +528,3 @@ All user-facing error messages are in Persian:
 ### Technical Messages
 
 Internal error messages and logs remain in English for developer clarity.
-
-## Future Enhancements
-
-### 1. **Error Codes**
-
-Add unique error codes for better client-side handling:
-
-```typescript
-{
-    "status": "error",
-    "code": "USER_NOT_FOUND",
-    "errors": [...]
-}
-```
-
-### 2. **Error Context**
-
-Add request context to errors for better debugging:
-
-```typescript
-{
-    "status": "error",
-    "requestId": "uuid",
-    "timestamp": "2024-01-01T00:00:00Z",
-    "errors": [...]
-}
-```
-
-### 3. **Rate Limiting Errors**
-
-Specific error handling for rate limit violations.
-
-### 4. **Validation Error Grouping**
-
-Group related validation errors by field or section.
-
-This error handling system provides a robust, consistent, and user-friendly approach to error management throughout the Shop Flow application.
