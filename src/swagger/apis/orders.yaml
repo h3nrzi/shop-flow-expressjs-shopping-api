@@ -1,0 +1,539 @@
+######################################################
+################### ORDERS ENDPOINTS ################
+######################################################
+
+paths:
+  /api/orders:
+    # ------------------------------------------------ CREATE ORDER ----------------------------------------------------
+    post:
+      tags:
+        - Orders
+      summary: Create a new order
+      description: Creates a new order for the authenticated user
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/Dtos/CreateOrderDto'
+      responses:
+        "201":
+          description: Order created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      order:
+                        $ref: '#/components/schemas/Order'
+        "400":
+          $ref: '#/components/responses/ValidationError'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/orders/get-myorders:
+    # ------------------------------------------------ GET CURRENT USER ORDERS ----------------------------------------------------
+    get:
+      tags:
+        - Orders
+      summary: Get current user's orders
+      description: Returns a paginated list of orders for the authenticated user. Supports filtering, sorting, and search functionality.
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+            example: 1
+          required: false
+          description: شماره صفحه برای صفحه‌بندی نتایج
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            example: 10
+          required: false
+          description: تعداد نتایج در هر صفحه
+        - in: query
+          name: sort
+          schema:
+            type: string
+            enum: [-totalPrice, totalPrice, -itemsPrice, itemsPrice, -shippingPrice, shippingPrice, -taxPrice, taxPrice, -createdAt, createdAt, -updatedAt, updatedAt, -paidAt, paidAt, -deliveredAt, deliveredAt, -isPaid, isPaid, -isDelivered, isDelivered]
+            example: -createdAt
+          required: false
+          description: ترتیب مرتب‌سازی نتایج (صعودی یا نزولی)
+        - in: query
+          name: paymentMethod
+          schema:
+            type: string
+            example: "Credit Card"
+          required: false
+          description: فیلتر سفارشات بر اساس روش پرداخت
+        - in: query
+          name: isPaid
+          schema:
+            type: boolean
+            example: true
+          required: false
+          description: فیلتر سفارشات بر اساس وضعیت پرداخت
+        - in: query
+          name: isDelivered
+          schema:
+            type: boolean
+            example: false
+          required: false
+          description: فیلتر سفارشات بر اساس وضعیت تحویل
+        - in: query
+          name: totalPrice , totalPrice[gt] , totalPrice[lt] , totalPrice[gte] , totalPrice[lte]
+          schema:
+            type: number
+            minimum: 0
+            example: 230000
+          required: false
+          description: فیلتر بر اساس قیمت کل سفارش (به تومان)
+        - in: query
+          name: itemsPrice , itemsPrice[gt] , itemsPrice[lt] , itemsPrice[gte] , itemsPrice[lte]
+          schema:
+            type: number
+            minimum: 0
+            example: 200000
+          required: false
+          description: فیلتر بر اساس قیمت کالاها (به تومان)
+        - in: query
+          name: shippingPrice , shippingPrice[gt] , shippingPrice[lt] , shippingPrice[gte] , shippingPrice[lte]
+          schema:
+            type: number
+            minimum: 0
+            example: 20000
+          required: false
+          description: فیلتر بر اساس هزینه ارسال (به تومان)
+        - in: query
+          name: taxPrice , taxPrice[gt] , taxPrice[lt] , taxPrice[gte] , taxPrice[lte]
+          schema:
+            type: number
+            minimum: 0
+            example: 10000
+          required: false
+          description: فیلتر بر اساس مالیات (به تومان)
+        - in: query
+          name: createdAt , createdAt[gt] , createdAt[lt] , createdAt[gte] , createdAt[lte]
+          schema:
+            type: string
+            format: date-time
+            example: "2023-01-01T10:00:00.000Z"
+          required: false
+          description: فیلتر بر اساس تاریخ ایجاد سفارش
+        - in: query
+          name: updatedAt , updatedAt[gt] , updatedAt[lt] , updatedAt[gte] , updatedAt[lte]
+          schema:
+            type: string
+            format: date-time
+            example: "2023-01-01T10:00:00.000Z"
+          required: false
+          description: فیلتر بر اساس تاریخ آپدیت سفارش
+        - in: query
+          name: paidAt , paidAt[gt] , paidAt[lt] , paidAt[gte] , paidAt[lte]
+          schema:
+            type: string
+            format: date-time
+            example: "2023-01-01T12:00:00.000Z"
+          required: false
+          description: فیلتر بر اساس تاریخ پرداخت
+        - in: query
+          name: deliveredAt , deliveredAt[gt] , deliveredAt[lt] , deliveredAt[gte] , deliveredAt[lte]
+          schema:
+            type: string
+            format: date-time
+            example: "2023-01-02T12:00:00.000Z"
+          required: false
+          description: فیلتر بر اساس تاریخ تحویل
+      responses:
+        "200":
+          description: User's orders retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  results:
+                    type: integer
+                    example: 3
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+                  data:
+                    type: object
+                    properties:
+                      orders:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Order'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/orders/top-selling-products:
+    # ------------------------------------------------ GET TOP SELLING PRODUCTS ----------------------------------------------------
+    get:
+      tags:
+        - Orders
+      summary: Get top selling products
+      description: Returns the top 10 best-selling products based on order quantities
+      responses:
+        "200":
+          description: Top selling products retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  results:
+                    type: integer
+                    example: 10
+                  data:
+                    type: object
+                    properties:
+                      orders:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            totalSold:
+                              type: integer
+                              example: 25
+                            product:
+                              type: array
+                              items:
+                                $ref: '#/components/schemas/Product'
+
+  /api/orders/{id}:
+    # ------------------------------------------------ GET ORDER BY ID ----------------------------------------------------
+    get:
+      tags:
+        - Orders
+      summary: Get order by ID
+      description: Returns a specific order by ID. Users can only access their own orders, admins can access any order.
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/orderId'
+      responses:
+        "200":
+          description: Order retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      order:
+                        $ref: '#/components/schemas/Order'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          description: Access denied - Cannot access other user's order
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: null
+                        message:
+                          type: string
+                          example: "شما اجازه انجام این عمل را ندارید!"
+        "404":
+          description: Order not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: null
+                        message:
+                          type: string
+                          example: "سفارش مورد نظر یافت نشد"
+
+  /api/orders/{id}/pay:
+    # ------------------------------------------------ UPDATE ORDER TO PAID ----------------------------------------------------
+    patch:
+      tags:
+        - Orders
+      summary: Update order to paid
+      description: Marks an order as paid. Users can only update their own orders, admins can update any order.
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/orderId'
+      responses:
+        "200":
+          description: Order marked as paid successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      order:
+                        $ref: '#/components/schemas/Order'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          description: Access denied - Cannot update other user's order
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: null
+                        message:
+                          type: string
+                          example: "شما اجازه انجام این عمل را ندارید!"
+        "404":
+          description: Order not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: "سفارش مورد نظر یافت نشد"
+
+######################################################
+################### REFERENCES #######################
+######################################################
+
+components:
+  Dtos:
+    CreateOrderDto:
+      type: object
+      required:
+        - orderItems
+        - shippingAddress
+        - paymentMethod
+        - itemsPrice
+        - shippingPrice
+        - taxPrice
+        - totalPrice
+      properties:
+        orderItems:
+          type: array
+          items:
+            type: object
+            required:
+              - productId
+              - qty
+            properties:
+              productId:
+                type: string
+                pattern: '^[0-9a-fA-F]{24}$'
+                example: "60d21b4667d0d8992e610c85"
+              qty:
+                type: integer
+                minimum: 1
+                example: 2
+        shippingAddress:
+          $ref: '#/components/schemas/ShippingAddress'
+        paymentMethod:
+          type: string
+          example: "Credit Card"
+        itemsPrice:
+          type: number
+          minimum: 0
+          example: 200000
+        shippingPrice:
+          type: number
+          minimum: 0
+          example: 20000
+        taxPrice:
+          type: number
+          minimum: 0
+          example: 10000
+        totalPrice:
+          type: number
+          minimum: 0
+          example: 230000
+
+    UpdateOrderDto:
+      type: object
+      properties:
+        orderItems:
+          type: array
+          items:
+            type: object
+            properties:
+              productId:
+                type: string
+                pattern: '^[0-9a-fA-F]{24}$'
+                example: "60d21b4667d0d8992e610c85"
+              qty:
+                type: integer
+                minimum: 1
+                example: 3
+        shippingAddress:
+          $ref: '#/components/schemas/ShippingAddress'
+        paymentMethod:
+          type: string
+          example: "PayPal"
+        itemsPrice:
+          type: number
+          minimum: 0
+          example: 150000
+        shippingPrice:
+          type: number
+          minimum: 0
+          example: 15000
+        taxPrice:
+          type: number
+          minimum: 0
+          example: 8000
+        totalPrice:
+          type: number
+          minimum: 0
+          example: 173000
+
+  parameters:
+    orderId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: '^[0-9a-fA-F]{24}$'
+        example: "60d21b4667d0d8992e610c85"
+      description: "شناسه سفارش"
+
+  responses:
+    ValidationError:
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: fail
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    field:
+                      type: string
+                      example: orderItems
+                    message:
+                      type: string
+                      example: "آیتم‌های سفارش الزامی است"
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: fail
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    field:
+                      type: string
+                      example: null
+                    message:
+                      type: string
+                      example: "هیچ موردی با این شناسه یافت نشد"
+
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: fail
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    field:
+                      type: string
+                      example: null
+                    message:
+                      type: string
+                      example: "شما وارد نشده اید! لطفا برای دسترسی وارد شوید"

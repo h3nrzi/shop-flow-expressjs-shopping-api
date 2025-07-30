@@ -1,0 +1,390 @@
+{
+	"openapi": "3.0.0",
+	"info": {
+		"title": "API Documentation",
+		"description": "API for managing products, users, orders, and reviews",
+		"version": "1.0.0",
+		"contact": {
+			"name": "Hossein Rezaei",
+			"email": "rezaeig22@gmail.com"
+		}
+	},
+	"servers": [
+		{
+			"url": "http://localhost:3000",
+			"description": "Local development server"
+		},
+		{
+			"url": "https://shop-flow.render.com",
+			"description": "Production server"
+		}
+	],
+	"tags": [
+		{
+			"name": "Auth",
+			"description": "Authentication related endpoints"
+		},
+		{
+			"name": "Users",
+			"description": "Users related endpoints"
+		},
+		{
+			"name": "Products",
+			"description": "Products related endpoints"
+		},
+		{
+			"name": "Reviews",
+			"description": "Reviews related endpoints"
+		},
+		{
+			"name": "Orders",
+			"description": "Orders related endpoints"
+		},
+		{
+			"name": "Uploads",
+			"description": "File upload related endpoints"
+		},
+		{
+			"name": "Admin",
+			"description": "Admin related endpoints"
+		}
+	],
+	"components": {
+		"securitySchemes": {
+			"bearerAuth": {
+				"type": "http",
+				"scheme": "bearer",
+				"bearerFormat": "JWT"
+			},
+			"cookieAuth": {
+				"type": "apiKey",
+				"in": "cookie",
+				"name": "jwt"
+			}
+		},
+		"schemas": {
+			"User": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"example": "60d21b4667d0d8992e610c85"
+					},
+					"name": {
+						"type": "string",
+						"example": "حسین رضایی"
+					},
+					"email": {
+						"type": "string",
+						"example": "hossein@example.com"
+					},
+					"photo": {
+						"type": "string",
+						"example": "https://example.com/avatar.jpg"
+					},
+					"role": {
+						"type": "string",
+						"enum": [
+							"user",
+							"admin"
+						],
+						"example": "user"
+					},
+					"active": {
+						"type": "boolean",
+						"example": true
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"example": "2021-01-01T00:00:00.000Z"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time",
+						"example": "2021-01-01T00:00:00.000Z"
+					}
+				}
+			},
+			"Product": {
+				"type": "object",
+				"properties": {
+					"_id": {
+						"type": "string",
+						"example": "60d21b4667d0d8992e610c85"
+					},
+					"name": {
+						"type": "string",
+						"example": "لپ تاپ Asus VivoBook"
+					},
+					"slug": {
+						"type": "string",
+						"example": "laptop-asus-vivobook"
+					},
+					"description": {
+						"type": "string",
+						"example": "لپ تاپ قدرتمند با پردازنده Intel Core i5"
+					},
+					"image": {
+						"type": "string",
+						"example": "https://example.com/laptop.jpg"
+					},
+					"images": {
+						"type": "array",
+						"items": {
+							"type": "string",
+							"example": "https://example.com/laptop2.jpg"
+						}
+					},
+					"countInStock": {
+						"type": "integer",
+						"example": 25
+					},
+					"isAvailable": {
+						"type": "boolean",
+						"example": true
+					},
+					"brand": {
+						"type": "string",
+						"example": "Asus"
+					},
+					"category": {
+						"type": "string",
+						"example": "لپ تاپ"
+					},
+					"rating": {
+						"type": "number",
+						"example": 4.5
+					},
+					"numReviews": {
+						"type": "integer",
+						"example": 10
+					},
+					"price": {
+						"type": "number",
+						"example": 15000000
+					},
+					"discount": {
+						"type": "number",
+						"example": 5
+					},
+					"discountedPrice": {
+						"type": "number",
+						"nullable": true,
+						"example": 14250000
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"example": "2021-06-22T14:30:00.000Z"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time",
+						"example": "2021-06-22T14:30:00.000Z"
+					}
+				}
+			},
+			"Review": {
+				"type": "object",
+				"properties": {
+					"_id": {
+						"type": "string",
+						"example": "60d21b4667d0d8992e610c85"
+					},
+					"rating": {
+						"type": "integer",
+						"minimum": 1,
+						"maximum": 5,
+						"example": 4
+					},
+					"comment": {
+						"type": "string",
+						"example": "محصول بسیار خوبی است و کیفیت عالی دارد"
+					},
+					"user": {
+						"type": "object",
+						"properties": {
+							"_id": {
+								"type": "string",
+								"example": "60d21b4667d0d8992e610c86"
+							},
+							"name": {
+								"type": "string",
+								"example": "حسین رضایی"
+							},
+							"email": {
+								"type": "string",
+								"example": "hossein@example.com"
+							}
+						}
+					},
+					"product": {
+						"type": "object",
+						"properties": {
+							"_id": {
+								"type": "string",
+								"example": "60d21b4667d0d8992e610c87"
+							},
+							"name": {
+								"type": "string",
+								"example": "لپ تاپ Asus VivoBook"
+							},
+							"price": {
+								"type": "number",
+								"example": 15000000
+							},
+							"description": {
+								"type": "string",
+								"example": "لپ تاپ قدرتمند با پردازنده Intel Core i5"
+							}
+						}
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"example": "2021-06-22T14:30:00.000Z"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time",
+						"example": "2021-06-22T14:30:00.000Z"
+					}
+				}
+			},
+			"OrderItem": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"example": "60d21b4667d0d8992e610c85"
+					},
+					"product": {
+						"$ref": "#/components/schemas/Product"
+					},
+					"qty": {
+						"type": "integer",
+						"example": 2
+					}
+				}
+			},
+			"ShippingAddress": {
+				"type": "object",
+				"required": [
+					"province",
+					"city",
+					"street"
+				],
+				"properties": {
+					"province": {
+						"type": "string",
+						"example": "Tehran"
+					},
+					"city": {
+						"type": "string",
+						"example": "Tehran"
+					},
+					"street": {
+						"type": "string",
+						"example": "Valiasr St."
+					}
+				}
+			},
+			"Order": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"example": "60d21b4667d0d8992e610c85"
+					},
+					"user": {
+						"type": "string",
+						"example": "60d21b4667d0d8992e610c86"
+					},
+					"orderItems": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/OrderItem"
+						}
+					},
+					"shippingAddress": {
+						"$ref": "#/components/schemas/ShippingAddress"
+					},
+					"paymentMethod": {
+						"type": "string",
+						"example": "Credit Card"
+					},
+					"itemsPrice": {
+						"type": "number",
+						"example": 200000
+					},
+					"shippingPrice": {
+						"type": "number",
+						"example": 20000
+					},
+					"taxPrice": {
+						"type": "number",
+						"example": 10000
+					},
+					"totalPrice": {
+						"type": "number",
+						"example": 230000
+					},
+					"isPaid": {
+						"type": "boolean",
+						"example": false
+					},
+					"isDelivered": {
+						"type": "boolean",
+						"example": false
+					},
+					"paidAt": {
+						"type": "string",
+						"format": "date-time",
+						"example": "2023-01-01T12:00:00.000Z"
+					},
+					"deliveredAt": {
+						"type": "string",
+						"format": "date-time",
+						"example": "2023-01-02T12:00:00.000Z"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"example": "2023-01-01T10:00:00.000Z"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time",
+						"example": "2023-01-01T10:00:00.000Z"
+					}
+				}
+			},
+			"Pagination": {
+				"type": "object",
+				"properties": {
+					"page": {
+						"type": "integer",
+						"example": 1
+					},
+					"limit": {
+						"type": "integer",
+						"example": 10
+					},
+					"total": {
+						"type": "integer",
+						"example": 100
+					},
+					"pages": {
+						"type": "integer",
+						"example": 10
+					},
+					"skip": {
+						"type": "integer",
+						"example": 0
+					}
+				}
+			}
+		}
+	}
+}
