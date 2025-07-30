@@ -1,0 +1,347 @@
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.createTestUserAndGetCookie = exports.getInvalidImageFiles = exports.getValidImageFiles = exports.createInvalidFileBuffer = exports.createValidJpegBuffer = exports.createValidImageBuffer = exports.uploadImageRequest = void 0;
+const supertest_1 = __importDefault(require("supertest"));
+const app_1 = __importDefault(require("@/app"));
+const buffer_1 = require("buffer");
+const uploadImageRequest = (file, filename, mimetype, cookie) => __awaiter(void 0, void 0, void 0, function* () {
+    const req = (0, supertest_1.default)(app_1.default).post("/api/uploads");
+    if (cookie) {
+        req.set("Cookie", cookie);
+    }
+    if (file && filename && mimetype) {
+        req.attach("image", file, {
+            filename,
+            contentType: mimetype,
+        });
+    }
+    return req;
+});
+exports.uploadImageRequest = uploadImageRequest;
+const createValidImageBuffer = () => {
+    const pngData = buffer_1.Buffer.from([
+        0x89,
+        0x50,
+        0x4e,
+        0x47,
+        0x0d,
+        0x0a,
+        0x1a,
+        0x0a,
+        0x00,
+        0x00,
+        0x00,
+        0x0d,
+        0x49,
+        0x48,
+        0x44,
+        0x52,
+        0x00,
+        0x00,
+        0x00,
+        0x01,
+        0x00,
+        0x00,
+        0x00,
+        0x01,
+        0x08,
+        0x06,
+        0x00,
+        0x00,
+        0x00,
+        0x1f,
+        0x15,
+        0xc4,
+        0x89,
+        0x00,
+        0x00,
+        0x00,
+        0x0a,
+        0x49,
+        0x44,
+        0x41,
+        0x54,
+        0x78,
+        0x9c,
+        0x63,
+        0x00,
+        0x01,
+        0x00,
+        0x00,
+        0x05,
+        0x00,
+        0x01,
+        0x0d,
+        0x0a,
+        0x2d,
+        0xb4,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x49,
+        0x45,
+        0x4e,
+        0x44,
+        0xae,
+        0x42,
+        0x60,
+        0x82,
+    ]);
+    return pngData;
+};
+exports.createValidImageBuffer = createValidImageBuffer;
+const createValidJpegBuffer = () => {
+    const jpegData = buffer_1.Buffer.from([
+        0xff,
+        0xd8,
+        0xff,
+        0xe0,
+        0x00,
+        0x10,
+        0x4a,
+        0x46,
+        0x49,
+        0x46,
+        0x00,
+        0x01,
+        0x01,
+        0x01,
+        0x00,
+        0x48,
+        0x00,
+        0x48,
+        0x00,
+        0x00,
+        0xff,
+        0xdb,
+        0x00,
+        0x43,
+        0x00,
+        0x08,
+        0x06,
+        0x06,
+        0x07,
+        0x06,
+        0x05,
+        0x08,
+        0x07,
+        0x07,
+        0x07,
+        0x09,
+        0x09,
+        0x08,
+        0x0a,
+        0x0c,
+        0x14,
+        0x0d,
+        0x0c,
+        0x0b,
+        0x0b,
+        0x0c,
+        0x19,
+        0x12,
+        0x13,
+        0x0f,
+        0x14,
+        0x1d,
+        0x1a,
+        0x1f,
+        0x1e,
+        0x1d,
+        0x1a,
+        0x1c,
+        0x1c,
+        0x20,
+        0x24,
+        0x2e,
+        0x27,
+        0x20,
+        0x22,
+        0x2c,
+        0x23,
+        0x1c,
+        0x1c,
+        0x28,
+        0x37,
+        0x29,
+        0x2c,
+        0x30,
+        0x31,
+        0x34,
+        0x34,
+        0x34,
+        0x1f,
+        0x27,
+        0x39,
+        0x3d,
+        0x38,
+        0x32,
+        0x3c,
+        0x2e,
+        0x33,
+        0x34,
+        0x32,
+        0xff,
+        0xc0,
+        0x00,
+        0x11,
+        0x08,
+        0x00,
+        0x01,
+        0x00,
+        0x01,
+        0x01,
+        0x01,
+        0x11,
+        0x00,
+        0x02,
+        0x11,
+        0x01,
+        0x03,
+        0x11,
+        0x01,
+        0xff,
+        0xc4,
+        0x00,
+        0x14,
+        0x00,
+        0x01,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x08,
+        0xff,
+        0xc4,
+        0x00,
+        0x14,
+        0x10,
+        0x01,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0xff,
+        0xda,
+        0x00,
+        0x0c,
+        0x03,
+        0x01,
+        0x00,
+        0x02,
+        0x11,
+        0x03,
+        0x11,
+        0x00,
+        0x3f,
+        0x00,
+        0xb2,
+        0xc0,
+        0x07,
+        0xff,
+        0xd9,
+    ]);
+    return jpegData;
+};
+exports.createValidJpegBuffer = createValidJpegBuffer;
+const createInvalidFileBuffer = () => {
+    return buffer_1.Buffer.from("This is not an image file", "utf-8");
+};
+exports.createInvalidFileBuffer = createInvalidFileBuffer;
+const getValidImageFiles = () => [
+    {
+        buffer: (0, exports.createValidImageBuffer)(),
+        filename: "test.png",
+        mimetype: "image/png",
+        description: "PNG image",
+    },
+    {
+        buffer: (0, exports.createValidJpegBuffer)(),
+        filename: "test.jpg",
+        mimetype: "image/jpeg",
+        description: "JPEG image",
+    },
+    {
+        buffer: (0, exports.createValidJpegBuffer)(),
+        filename: "test.jpeg",
+        mimetype: "image/jpeg",
+        description: "JPEG image with .jpeg extension",
+    },
+];
+exports.getValidImageFiles = getValidImageFiles;
+const getInvalidImageFiles = () => [
+    {
+        buffer: (0, exports.createInvalidFileBuffer)(),
+        filename: "test.txt",
+        mimetype: "text/plain",
+        description: "text file",
+        expectedError: "تصویر فقط پشتیبانی میشود!",
+    },
+    {
+        buffer: (0, exports.createInvalidFileBuffer)(),
+        filename: "test.pdf",
+        mimetype: "application/pdf",
+        description: "PDF file",
+        expectedError: "تصویر فقط پشتیبانی میشود!",
+    },
+    {
+        buffer: (0, exports.createInvalidFileBuffer)(),
+        filename: "test.gif",
+        mimetype: "image/gif",
+        description: "GIF image (unsupported)",
+        expectedError: "تصویر فقط پشتیبانی میشود!",
+    },
+];
+exports.getInvalidImageFiles = getInvalidImageFiles;
+const createTestUserAndGetCookie = (...args_1) => __awaiter(void 0, [...args_1], void 0, function* (suffix = "uploader") {
+    const user = {
+        name: "test",
+        email: `test${suffix}@test.com`,
+        password: "test123456",
+        passwordConfirmation: "test123456",
+    };
+    const res = yield (0, supertest_1.default)(app_1.default)
+        .post("/api/users/signup")
+        .send(user);
+    return {
+        user,
+        cookie: res.headers["set-cookie"][0],
+    };
+});
+exports.createTestUserAndGetCookie = createTestUserAndGetCookie;

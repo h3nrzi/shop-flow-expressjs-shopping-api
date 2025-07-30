@@ -1,0 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.imagesInput = exports.imageInput = exports.imagesUploader = exports.imageUploader = exports.deleteProductButtons = exports.editProductForm = exports.createProductForm = exports.logoutButton = exports.loginForm = void 0;
+exports.loginForm = document.getElementById("loginForm");
+exports.logoutButton = document.getElementById("logoutButton");
+exports.createProductForm = document.getElementById("createProductForm");
+exports.editProductForm = document.getElementById("editProductForm");
+exports.deleteProductButtons = document.querySelectorAll("[id^='confirmDeleteButton']");
+exports.imageUploader = document.getElementById("imageUploader");
+exports.imagesUploader = document.getElementById("imagesUploader");
+exports.imageInput = document.getElementById("image");
+exports.imagesInput = document.getElementById("images");
