@@ -2,10 +2,10 @@
 	"name": "shop-flow",
 	"version": "1.0.0",
 	"description": "",
-	"main": "src/dist/server.js",
+	"main": "dist/src/server.js",
 	"scripts": {
 		"start:dev": "nodemon src/server.ts",
-		"start": "node src/dist/server.js",
+		"start": "node dist/src/server.js",
 		"build": "npm install && tsc -p src",
 		"test": "jest --no-cache --detectOpenHandles --forceExit",
 		"test:watch": "jest --watchAll --no-cache --detectOpenHandles --forceExit",
