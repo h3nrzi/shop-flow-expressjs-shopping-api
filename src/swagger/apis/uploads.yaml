@@ -1,0 +1,89 @@
+######################################################
+################### UPLOADS ENDPOINTS ################
+######################################################
+
+paths:
+  /api/uploads:
+    # ------------------------------------------------ UPLOAD IMAGE ----------------------------------------------------
+    post:
+      tags:
+        - Uploads
+      summary: Upload an image
+      description: Uploads an image file to Cloudinary and returns the secure URL. Requires authentication and supports PNG, JPEG, and WEBP formats.
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+                  description: Image file to upload (PNG, JPEG, or WEBP)
+              required:
+                - image
+            encoding:
+              image:
+                contentType: image/png, image/jpeg, image/webp
+      responses:
+        "201":
+          description: Image uploaded successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      image:
+                        type: string
+                        format: uri
+                        example: "https://res.cloudinary.com/test/image/upload/v1234567890/Azooghe/test.jpg"
+                        description: Cloudinary secure URL of the uploaded image
+        "400":
+          description: Invalid file format or validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: image
+                        message:
+                          type: string
+                          example: "تصویر فقط پشتیبانی میشود!"
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "500":
+          description: Internal server error (e.g., Cloudinary upload failure)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: "Internal server error"
+
+######################################################
+################### REFERENCES #######################
+######################################################

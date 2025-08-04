@@ -1,0 +1,407 @@
+######################################################
+################### AUTH ENDPOINTS ###################
+######################################################
+
+paths:
+  /api/users/signup:
+    # ------------------------------------------------ SIGNUP ----------------------------------------------------
+    post:
+      tags:
+        - Auth
+      summary: Register a new user
+      description: Creates a new user and returns a JWT token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/Dtos/SignupDto'
+      responses:
+        "201":
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: '#/components/schemas/User'
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: email
+                        message:
+                          type: string
+                          example: "فرمت ایمیل صحیح نیست"
+
+  /api/users/login:
+    # ------------------------------------------------ LOGIN ----------------------------------------------------
+    post:
+      tags:
+        - Auth
+      summary: Login user
+      description: Authenticates a user and returns a JWT token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/Dtos/LoginDto'
+      responses:
+        "200":
+          description: User logged in successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: '#/components/schemas/User'
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: email
+                        message:
+                          type: string
+                          example: "فرمت ایمیل صحیح نیست"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                NoToken:
+                  summary: Password or email is incorrect
+                  value:
+                    status: fail
+                    errors:
+                      - field: null
+                        message: "ایمیل یا رمز عبور اشتباه است!"
+                NoToken2:
+                  summary: User is blocked
+                  value:
+                    status: fail
+                    errors:
+                      - field: null
+                        message: "کاربری که به این ایمیل مرتبط است مسدود شده است! لطفا با پشتیبانی تماس بگیرید."
+
+  /api/users/logout:
+    # ------------------------------------------------ LOGOUT ----------------------------------------------------
+    post:
+      tags:
+        - Auth
+      summary: Logout user
+      description: Logs out the user and removes the authentication cookie
+      responses:
+        "204":
+          description: User logged out successfully, cookie removed
+
+  /api/users/forgot-password:
+    # ------------------------------------------------ FORGOT PASSWORD -------------------------------------------
+    post:
+      tags:
+        - Auth
+      summary: Forgot password
+      description: Sends a password reset email to the user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/Dtos/ForgotPasswordDto'
+      responses:
+        "200":
+          description: Password reset email sent
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: "ایمیل بازیابی رمز عبور با موفقیت ارسال شد"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: email
+                        message:
+                          type: string
+                          example: "فرمت ایمیل صحیح نیست"
+        "404":
+          $ref: '#/components/responses/NotFound'
+
+  /api/users/reset-password:
+    # ------------------------------------------------ RESET PASSWORD --------------------------------------------
+    patch:
+      tags:
+        - Auth
+      summary: Reset password
+      description: Resets the user's password using a reset token
+      parameters:
+        - in: query
+          name: resetToken
+          required: true
+          schema:
+            type: string
+          description: The password reset token sent to the user's email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/Dtos/ResetPasswordDto'
+      responses:
+        "200":
+          description: Password reset successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "رمز عبور با موفقیت تغییر کرد"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: password
+                        message:
+                          type: string
+                          example: "رمز عبور و تایید رمز عبور مطابقت ندارند"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: null
+                        message:
+                          type: string
+                          example: "توکن نامعتبر است یا منقضی شده است!"
+
+  /api/users/refresh-token:
+    # ------------------------------------------------ REFRESH TOKEN -----------------------------------------
+    post:
+      tags:
+        - Auth
+      summary: Refresh access token
+      description: Generates a new access token using the refresh token from cookies
+      responses:
+        "200":
+          description: New access token generated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: '#/components/schemas/User'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: null
+                        message:
+                          type: string
+              examples:
+                NoRefreshToken:
+                  summary: No refresh token provided
+                  value:
+                    status: fail
+                    errors:
+                      - field: null
+                        message: "توکن تازه‌سازی ارائه نشده است"
+                InvalidRefreshToken:
+                  summary: Invalid refresh token
+                  value:
+                    status: fail
+                    errors:
+                      - field: null
+                        message: "توکن تازه‌سازی معتبر نیست"
+                UserInactive:
+                  summary: User account is inactive
+                  value:
+                    status: fail
+                    errors:
+                      - field: null
+                        message: "حساب کاربری غیرفعال است"
+                TokenExpired:
+                  summary: Refresh token expired
+                  value:
+                    status: fail
+                    errors:
+                      - field: null
+                        message: "توکن تازه‌سازی نامعتبر یا منقضی شده است"
+
+
+######################################################
+################### REFERENCES #######################
+######################################################
+
+components:
+  Dtos:
+    SignupDto:
+      type: object
+      required:
+        - name
+        - email
+        - password
+        - passwordConfirmation
+      properties:
+        name:
+          type: string
+          example: Hossein Rezaei
+        email:
+          type: string
+          example: hossein@example.com
+        password:
+          type: string
+          format: password
+          example: StrongPass123!
+        passwordConfirmation:
+          type: string
+          format: password
+          example: StrongPass123!
+    LoginDto:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          example: hossein@example.com
+        password:
+          type: string
+          format: password
+          example: StrongPass123!
+    ForgotPasswordDto:
+      type: object
+      required:
+        - email
+      properties:
+        email:
+          type: string
+          example: hossein@example.com
+    ResetPasswordDto:
+      type: object
+      required:
+        - password
+        - passwordConfirmation
+      properties:
+        password:
+          type: string
+          format: password
+          example: NewStrongPass123!
+        passwordConfirmation:
+          type: string
+          format: password
+          example: NewStrongPass123!

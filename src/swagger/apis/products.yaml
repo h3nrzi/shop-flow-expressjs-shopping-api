@@ -1,0 +1,262 @@
+######################################################
+################### PRODUCTS ENDPOINTS ##############
+######################################################
+
+paths:
+  /api/products:
+    # ------------------------------------------------ GET ALL PRODUCTS ----------------------------------------------------
+    get:
+      tags:
+        - Products
+      summary: Get all products
+      description: Returns a paginated list of products. Supports filtering, sorting, and search functionality.
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+            example: 1
+          required: false
+          description: شماره صفحه برای صفحه‌بندی نتایج
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            example: 10
+          required: false
+          description: تعداد نتایج در هر صفحه
+        - in: query
+          name: sort
+          schema:
+            type: string
+            enum: [-price, price, -rating, rating, -numReviews, numReviews, -createdAt, createdAt, -updatedAt, updatedAt, -countInStock, countInStock, ...]
+            example: desc
+          required: false
+          description: ترتیب مرتب‌سازی نتایج (صعودی یا نزولی)
+        - in: query
+          name: search
+          schema:
+            type: string
+            example: لپ تاپ
+          required: false
+          description: جستجو در نام  
+        - in: query
+          name: brand
+          schema:
+            type: string
+            example: Asus
+          required: false
+          description: فیلتر محصولات بر اساس برند
+        - in: query
+          name: category
+          schema:
+            type: string
+            example: لپ تاپ
+          required: false
+          description: فیلتر محصولات بر اساس دسته‌بندی
+        - in: query
+          name: isAvailable
+          schema:
+            type: boolean
+            example: true
+          required: false
+          description: فیلتر محصولات بر اساس موجود بودن
+        - in: query
+          name: countInStock
+          schema:
+            type: integer
+            minimum: 0
+            example: 10
+          required: false
+          description: فیلتر بر اساس تعداد موجود در انبار
+        - in: query
+          name: rating , rating[gt] , rating[lt] , rating[gte] , rating[lte]
+          schema:
+            type: number
+            minimum: 0
+            maximum: 5
+            example: 4.5
+          required: false
+          description: فیلتر بر اساس امتیاز محصول
+        - in: query
+          name: numReviews , numReviews[gt] , numReviews[lt] , numReviews[gte] , numReviews[lte]
+          schema:
+            type: integer
+            minimum: 0
+            example: 10
+          required: false
+          description: فیلتر بر اساس تعداد نظرات کاربران
+        - in: query
+          name: price , price[gt] , price[lt] , price[gte] , price[lte]
+          schema:
+            type: number
+            minimum: 0
+            example: 1000000
+          required: false
+          description: فیلتر بر اساس قیمت محصول (به تومان)
+        - in: query
+          name: discount , discount[gt] , discount[lt] , discount[gte] , discount[lte]
+          schema:
+            type: number
+            minimum: 0
+            maximum: 100
+            example: 10
+          required: false
+          description: فیلتر بر اساس درصد تخفیف
+        - in: query
+          name: discountedPrice , discountedPrice[gt] , discountedPrice[lt] , discountedPrice[gte] , discountedPrice[lte]
+          schema:
+            type: number
+            minimum: 0
+            example: 900000
+          required: false
+          description: فیلتر بر اساس قیمت با تخفیف (به تومان)
+      responses:
+        "200":
+          description: Products retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  results:
+                    type: integer
+                    example: 10
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+                  data:
+                    type: object
+                    properties:
+                      products:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Product'
+        "404":
+          description: Page exceeds total pages
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: null
+                        message:
+                          type: string
+                          example: "این صفحه وجود ندارد"
+
+  /api/products/{id}:
+    # ------------------------------------------------ GET PRODUCT BY ID ----------------------------------------------------
+    get:
+      tags:
+        - Products
+      summary: Get a product by ID
+      description: Returns a single product by its ID.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            example: "60d21b4667d0d8992e610c85"
+          required: true
+          description: شناسه محصول
+      responses:
+        "200":
+          description: Product retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      product:
+                        $ref: '#/components/schemas/Product'
+        "404":
+          $ref: '#/components/responses/NotFound'
+
+######################################################
+################### REFERENCES #######################
+######################################################
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "60d21b4667d0d8992e610c85"
+        name:
+          type: string
+          example: "لپ تاپ Asus VivoBook"
+        slug:
+          type: string
+          example: "laptop-asus-vivobook"
+        description:
+          type: string
+          example: "لپ تاپ قدرتمند با پردازنده Intel Core i5"
+        image:
+          type: string
+          example: "https://example.com/laptop.jpg"
+        images:
+          type: array
+          items:
+            type: string
+            example: "https://example.com/laptop2.jpg"
+        countInStock:
+          type: integer
+          example: 25
+        isAvailable:
+          type: boolean
+          example: true
+        brand:
+          type: string
+          example: "Asus"
+        category:
+          type: string
+          example: "لپ تاپ"
+        rating:
+          type: number
+          example: 4.5
+        numReviews:
+          type: integer
+          example: 10
+        price:
+          type: number
+          example: 15000000
+        discount:
+          type: number
+          example: 5
+        discountedPrice:
+          type: number
+          nullable: true
+          example: 14250000
+        createdAt:
+          type: string
+          format: date-time
+          example: "2021-06-22T14:30:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2021-06-22T14:30:00.000Z"
+
+
