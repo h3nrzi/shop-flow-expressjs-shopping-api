@@ -1,5 +1,4 @@
 {
-	"arrowParens": "avoid",
 	"useTabs": true,
-	"printWidth": 65
+	"printWidth": 150
 }

@@ -1,17 +1,17 @@
-import { MongoMemoryServer } from "mongodb-memory-server";
-import mongoose from "mongoose";
 
 // ===============================================
 // ============ Test Setup & Teardown ============
 // ===============================================
+import { MongoMemoryServer } from "mongodb-memory-server";
+import mongoose from "mongoose";
 
 let mongo: MongoMemoryServer;
 
 beforeAll(async () => {
 	// Set environment variables first
+	process.env.NODE_ENV = "test";
 	process.env.JWT_SECRET = "asdf";
 	process.env.JWT_EXPIRES_IN = "1h";
-	process.env.NODE_ENV = "test";
 
 	// Close existing mongoose connection if open
 	if (mongoose.connection.readyState !== 0) {
@@ -29,8 +29,7 @@ beforeAll(async () => {
 
 beforeEach(async () => {
 	const collections = await mongoose.connection.db.collections();
-	for (let collection of collections)
-		await collection.deleteMany({});
+	for (let collection of collections) await collection.deleteMany({});
 });
 
 afterAll(async () => {

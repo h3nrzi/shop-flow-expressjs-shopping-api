@@ -1,3 +1,7 @@
+import { NotificationController } from "./notifications/presentation/notification.controller";
+import { Notification } from "./notifications/infrastructure/notification.entity";
+import { NotificationRepository } from "./notifications/infrastructure/notification.repository";
+import { NotificationService } from "./notifications/application/notification.service";
 import { OrderController } from "./orders/order.controller";
 import { Order } from "./orders/order.entity";
 import { OrderRepository } from "./orders/order.repository";
@@ -22,42 +26,31 @@ import { ViewController } from "./views/view.controller";
 import { ViewService } from "./views/view.service";
 
 // Entities
-export { Order, Product, Review, User };
+export { Notification, Order, Product, Review, User };
 
 // Repositories Injection
+export const notificationRepository = new NotificationRepository(Notification);
 export const orderRepository = new OrderRepository(Order);
 export const productRepository = new ProductRepository(Product);
 export const userRepository = new UserRepository(User);
 export const reviewRepository = new ReviewRepository(Review);
 
 // Services Injection
-export const orderService = new OrderService(
-	orderRepository,
-	productRepository
-);
-export const productService = new ProductService(
-	productRepository
-);
-export const reviewService = new ReviewService(
-	reviewRepository,
-	productRepository
-);
+export const notificationService = new NotificationService(notificationRepository);
+export const orderService = new OrderService(orderRepository, productRepository);
+export const productService = new ProductService(productRepository);
+export const reviewService = new ReviewService(reviewRepository, productRepository);
 export const userService = new UserService(userRepository);
 export const authService = new AuthService(userRepository);
 export const uploadService = new UploadService();
 export const viewService = new ViewService(Product);
 
 // Controllers Injection
+export const notificationController = new NotificationController(notificationService);
 export const orderController = new OrderController(orderService);
-export const productController = new ProductController(
-	productService
-);
-export const reviewController = new ReviewController(
-	reviewService
-);
+export const productController = new ProductController(productService);
+export const reviewController = new ReviewController(reviewService);
 export const userController = new UserController(userService);
 export const authController = new AuthController(authService);
-export const uploadController = new UploadController(
-	uploadService
-);
+export const uploadController = new UploadController(uploadService);
 export const viewController = new ViewController(viewService);

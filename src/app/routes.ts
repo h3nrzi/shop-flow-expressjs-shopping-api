@@ -1,4 +1,5 @@
 import { Express } from "express";
+import { notificationRouter } from "../core/notifications/notification.route";
 import { orderRouter } from "../core/orders/order.routes";
 import { productRouter } from "../core/products/product.routes";
 import { userRouter } from "../core/users/user.routes";
@@ -26,6 +27,7 @@ module.exports = (app: Express) => {
 	app.use("/api/users", userRouter);
 	app.use("/api/uploads", uploadRouter);
 	app.use("/api/orders", orderRouter);
+	app.use("/api/notifications", notificationRouter);
 
 	// Not found route
 	app.all("*", () => {
