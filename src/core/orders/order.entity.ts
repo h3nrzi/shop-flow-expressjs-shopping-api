@@ -1,10 +1,5 @@
-import mongoose from "mongoose";
-import {
-	IOrderItem,
-	IShippingAddress,
-	OrderDoc,
-	OrderModel,
-} from "./order.interface";
+import mongoose, { Query } from "mongoose";
+import { IOrderItem, IShippingAddress, OrderDoc, OrderModel } from "./order.interface";
 
 const orderItemSchema = new mongoose.Schema<IOrderItem>(
 	{
@@ -22,25 +17,24 @@ const orderItemSchema = new mongoose.Schema<IOrderItem>(
 				delete ret._id;
 			},
 		},
-	},
+	}
 );
 
-const shippingAddressSchema =
-	new mongoose.Schema<IShippingAddress>(
-		{
-			province: { type: String, required: true },
-			city: { type: String, required: true },
-			street: { type: String, required: true },
-		},
-		{
-			toJSON: {
-				transform: (doc, ret) => {
-					ret.id = ret._id;
-					delete ret._id;
-				},
+const shippingAddressSchema = new mongoose.Schema<IShippingAddress>(
+	{
+		province: { type: String, required: true },
+		city: { type: String, required: true },
+		street: { type: String, required: true },
+	},
+	{
+		toJSON: {
+			transform: (doc, ret) => {
+				ret.id = ret._id;
+				delete ret._id;
 			},
 		},
-	);
+	}
+);
 
 const orderSchema = new mongoose.Schema<OrderDoc>(
 	{
@@ -75,11 +69,13 @@ const orderSchema = new mongoose.Schema<OrderDoc>(
 				delete ret.__v;
 			},
 		},
-	},
+	}
 );
 
-const Order = mongoose.model<OrderDoc, OrderModel>(
-	"Order",
-	orderSchema,
-);
+orderItemSchema.pre(/^find/, async function (this: Query<any, OrderDoc>, next) {
+	this.populate("user");
+	next();
+});
+
+const Order = mongoose.model<OrderDoc, OrderModel>("Order", orderSchema);
 export { Order };

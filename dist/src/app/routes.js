@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const notification_route_1 = require("../core/notifications/notification.route");
 const order_routes_1 = require("../core/orders/order.routes");
 const product_routes_1 = require("../core/products/product.routes");
 const user_routes_1 = require("../core/users/user.routes");
@@ -20,6 +21,7 @@ module.exports = (app) => {
     app.use("/api/users", user_routes_1.userRouter);
     app.use("/api/uploads", upload_routes_1.uploadRouter);
     app.use("/api/orders", order_routes_1.orderRouter);
+    app.use("/api/notifications", notification_route_1.notificationRouter);
     app.all("*", () => {
         throw new not_found_error_1.NotFoundError("صفحه مورد نظر یافت نشد");
     });

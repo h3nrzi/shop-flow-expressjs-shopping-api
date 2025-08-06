@@ -1,38 +1,16 @@
 import { CreateNotificationDto } from "../presentation/notification.dto";
-import { INotificationDoc, INotificationModel, INotificationQuery } from "./notification.interface";
+import { INotificationDoc, INotificationModel } from "./notification.interface";
 
 export class NotificationRepository {
 	constructor(private readonly notificationModel: INotificationModel) {}
 
-	async findAllForUser(userId: string, query?: INotificationQuery): Promise<INotificationDoc[]> {
-		const filter: any = { user: userId };
-
-		// Apply filters
-		if (query?.type) {
-			filter.type = query.type;
-		}
-		if (query?.isRead !== undefined) {
-			filter.isRead = query.isRead;
-		}
-		if (query?.from || query?.to) {
-			filter.createdAt = {};
-			if (query.from) filter.createdAt.$gte = query.from;
-			if (query.to) filter.createdAt.$lte = query.to;
-		}
-
-		let queryBuilder = this.notificationModel.find(filter);
-
-		// Apply sorting
-		const sortOrder = query?.sort === "asc" ? 1 : -1;
-		queryBuilder = queryBuilder.sort({ createdAt: sortOrder });
-
-		// Apply pagination
-		if (query?.page && query?.limit) {
-			const skip = (query.page - 1) * query.limit;
-			queryBuilder = queryBuilder.skip(skip).limit(query.limit);
-		}
-
-		return queryBuilder.populate("user", "name email").exec();
+	async findAllForUser(userId: string): Promise<INotificationDoc[]> {
+		return this.notificationModel
+			.find({
+				user: userId,
+			})
+			.populate("user", "name email")
+			.exec();
 	}
 
 	async findById(id: string): Promise<INotificationDoc | null> {

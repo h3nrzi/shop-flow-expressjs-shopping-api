@@ -35,21 +35,7 @@ paths:
           name: sort
           schema:
             type: string
-            enum:
-              [
-                -name,
-                name,
-                -email,
-                email,
-                -role,
-                role,
-                -active,
-                active,
-                -createdAt,
-                createdAt,
-                -updatedAt,
-                updatedAt,
-              ]
+            enum: [-name, name, -email, email, -role, role, -active, active, -createdAt, createdAt, -updatedAt, updatedAt]
             example: -createdAt
           required: false
           description: ترتیب مرتب‌سازی نتایج (صعودی یا نزولی)
@@ -948,6 +934,130 @@ paths:
           $ref: "#/components/responses/UnauthorizedWithAdminAuthorization"
         "404":
           $ref: "#/components/responses/NotFound"
+
+  ###################################################
+  ########### NOTIFICATIONS ENDPOINTS ###############
+  ###################################################
+
+  /api/notifications:
+    # ------------------------------------------------ CREATE NOTIFICATION (ADMIN ONLY) -------------------------
+    post:
+      tags:
+        - Admin
+      summary: Create a notification
+      description: Creates a new notification for a specific user. Only admins can create notifications.
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/Dtos/CreateNotificationDto"
+      responses:
+        "201":
+          description: Notification created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      notification:
+                        $ref: "#/components/schemas/Notification"
+        "400":
+          description: Validation error or user not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: user
+                        message:
+                          type: string
+                          example: "کاربر مورد نظر یافت نشد"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /api/notifications/bulk:
+    # ------------------------------------------------ CREATE BULK NOTIFICATIONS (ADMIN ONLY) ------------------
+    post:
+      tags:
+        - Admin
+      summary: Create bulk notifications
+      description: Creates notifications for multiple users at once. Only admins can create bulk notifications.
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/Dtos/CreateBulkNotificationDto"
+      responses:
+        "201":
+          description: Bulk notifications created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  results:
+                    type: number
+                    example: 3
+                    description: Number of notifications created
+                  data:
+                    type: object
+                    properties:
+                      notifications:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/Notification"
+        "400":
+          description: Validation error or some users not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: userIds
+                        message:
+                          type: string
+                          example: "برخی از کاربران مورد نظر یافت نشدند"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
 
 ############################################
 ########### REFERENCES #####################

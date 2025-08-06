@@ -16,9 +16,9 @@ const mongodb_memory_server_1 = require("mongodb-memory-server");
 const mongoose_1 = __importDefault(require("mongoose"));
 let mongo;
 beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
+    process.env.NODE_ENV = "test";
     process.env.JWT_SECRET = "asdf";
     process.env.JWT_EXPIRES_IN = "1h";
-    process.env.NODE_ENV = "test";
     if (mongoose_1.default.connection.readyState !== 0) {
         yield mongoose_1.default.connection.close();
     }

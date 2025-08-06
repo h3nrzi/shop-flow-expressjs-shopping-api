@@ -47,7 +47,7 @@ export const viewService = new ViewService(Product);
 
 // Controllers Injection
 export const notificationController = new NotificationController(notificationService);
-export const orderController = new OrderController(orderService);
+export const orderController = new OrderController(orderService, notificationService);
 export const productController = new ProductController(productService);
 export const reviewController = new ReviewController(reviewService);
 export const userController = new UserController(userService);

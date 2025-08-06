@@ -19,10 +19,11 @@ router.route("/mark-all-read").patch(notificationController.markAllAsRead.bind(n
 
 router.route("/delete-all").delete(notificationController.deleteAllNotifications.bind(notificationController));
 
+router.route("/mark-read/:id").patch(notificationController.markAsRead.bind(notificationController));
+
 router
 	.route("/:id")
 	.get([notificationController.getNotificationById.bind(notificationController)])
-	.patch([notificationController.markAsRead.bind(notificationController)])
 	.delete([notificationController.deleteNotification.bind(notificationController)]);
 
 /************************************************************************

@@ -11,8 +11,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OrderController = void 0;
 class OrderController {
-    constructor(orderService) {
+    constructor(orderService, notificationService) {
         this.orderService = orderService;
+        this.notificationService = notificationService;
         this.getOrderById = (req, res) => __awaiter(this, void 0, void 0, function* () {
             const order = yield this.orderService.getOrderById(req.params.id, req.user.id, req.user.role);
             res.status(200).json({
@@ -32,6 +33,13 @@ class OrderController {
             const createOrderDto = req.body;
             const userId = req.user.id;
             const order = yield this.orderService.createOrder(createOrderDto, userId);
+            this.notificationService.createNotification({
+                user: userId,
+                title: "سفارش جدید",
+                message: "سفارش شما با موفقیت ثبت شد",
+                type: "order",
+                data: Object.assign({}, order),
+            });
             res.status(201).json({
                 status: "success",
                 data: { order },
@@ -48,6 +56,13 @@ class OrderController {
             const orderId = req.params.id;
             const userId = req.user.id;
             const order = yield this.orderService.updateOrderToPaid(orderId, userId, req.user.role);
+            this.notificationService.createNotification({
+                user: userId,
+                title: "پرداخت سفارش",
+                message: "سفارش شما با موفقیت پرداخت شد",
+                type: "order",
+                data: Object.assign({}, order),
+            });
             res.status(200).json({
                 status: "success",
                 data: { order },
@@ -57,6 +72,13 @@ class OrderController {
             const orderId = req.params.id;
             const userId = req.user.id;
             const order = yield this.orderService.updateOrderToDeliver(orderId, userId, req.user.role);
+            this.notificationService.createNotification({
+                user: userId,
+                title: "ارسال سفارش",
+                message: "سفارش شما با موفقیت ارسال شد",
+                type: "order",
+                data: Object.assign({}, order),
+            });
             res.status(200).json({
                 status: "success",
                 data: { order },

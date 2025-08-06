@@ -1,0 +1,555 @@
+######################################################
+################### NOTIFICATION ENDPOINTS ##########
+######################################################
+
+paths:
+  /api/notifications:
+    # ------------------------------------------------ GET CURRENT USER NOTIFICATIONS ---------------------------
+    get:
+      tags:
+        - Notifications
+      summary: Get current user notifications
+      description: Retrieves all notifications for the currently authenticated user, sorted by creation date (newest first)
+      security:
+        - cookieAuth: []
+      responses:
+        "200":
+          description: Notifications retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  results:
+                    type: number
+                    example: 5
+                  data:
+                    type: object
+                    properties:
+                      notifications:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/Notification"
+                      totalCount:
+                        type: number
+                        example: 10
+                        description: Total number of notifications for the user
+                      unreadCount:
+                        type: number
+                        example: 3
+                        description: Number of unread notifications for the user
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/notifications/unread-count:
+    # ------------------------------------------------ GET UNREAD NOTIFICATIONS COUNT ---------------------------
+    get:
+      tags:
+        - Notifications
+      summary: Get unread notifications count
+      description: Returns the count of unread notifications for the current user
+      security:
+        - cookieAuth: []
+      responses:
+        "200":
+          description: Unread count retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      unreadCount:
+                        type: number
+                        example: 5
+                        description: Number of unread notifications
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/notifications/mark-read/{id}:
+    # ------------------------------------------------ MARK NOTIFICATION AS READ --------------------------------
+    patch:
+      tags:
+        - Notifications
+      summary: Mark notification as read
+      description: Marks a specific notification as read. Users can only mark their own notifications as read.
+      security:
+        - cookieAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            pattern: "^[0-9a-fA-F]{24}$"
+          description: The notification ID (MongoDB ObjectId)
+          example: "507f1f77bcf86cd799439011"
+      responses:
+        "200":
+          description: Notification marked as read successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      notification:
+                        $ref: "#/components/schemas/Notification"
+        "400":
+          description: Invalid ID format or unauthorized access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: id
+                        message:
+                          type: string
+                          example: "شما مجاز به مشاهده این اعلان نیستید"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          description: Notification not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: null
+                        message:
+                          type: string
+                          example: "اعلان مورد نظر یافت نشد"
+
+  /api/notifications/mark-all-read:
+    # ------------------------------------------------ MARK ALL NOTIFICATIONS AS READ -------------------------
+    patch:
+      tags:
+        - Notifications
+      summary: Mark all notifications as read
+      description: Marks all notifications of the current user as read
+      security:
+        - cookieAuth: []
+      responses:
+        "200":
+          description: All notifications marked as read
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: "همه اعلان‌ها به عنوان خوانده شده علامت‌گذاری شدند"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/notifications/delete-all:
+    # ------------------------------------------------ DELETE ALL NOTIFICATIONS --------------------------------
+    delete:
+      tags:
+        - Notifications
+      summary: Delete all notifications
+      description: Deletes all notifications of the current user
+      security:
+        - cookieAuth: []
+      responses:
+        "204":
+          description: All notifications deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/notifications/{id}:
+    # ------------------------------------------------ GET NOTIFICATION BY ID ----------------------------------
+    get:
+      tags:
+        - Notifications
+      summary: Get notification by ID
+      description: Retrieves a specific notification by its ID. Users can only access their own notifications.
+      security:
+        - cookieAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            pattern: "^[0-9a-fA-F]{24}$"
+          description: The notification ID (MongoDB ObjectId)
+          example: "507f1f77bcf86cd799439011"
+      responses:
+        "200":
+          description: Notification retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      notification:
+                        $ref: "#/components/schemas/Notification"
+        "400":
+          description: Invalid ID format or unauthorized access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: id
+                        message:
+                          type: string
+                          example: "شما مجاز به مشاهده این اعلان نیستید"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          description: Notification not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: null
+                        message:
+                          type: string
+                          example: "اعلان مورد نظر یافت نشد"
+
+    # ------------------------------------------------ DELETE NOTIFICATION --------------------------------------
+    delete:
+      tags:
+        - Notifications
+      summary: Delete notification
+      description: Deletes a specific notification. Users can only delete their own notifications.
+      security:
+        - cookieAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            pattern: "^[0-9a-fA-F]{24}$"
+          description: The notification ID (MongoDB ObjectId)
+          example: "507f1f77bcf86cd799439011"
+      responses:
+        "204":
+          description: Notification deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+        "400":
+          description: Invalid ID format or unauthorized access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: id
+                        message:
+                          type: string
+                          example: "شما مجاز به مشاهده این اعلان نیستید"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          description: Notification not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: null
+                        message:
+                          type: string
+                          example: "اعلان مورد نظر یافت نشد"
+
+######################################################
+################### REFERENCES #######################
+######################################################
+
+components:
+  schemas:
+    Notification:
+      type: object
+      properties:
+        _id:
+          type: string
+          pattern: "^[0-9a-fA-F]{24}$"
+          description: Notification ID (MongoDB ObjectId)
+          example: "507f1f77bcf86cd799439011"
+        user:
+          type: string
+          pattern: "^[0-9a-fA-F]{24}$"
+          description: User ID who receives this notification (MongoDB ObjectId)
+          example: "507f1f77bcf86cd799439012"
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: Title of the notification
+          example: "سفارش جدید"
+        message:
+          type: string
+          minLength: 1
+          maxLength: 1000
+          description: Message content of the notification
+          example: "سفارش شما با موفقیت ثبت شد"
+        type:
+          type: string
+          enum: [order, promotion, system, review]
+          description: Type of the notification
+          example: "order"
+        isRead:
+          type: boolean
+          description: Whether the notification has been read
+          example: false
+        data:
+          type: object
+          description: Additional data related to the notification
+          example: { "orderId": "507f1f77bcf86cd799439013", "amount": 1500000 }
+        createdAt:
+          type: string
+          format: date-time
+          description: Date and time when the notification was created
+          example: "2024-12-07T10:30:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: Date and time when the notification was last updated
+          example: "2024-12-07T10:30:00.000Z"
+        readAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: Date and time when the notification was read (null if not read)
+          example: "2024-12-07T11:15:00.000Z"
+
+  Dtos:
+    CreateNotificationDto:
+      type: object
+      required:
+        - user
+        - title
+        - message
+        - type
+      properties:
+        user:
+          type: string
+          pattern: "^[0-9a-fA-F]{24}$"
+          description: User ID who will receive the notification (MongoDB ObjectId)
+          example: "507f1f77bcf86cd799439012"
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: Title of the notification
+          example: "سفارش جدید"
+        message:
+          type: string
+          minLength: 1
+          maxLength: 1000
+          description: Message content of the notification
+          example: "سفارش شما با موفقیت ثبت شد"
+        type:
+          type: string
+          enum: [order, promotion, system, review]
+          description: Type of the notification
+          example: "order"
+        data:
+          type: object
+          description: Additional data related to the notification (optional)
+          example: { "orderId": "507f1f77bcf86cd799439013", "amount": 1500000 }
+
+    CreateBulkNotificationDto:
+      type: object
+      required:
+        - userIds
+        - title
+        - message
+        - type
+      properties:
+        userIds:
+          type: array
+          minItems: 1
+          items:
+            type: string
+            pattern: "^[0-9a-fA-F]{24}$"
+          description: Array of user IDs who will receive the notification (MongoDB ObjectIds)
+          example: ["507f1f77bcf86cd799439012", "507f1f77bcf86cd799439013", "507f1f77bcf86cd799439014"]
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: Title of the notification
+          example: "تخفیف ویژه"
+        message:
+          type: string
+          minLength: 1
+          maxLength: 1000
+          description: Message content of the notification
+          example: "تخفیف 30 درصدی برای تمام محصولات"
+        type:
+          type: string
+          enum: [order, promotion, system, review]
+          description: Type of the notification
+          example: "promotion"
+        data:
+          type: object
+          description: Additional data related to the notification (optional)
+          example: { "promotionId": "promo123", "discountPercent": 30 }
+
+  responses:
+    Unauthorized:
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: fail
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    field:
+                      type: string
+                      example: null
+                    message:
+                      type: string
+          examples:
+            NoToken:
+              summary: No authentication token provided
+              value:
+                status: fail
+                errors:
+                  - field: null
+                    message: "شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
+            InvalidToken:
+              summary: Invalid or expired token
+              value:
+                status: fail
+                errors:
+                  - field: null
+                    message: "کاربر متعلق به این توکن دیگر وجود ندارد!"
+
+    Forbidden:
+      description: Access forbidden - Admin role required
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: fail
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    field:
+                      type: string
+                      example: null
+                    message:
+                      type: string
+                      example: "شما مجاز به انجام این عمل نیستید"
+
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: jwt
