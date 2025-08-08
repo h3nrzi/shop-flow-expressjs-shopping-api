@@ -53,10 +53,7 @@ router.post("/login", [
 	authController.login.bind(authController),
 ]);
 
-router.post(
-	"/logout",
-	authController.logout.bind(authController)
-);
+router.post("/logout", authController.logout.bind(authController));
 
 router.post("/forgot-password", [
 	body("email")
@@ -95,20 +92,14 @@ router.patch("/reset-password", [
 	authController.resetPassword.bind(authController),
 ]);
 
-router.post(
-	"/refresh-token",
-	authController.refreshToken.bind(authController)
-);
+router.post("/refresh-token", authController.refreshToken.bind(authController));
 
 /************************************************************************
  *********  @description Protect all routes below to users only *********
  ************************************************************************/
 router.use(authMiddleware.protect);
 
-router.get(
-	"/get-me",
-	userController.getCurrentUser.bind(userController)
-);
+router.get("/get-me", userController.getCurrentUser.bind(userController));
 
 router.patch("/update-me", [
 	body("name")
@@ -163,7 +154,7 @@ router.patch("/update-me-password", [
 
 router.delete(
 	"/delete-me",
-	userController.deleteCurrentUser.bind(userController)
+	userController.deleteCurrentUser.bind(userController),
 );
 
 /************************************************************************
@@ -218,10 +209,7 @@ router
 	.get([userController.findUserById.bind(userController)])
 	.delete([userController.deleteUser.bind(userController)])
 	.patch([
-		body("name")
-			.optional()
-			.isString()
-			.withMessage("فرمت نام کاربر معتبر نیست"),
+		body("name").optional().isString().withMessage("فرمت نام کاربر معتبر نیست"),
 		body("email")
 			.optional()
 			.isEmail()

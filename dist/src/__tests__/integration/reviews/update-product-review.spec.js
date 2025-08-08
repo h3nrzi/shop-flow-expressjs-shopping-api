@@ -200,7 +200,10 @@ describe("PATCH /api/products/:productId/reviews/:id", () => {
         }));
         it("product average rating is recalculated correctly with multiple reviews", () => __awaiter(void 0, void 0, void 0, function* () {
             const { user: user2 } = yield (0, reviews_helper_1.createTestUserAndGetCookie)("reviewer2");
-            yield (0, reviews_helper_1.createTestReview)(product._id.toString(), user2._id.toString(), { rating: 5, comment: "Excellent!" });
+            yield (0, reviews_helper_1.createTestReview)(product._id.toString(), user2._id.toString(), {
+                rating: 5,
+                comment: "Excellent!",
+            });
             yield (0, reviews_helper_1.expectProductRatingUpdate)(product._id.toString(), 4, 2);
             const updateData = { rating: 1 };
             const res = yield (0, reviews_helper_1.updateReviewRequest)(product._id.toString(), review._id.toString(), updateData, cookie);
@@ -226,7 +229,7 @@ describe("PATCH /api/products/:productId/reviews/:id", () => {
         }));
         it("updatedAt timestamp is modified after update", () => __awaiter(void 0, void 0, void 0, function* () {
             const originalUpdatedAt = review.updatedAt;
-            yield new Promise(resolve => setTimeout(resolve, 10));
+            yield new Promise((resolve) => setTimeout(resolve, 10));
             const updateData = {
                 rating: 4,
                 comment: "Updated review",

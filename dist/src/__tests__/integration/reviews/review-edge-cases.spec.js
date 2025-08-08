@@ -130,7 +130,10 @@ describe("Review Edge Cases and Error Handling Tests", () => {
             }
         }));
         it("handles invalid ObjectId formats for review", () => __awaiter(void 0, void 0, void 0, function* () {
-            yield (0, reviews_helper_1.createTestReview)(product._id.toString(), user._id.toString(), { rating: 4, comment: "Test" });
+            yield (0, reviews_helper_1.createTestReview)(product._id.toString(), user._id.toString(), {
+                rating: 4,
+                comment: "Test",
+            });
             const invalidIds = [
                 "invalid",
                 "123",
@@ -164,8 +167,8 @@ describe("Review Edge Cases and Error Handling Tests", () => {
                 .fill(null)
                 .map(() => (0, reviews_helper_1.createReviewRequest)(product._id.toString(), reviewData, cookie));
             const results = yield Promise.all(promises);
-            const successCount = results.filter(r => r.status === 201).length;
-            const errorCount = results.filter(r => r.status >= 400).length;
+            const successCount = results.filter((r) => r.status === 201).length;
+            const errorCount = results.filter((r) => r.status >= 400).length;
             expect(successCount + errorCount).toBe(5);
             expect(successCount).toBeGreaterThan(0);
         }));
@@ -177,7 +180,7 @@ describe("Review Edge Cases and Error Handling Tests", () => {
                 (0, reviews_helper_1.updateReviewRequest)(product._id.toString(), review._id.toString(), { comment: "Updated" }, cookie),
             ];
             const results = yield Promise.all(updatePromises);
-            results.forEach(res => {
+            results.forEach((res) => {
                 expect(res.status).toBe(200);
             });
         }));
@@ -187,8 +190,8 @@ describe("Review Edge Cases and Error Handling Tests", () => {
                 .fill(null)
                 .map(() => (0, reviews_helper_1.deleteReviewRequest)(product._id.toString(), review._id.toString(), cookie));
             const results = yield Promise.all(deletePromises);
-            const successCount = results.filter(r => r.status === 204).length;
-            const notFoundCount = results.filter(r => r.status === 404).length;
+            const successCount = results.filter((r) => r.status === 204).length;
+            const notFoundCount = results.filter((r) => r.status === 404).length;
             expect(successCount).toBe(1);
             expect(notFoundCount).toBe(2);
         }));
@@ -216,14 +219,7 @@ describe("Review Edge Cases and Error Handling Tests", () => {
             }
         }));
         it("handles invalid limit values", () => __awaiter(void 0, void 0, void 0, function* () {
-            const invalidLimits = [
-                -1,
-                0,
-                "invalid",
-                null,
-                undefined,
-                1000000,
-            ];
+            const invalidLimits = [-1, 0, "invalid", null, undefined, 1000000];
             for (const limit of invalidLimits) {
                 const res = yield (0, reviews_helper_1.getAllReviewsRequest)(product._id.toString(), { limit }, cookie);
                 expect([200, 400]).toContain(res.status);
@@ -318,7 +314,10 @@ describe("Review Edge Cases and Error Handling Tests", () => {
     });
     describe("Error Recovery and Resilience", () => {
         it("maintains data consistency after failed operations", () => __awaiter(void 0, void 0, void 0, function* () {
-            yield (0, reviews_helper_1.createTestReview)(product._id.toString(), user._id.toString(), { rating: 4, comment: "Initial" });
+            yield (0, reviews_helper_1.createTestReview)(product._id.toString(), user._id.toString(), {
+                rating: 4,
+                comment: "Initial",
+            });
             yield (0, reviews_helper_1.expectProductRatingUpdate)(product._id.toString(), 4, 1);
             const invalidRes = yield (0, reviews_helper_1.createReviewRequest)(product._id.toString(), { rating: 10, comment: "Invalid" }, cookie);
             expect(invalidRes.status).toBe(400);

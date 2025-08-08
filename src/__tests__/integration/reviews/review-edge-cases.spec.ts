@@ -20,9 +20,7 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 
 	beforeEach(async () => {
 		product = await createTestProduct();
-		const testUser = await createTestUserAndGetCookie(
-			"reviewer"
-		);
+		const testUser = await createTestUserAndGetCookie("reviewer");
 		user = testUser.user;
 		cookie = testUser.cookie;
 	});
@@ -33,7 +31,7 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 			const res = await createReviewRequest(
 				product._id.toString(),
 				{ rating: 4, comment: "Test" },
-				malformedCookie
+				malformedCookie,
 			);
 
 			expect(res.status).toBe(401);
@@ -44,7 +42,7 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 			const res = await createReviewRequest(
 				product._id.toString(),
 				{ rating: 4, comment: "Test" },
-				emptyCookie
+				emptyCookie,
 			);
 
 			expect(res.status).toBe(401);
@@ -56,7 +54,7 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 			const res = await createReviewRequest(
 				product._id.toString(),
 				{ rating: 4, comment: "Test" },
-				invalidSignatureCookie
+				invalidSignatureCookie,
 			);
 
 			expect(res.status).toBe(401);
@@ -67,32 +65,30 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 			const res = await createReviewRequest(
 				product._id.toString(),
 				{ rating: 4, comment: "Test" },
-				invalidUserCookie
+				invalidUserCookie,
 			);
 
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].message).toBe(
-				"کاربر متعلق به این توکن دیگر وجود ندارد!"
+				"کاربر متعلق به این توکن دیگر وجود ندارد!",
 			);
 		});
 
 		it("handles inactive user attempting to create review", async () => {
 			// Deactivate the user
-			const userDoc = await userRepository.findByEmail(
-				user.email
-			);
+			const userDoc = await userRepository.findByEmail(user.email);
 			userDoc!.active = false;
 			await userDoc!.save({ validateBeforeSave: false });
 
 			const res = await createReviewRequest(
 				product._id.toString(),
 				{ rating: 4, comment: "Test" },
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].message).toBe(
-				"کاربری که به این ایمیل مرتبط است غیرفعال شده!"
+				"کاربری که به این ایمیل مرتبط است غیرفعال شده!",
 			);
 		});
 	});
@@ -102,7 +98,7 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 			const res = await createReviewRequest(
 				product._id.toString(),
 				{ rating: Number.MAX_SAFE_INTEGER, comment: "Test" },
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(400);
@@ -112,7 +108,7 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 			const res = await createReviewRequest(
 				product._id.toString(),
 				{ rating: -1, comment: "Test" },
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(400);
@@ -122,7 +118,7 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 			const res = await createReviewRequest(
 				product._id.toString(),
 				{ rating: 3.5, comment: "Test" },
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(400);
@@ -132,7 +128,7 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 			const res = await createReviewRequest(
 				product._id.toString(),
 				{ rating: null as any, comment: "Test" },
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(400);
@@ -142,7 +138,7 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 			const res = await createReviewRequest(
 				product._id.toString(),
 				{ rating: undefined as any, comment: "Test" },
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(400);
@@ -152,7 +148,7 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 			const res = await createReviewRequest(
 				product._id.toString(),
 				{ rating: 4, comment: null as any },
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(400);
@@ -162,7 +158,7 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 			const res = await createReviewRequest(
 				product._id.toString(),
 				{ rating: 4, comment: undefined as any },
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(400);
@@ -172,7 +168,7 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 			const res = await createReviewRequest(
 				product._id.toString(),
 				{ rating: 4, comment: "" },
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(400);
@@ -182,7 +178,7 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 			const res = await createReviewRequest(
 				product._id.toString(),
 				{ rating: 4, comment: "   \n\t   " },
-				cookie
+				cookie,
 			);
 
 			// This might be accepted depending on validation rules
@@ -195,7 +191,7 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 			const res = await createReviewRequest(
 				product._id.toString(),
 				{ rating: 4, comment: veryLongComment },
-				cookie
+				cookie,
 			);
 
 			// Should either accept or reject based on validation rules
@@ -207,7 +203,7 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 			const res = await createReviewRequest(
 				product._id.toString(),
 				{ rating: 4, comment: specialComment },
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(201);
@@ -219,13 +215,11 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 			const res = await createReviewRequest(
 				product._id.toString(),
 				{ rating: 4, comment: sqlInjectionComment },
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(201);
-			expect(res.body.data.review.comment).toBe(
-				sqlInjectionComment
-			);
+			expect(res.body.data.review.comment).toBe(sqlInjectionComment);
 		});
 
 		it("handles comment with XSS attempt", async () => {
@@ -233,7 +227,7 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 			const res = await createReviewRequest(
 				product._id.toString(),
 				{ rating: 4, comment: xssComment },
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(201);
@@ -256,7 +250,7 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 				const res = await createReviewRequest(
 					invalidId,
 					{ rating: 4, comment: "Test" },
-					cookie
+					cookie,
 				);
 
 				expect(res.status).toBe(400);
@@ -264,11 +258,10 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 		});
 
 		it("handles invalid ObjectId formats for review", async () => {
-			await createTestReview(
-				product._id.toString(),
-				user._id.toString(),
-				{ rating: 4, comment: "Test" }
-			);
+			await createTestReview(product._id.toString(), user._id.toString(), {
+				rating: 4,
+				comment: "Test",
+			});
 
 			const invalidIds = [
 				"invalid",
@@ -283,7 +276,7 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 					product._id.toString(),
 					invalidId,
 					{ rating: 5 },
-					cookie
+					cookie,
 				);
 
 				expect(res.status).toBe(400);
@@ -295,7 +288,7 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 			const res = await createReviewRequest(
 				nonExistentId,
 				{ rating: 4, comment: "Test" },
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(404);
@@ -307,7 +300,7 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 				product._id.toString(),
 				nonExistentId,
 				{ rating: 5 },
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(404);
@@ -325,23 +318,15 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 			const promises = Array(5)
 				.fill(null)
 				.map(() =>
-					createReviewRequest(
-						product._id.toString(),
-						reviewData,
-						cookie
-					)
+					createReviewRequest(product._id.toString(), reviewData, cookie),
 				);
 
 			const results = await Promise.all(promises);
 
 			// Only one should succeed (if there's a unique constraint)
 			// Or all should succeed (if multiple reviews per user are allowed)
-			const successCount = results.filter(
-				r => r.status === 201
-			).length;
-			const errorCount = results.filter(
-				r => r.status >= 400
-			).length;
+			const successCount = results.filter((r) => r.status === 201).length;
+			const errorCount = results.filter((r) => r.status >= 400).length;
 
 			expect(successCount + errorCount).toBe(5);
 			expect(successCount).toBeGreaterThan(0);
@@ -351,7 +336,7 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 			const review = await createTestReview(
 				product._id.toString(),
 				user._id.toString(),
-				{ rating: 3, comment: "Original" }
+				{ rating: 3, comment: "Original" },
 			);
 
 			// Attempt concurrent updates
@@ -360,26 +345,26 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 					product._id.toString(),
 					review._id.toString(),
 					{ rating: 5 },
-					cookie
+					cookie,
 				),
 				updateReviewRequest(
 					product._id.toString(),
 					review._id.toString(),
 					{ rating: 1 },
-					cookie
+					cookie,
 				),
 				updateReviewRequest(
 					product._id.toString(),
 					review._id.toString(),
 					{ comment: "Updated" },
-					cookie
+					cookie,
 				),
 			];
 
 			const results = await Promise.all(updatePromises);
 
 			// All should succeed (last one wins)
-			results.forEach(res => {
+			results.forEach((res) => {
 				expect(res.status).toBe(200);
 			});
 		});
@@ -388,7 +373,7 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 			const review = await createTestReview(
 				product._id.toString(),
 				user._id.toString(),
-				{ rating: 3, comment: "To be deleted" }
+				{ rating: 3, comment: "To be deleted" },
 			);
 
 			// Attempt concurrent deletions
@@ -398,19 +383,15 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 					deleteReviewRequest(
 						product._id.toString(),
 						review._id.toString(),
-						cookie
-					)
+						cookie,
+					),
 				);
 
 			const results = await Promise.all(deletePromises);
 
 			// One should succeed (204), others should fail (404)
-			const successCount = results.filter(
-				r => r.status === 204
-			).length;
-			const notFoundCount = results.filter(
-				r => r.status === 404
-			).length;
+			const successCount = results.filter((r) => r.status === 204).length;
+			const notFoundCount = results.filter((r) => r.status === 404).length;
 
 			expect(successCount).toBe(1);
 			expect(notFoundCount).toBe(2);
@@ -423,7 +404,7 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 			const review = await createTestReview(
 				product._id.toString(),
 				user._id.toString(),
-				{ rating: 4, comment: "Test review" }
+				{ rating: 4, comment: "Test review" },
 			);
 
 			// Delete the product (this would require admin access in real scenario)
@@ -433,7 +414,7 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 			const res = await getReviewByIdRequest(
 				product._id.toString(),
 				review._id.toString(),
-				cookie
+				cookie,
 			);
 
 			// Should handle gracefully (either 404 or populate error)
@@ -445,7 +426,7 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 			const review = await createTestReview(
 				product._id.toString(),
 				user._id.toString(),
-				{ rating: 4, comment: "Test review" }
+				{ rating: 4, comment: "Test review" },
 			);
 
 			// Delete the user
@@ -455,7 +436,7 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 			const res = await getReviewByIdRequest(
 				product._id.toString(),
 				review._id.toString(),
-				cookie
+				cookie,
 			);
 
 			// Should handle gracefully (either 404 or populate error)
@@ -471,7 +452,7 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 				const res = await getAllReviewsRequest(
 					product._id.toString(),
 					{ page },
-					cookie
+					cookie,
 				);
 
 				// Should either use default page or return error
@@ -480,20 +461,13 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 		});
 
 		it("handles invalid limit values", async () => {
-			const invalidLimits = [
-				-1,
-				0,
-				"invalid",
-				null,
-				undefined,
-				1000000,
-			];
+			const invalidLimits = [-1, 0, "invalid", null, undefined, 1000000];
 
 			for (const limit of invalidLimits) {
 				const res = await getAllReviewsRequest(
 					product._id.toString(),
 					{ limit },
-					cookie
+					cookie,
 				);
 
 				// Should either use default limit or return error
@@ -505,13 +479,11 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 			const res = await getAllReviewsRequest(
 				product._id.toString(),
 				{ page: Number.MAX_SAFE_INTEGER },
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(404);
-			expect(res.body.errors[0].message).toBe(
-				"این صفحه وجود ندارد"
-			);
+			expect(res.body.errors[0].message).toBe("این صفحه وجود ندارد");
 		});
 	});
 
@@ -530,7 +502,7 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 				const res = await getAllReviewsRequest(
 					product._id.toString(),
 					{ sort },
-					cookie
+					cookie,
 				);
 
 				// Should either ignore invalid sort or return error
@@ -546,13 +518,11 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 				"rating[lte]": null,
 			};
 
-			for (const [key, value] of Object.entries(
-				invalidFilters
-			)) {
+			for (const [key, value] of Object.entries(invalidFilters)) {
 				const res = await getAllReviewsRequest(
 					product._id.toString(),
 					{ [key]: value },
-					cookie
+					cookie,
 				);
 
 				// Should either ignore invalid filters or return error
@@ -565,7 +535,7 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 			const res = await getAllReviewsRequest(
 				product._id.toString(),
 				{ "malformed[": "value" },
-				cookie
+				cookie,
 			);
 
 			expect([200, 400]).toContain(res.status);
@@ -581,14 +551,14 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 					Array.from({ length: 1000 }, (_, i) => [
 						`field${i}`,
 						`value${i}`.repeat(100),
-					])
+					]),
 				),
 			} as any;
 
 			const res = await createReviewRequest(
 				product._id.toString(),
 				largePayload,
-				cookie
+				cookie,
 			);
 
 			// Should either accept (ignoring extra fields) or reject due to size
@@ -608,7 +578,7 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 			const res = await createReviewRequest(
 				product._id.toString(),
 				deepObject,
-				cookie
+				cookie,
 			);
 
 			// Should handle gracefully
@@ -631,7 +601,7 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 				const res = await createReviewRequest(
 					product._id.toString(),
 					{ rating: 5, comment },
-					cookie
+					cookie,
 				);
 
 				expect(res.status).toBe(201);
@@ -645,7 +615,7 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 			const res = await createReviewRequest(
 				product._id.toString(),
 				{ rating: 4, comment: mixedText },
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(201);
@@ -658,46 +628,35 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 			const res = await createReviewRequest(
 				product._id.toString(),
 				{ rating: 4, comment: zeroWidthComment },
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(201);
-			expect(res.body.data.review.comment).toBe(
-				zeroWidthComment
-			);
+			expect(res.body.data.review.comment).toBe(zeroWidthComment);
 		});
 	});
 
 	describe("Error Recovery and Resilience", () => {
 		it("maintains data consistency after failed operations", async () => {
 			// Create initial review
-			await createTestReview(
-				product._id.toString(),
-				user._id.toString(),
-				{ rating: 4, comment: "Initial" }
-			);
+			await createTestReview(product._id.toString(), user._id.toString(), {
+				rating: 4,
+				comment: "Initial",
+			});
 
-			await expectProductRatingUpdate(
-				product._id.toString(),
-				4,
-				1
-			);
+			await expectProductRatingUpdate(product._id.toString(), 4, 1);
 
 			// Attempt invalid operation
 			const invalidRes = await createReviewRequest(
 				product._id.toString(),
 				{ rating: 10, comment: "Invalid" }, // Invalid rating
-				cookie
+				cookie,
 			);
 
 			expect(invalidRes.status).toBe(400);
 
 			// Verify original state is preserved
-			await expectProductRatingUpdate(
-				product._id.toString(),
-				4,
-				1
-			);
+			await expectProductRatingUpdate(product._id.toString(), 4, 1);
 		});
 
 		it("handles partial failures in batch operations gracefully", async () => {
@@ -719,7 +678,7 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 				const res = await createReviewRequest(
 					product._id.toString(),
 					op,
-					cookie
+					cookie,
 				);
 
 				if (res.status === 201) {
@@ -736,7 +695,7 @@ describe("Review Edge Cases and Error Handling Tests", () => {
 			const allReviewsRes = await getAllReviewsRequest(
 				product._id.toString(),
 				{},
-				cookie
+				cookie,
 			);
 			expect(allReviewsRes.body.results).toBe(3);
 		});

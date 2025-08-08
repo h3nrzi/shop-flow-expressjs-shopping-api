@@ -31,9 +31,7 @@ class ProductRepository {
         });
     }
     getOne(id, populate) {
-        return this.productModel
-            .findById(id)
-            .populate(populate);
+        return this.productModel.findById(id).populate(populate);
     }
     createOne(data) {
         return this.productModel.create(data);

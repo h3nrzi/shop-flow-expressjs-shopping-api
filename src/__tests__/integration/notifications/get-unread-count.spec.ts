@@ -29,7 +29,9 @@ describe("GET /api/notifications/unread-count", () => {
 			const res = await getUnreadCountRequest();
 
 			expect(res.status).toBe(401);
-			expect(res.body.errors[0].message).toBe("شما وارد نشده اید! لطفا برای دسترسی وارد شوید");
+			expect(res.body.errors[0].message).toBe(
+				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید",
+			);
 		});
 
 		it("user is not authenticated (invalid token)", async () => {
@@ -37,7 +39,9 @@ describe("GET /api/notifications/unread-count", () => {
 			const res = await getUnreadCountRequest(invalidCookie);
 
 			expect(res.status).toBe(401);
-			expect(res.body.errors[0].message).toBe("کاربر متعلق به این توکن دیگر وجود ندارد!");
+			expect(res.body.errors[0].message).toBe(
+				"کاربر متعلق به این توکن دیگر وجود ندارد!",
+			);
 		});
 	});
 
@@ -52,9 +56,18 @@ describe("GET /api/notifications/unread-count", () => {
 
 		it("user has all unread notifications", async () => {
 			// Create multiple notifications
-			await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
-			await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
-			await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
+			await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
+			await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
+			await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
 
 			const res = await getUnreadCountRequest(userCookie);
 
@@ -65,13 +78,28 @@ describe("GET /api/notifications/unread-count", () => {
 
 		it("user has some read and some unread notifications", async () => {
 			// Create notifications
-			const createRes1 = await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
-			const createRes2 = await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
-			await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
+			const createRes1 = await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
+			const createRes2 = await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
+			await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
 
 			// Mark two notifications as read
-			await markAsReadRequest(createRes1.body.data.notification._id, userCookie);
-			await markAsReadRequest(createRes2.body.data.notification._id, userCookie);
+			await markAsReadRequest(
+				createRes1.body.data.notification._id,
+				userCookie,
+			);
+			await markAsReadRequest(
+				createRes2.body.data.notification._id,
+				userCookie,
+			);
 
 			const res = await getUnreadCountRequest(userCookie);
 
@@ -82,12 +110,24 @@ describe("GET /api/notifications/unread-count", () => {
 
 		it("user has all read notifications", async () => {
 			// Create notifications
-			const createRes1 = await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
-			const createRes2 = await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
+			const createRes1 = await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
+			const createRes2 = await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
 
 			// Mark all notifications as read
-			await markAsReadRequest(createRes1.body.data.notification._id, userCookie);
-			await markAsReadRequest(createRes2.body.data.notification._id, userCookie);
+			await markAsReadRequest(
+				createRes1.body.data.notification._id,
+				userCookie,
+			);
+			await markAsReadRequest(
+				createRes2.body.data.notification._id,
+				userCookie,
+			);
 
 			const res = await getUnreadCountRequest(userCookie);
 
@@ -98,9 +138,18 @@ describe("GET /api/notifications/unread-count", () => {
 
 		it("unread count only includes current user's notifications", async () => {
 			// Create notifications for both user and admin
-			await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
-			await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
-			await createNotificationRequest(getValidNotificationData(admin._id), adminCookie);
+			await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
+			await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
+			await createNotificationRequest(
+				getValidNotificationData(admin._id),
+				adminCookie,
+			);
 
 			const userRes = await getUnreadCountRequest(userCookie);
 			const adminRes = await getUnreadCountRequest(adminCookie);

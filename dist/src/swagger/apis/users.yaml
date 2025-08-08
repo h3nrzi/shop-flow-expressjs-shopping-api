@@ -28,9 +28,9 @@ paths:
                     type: object
                     properties:
                       currentUser:
-                        $ref: '#/components/schemas/User'
+                        $ref: "#/components/schemas/User"
         "401":
-          $ref: '#/components/responses/Unauthorized'
+          $ref: "#/components/responses/Unauthorized"
 
   /api/users/update-me:
     # ------------------------------------------------ UPDATE ME ----------------------------------------------------
@@ -47,7 +47,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/Dtos/UpdateCurrentUserInfoDto'
+              $ref: "#/components/Dtos/UpdateCurrentUserInfoDto"
       responses:
         "200":
           description: User information updated successfully
@@ -63,7 +63,7 @@ paths:
                     type: object
                     properties:
                       updatedUser:
-                        $ref: '#/components/schemas/User'
+                        $ref: "#/components/schemas/User"
         "400":
           description: Validation error
           content:
@@ -86,7 +86,7 @@ paths:
                           type: string
                           example: "فرمت ایمیل صحیح نیست"
         "401":
-          $ref: '#/components/responses/Unauthorized'
+          $ref: "#/components/responses/Unauthorized"
         "422":
           description: Password fields sent in update-me
           content:
@@ -124,7 +124,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/Dtos/UpdateCurrentUserPasswordDto'
+              $ref: "#/components/Dtos/UpdateCurrentUserPasswordDto"
       responses:
         "200":
           description: Password updated successfully
@@ -140,7 +140,7 @@ paths:
                     type: object
                     properties:
                       user:
-                        $ref: '#/components/schemas/User'
+                        $ref: "#/components/schemas/User"
         "400":
           description: Validation error
           content:
@@ -163,7 +163,7 @@ paths:
                           type: string
                           example: "رمز عبور و تایید رمز عبور مطابقت ندارند"
         "401":
-          $ref: '#/components/responses/Unauthorized'
+          $ref: "#/components/responses/Unauthorized"
         "403":
           description: Current password is incorrect
           content:
@@ -200,12 +200,11 @@ paths:
         "204":
           description: User deleted successfully
         "401":
-          $ref: '#/components/responses/Unauthorized'
+          $ref: "#/components/responses/Unauthorized"
 
 ######################################################
 ################### REFERENCES #######################
 ######################################################
-
 
 components:
   Dtos:

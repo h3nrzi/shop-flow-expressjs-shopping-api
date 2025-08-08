@@ -10,22 +10,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 class APIFeatures {
-    constructor(Model, reqQuery, initialFilter) {
+    constructor(Model, reqQuery, initialFilter, populate) {
         this.Model = Model;
         this.queryRequest = reqQuery;
-        this.dbQuery = this.Model.find(initialFilter);
+        this.dbQuery = this.Model.find(initialFilter).populate(populate || "");
     }
     filter() {
         const queryObject = Object.assign({}, this.queryRequest);
-        const excludedFields = [
-            "sort",
-            "fields",
-            "search",
-            "page",
-            "limit",
-        ];
-        excludedFields.forEach(field => delete queryObject[field]);
-        const queryString = JSON.stringify(queryObject).replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`);
+        const excludedFields = ["sort", "fields", "search", "page", "limit"];
+        excludedFields.forEach((field) => delete queryObject[field]);
+        const queryString = JSON.stringify(queryObject).replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
         this.dbQuery = this.dbQuery.find(JSON.parse(queryString));
         return this;
     }
@@ -53,9 +47,7 @@ class APIFeatures {
     }
     limitFields() {
         if (this.queryRequest.fields) {
-            const fields = this.queryRequest.fields
-                .split(",")
-                .join(" ");
+            const fields = this.queryRequest.fields.split(",").join(" ");
             this.dbQuery = this.dbQuery.select(fields);
         }
         else {

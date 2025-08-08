@@ -16,58 +16,44 @@ describe("POST /api/orders", () => {
 
 	beforeEach(async () => {
 		product = await createTestProduct();
-		const testUser = await createTestUserAndGetCookie(
-			"orderuser"
-		);
+		const testUser = await createTestUserAndGetCookie("orderuser");
 		cookie = testUser.cookie;
 		user = testUser.user;
 	});
 
 	describe("should return 401, if", () => {
 		it("user is not authenticated (no token)", async () => {
-			const orderData = getValidOrderData(
-				product._id.toString()
-			);
+			const orderData = getValidOrderData(product._id.toString());
 			const res = await createOrderRequest(orderData);
 
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].message).toBe(
-				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
+				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید",
 			);
 		});
 
 		it("user is not authenticated (invalid token)", async () => {
-			const orderData = getValidOrderData(
-				product._id.toString()
-			);
+			const orderData = getValidOrderData(product._id.toString());
 			const invalidCookie = `jwt=${getInvalidToken()}`;
-			const res = await createOrderRequest(
-				orderData,
-				invalidCookie
-			);
+			const res = await createOrderRequest(orderData, invalidCookie);
 
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].message).toBe(
-				"کاربر متعلق به این توکن دیگر وجود ندارد!"
+				"کاربر متعلق به این توکن دیگر وجود ندارد!",
 			);
 		});
 	});
 
 	describe("should return 400, if", () => {
 		const invalidDataCases = getInvalidOrderData();
-		invalidDataCases.forEach(
-			({ testCase, data, expectedError }) => {
-				it(testCase, async () => {
-					const res = await createOrderRequest(
-						data as any,
-						cookie
-					);
+		invalidDataCases.forEach(({ testCase, data, expectedError }) => {
+			it(testCase, async () => {
+				const res = await createOrderRequest(data as any, cookie);
 
-					expect(res.status).toBe(400);
-					expect(res.body.errors[0].message).toBe(expectedError);
-				});
-			}
-		);
+				expect(res.status).toBe(400);
+				expect(res.body.errors[0].message).toBe(expectedError);
+			});
+		});
 	});
 
 	describe("should return 404, if", () => {
@@ -82,10 +68,7 @@ describe("POST /api/orders", () => {
 
 	describe("should return 201, if", () => {
 		it("order is created successfully with valid data", async () => {
-			const orderData = getValidOrderData(
-				product._id.toString(),
-				3
-			);
+			const orderData = getValidOrderData(product._id.toString(), 3);
 			const res = await createOrderRequest(orderData, cookie);
 
 			expect(res.status).toBe(201);
@@ -129,9 +112,7 @@ describe("POST /api/orders", () => {
 		});
 
 		it("order has correct default status values", async () => {
-			const orderData = getValidOrderData(
-				product._id.toString()
-			);
+			const orderData = getValidOrderData(product._id.toString());
 			const res = await createOrderRequest(orderData, cookie);
 
 			expect(res.status).toBe(201);
@@ -142,9 +123,7 @@ describe("POST /api/orders", () => {
 		});
 
 		it("order is associated with the correct user", async () => {
-			const orderData = getValidOrderData(
-				product._id.toString()
-			);
+			const orderData = getValidOrderData(product._id.toString());
 			const res = await createOrderRequest(orderData, cookie);
 
 			expect(res.status).toBe(201);

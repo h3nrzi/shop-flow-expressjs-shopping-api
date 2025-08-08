@@ -9,7 +9,7 @@ const sanitizeObject = (data) => {
     if (typeof data === "string")
         return (0, xss_1.default)(data, { whiteList: {} });
     if (Array.isArray(data))
-        return data.map(item => sanitizeObject(item));
+        return data.map((item) => sanitizeObject(item));
     if (typeof data === "object" && data !== null) {
         const sanitizedObj = {};
         for (const key in data)

@@ -8,37 +8,28 @@ import { CreateProductDto } from "@/core/products/dtos/create-product.dto";
 // ============ Users Related Requests ============
 // ===============================================
 
-export const allUsersRequest = async (
-	cookie: string
-): Promise<Response> => {
-	return await request(app)
-		.get("/api/users")
-		.set("Cookie", cookie);
+export const allUsersRequest = async (cookie: string): Promise<Response> => {
+	return await request(app).get("/api/users").set("Cookie", cookie);
 };
 
 export const getUserRequest = async (
 	cookie: string,
-	userId: string
+	userId: string,
 ): Promise<Response> => {
-	return await request(app)
-		.get(`/api/users/${userId}`)
-		.set("Cookie", cookie);
+	return await request(app).get(`/api/users/${userId}`).set("Cookie", cookie);
 };
 
 export const createUserRequest = async (
 	cookie: string,
-	body: ICreateUserDto
+	body: ICreateUserDto,
 ): Promise<Response> => {
-	return await request(app)
-		.post("/api/users")
-		.set("Cookie", cookie)
-		.send(body);
+	return await request(app).post("/api/users").set("Cookie", cookie).send(body);
 };
 
 export const updateUserRequest = async (
 	cookie: string,
 	userId: string,
-	body: IUpdateUserDto
+	body: IUpdateUserDto,
 ): Promise<Response> => {
 	return await request(app)
 		.patch(`/api/users/${userId}`)
@@ -48,7 +39,7 @@ export const updateUserRequest = async (
 
 export const deleteUserRequest = async (
 	cookie: string,
-	userId: string
+	userId: string,
 ): Promise<Response> => {
 	return await request(app)
 		.delete(`/api/users/${userId}`)
@@ -57,7 +48,7 @@ export const deleteUserRequest = async (
 
 export const getUsersCountByDayRequest = async (
 	cookie: string,
-	period?: string
+	period?: string,
 ): Promise<Response> => {
 	let url = "/api/users/get-users-count";
 	if (period) url += `?period=${period}`;
@@ -70,7 +61,7 @@ export const getUsersCountByDayRequest = async (
 
 export const createProductRequest = async (
 	cookie: string,
-	body: CreateProductDto
+	body: CreateProductDto,
 ): Promise<Response> => {
 	return await request(app)
 		.post("/api/products")

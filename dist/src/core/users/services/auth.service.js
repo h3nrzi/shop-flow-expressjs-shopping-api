@@ -96,17 +96,13 @@ class AuthService {
     }
     resetPassword(resetPasswordDto, resetToken) {
         return __awaiter(this, void 0, void 0, function* () {
-            const token = node_crypto_1.default
-                .createHash("sha256")
-                .update(resetToken)
-                .digest("hex");
+            const token = node_crypto_1.default.createHash("sha256").update(resetToken).digest("hex");
             const user = yield this.userRepository.findByPasswordRestToken(token);
             if (!user) {
                 throw new not_authorized_error_1.NotAuthorizedError("توکن نامعتبر است یا منقضی شده است!");
             }
             user.password = resetPasswordDto.password;
-            user.passwordConfirmation =
-                resetPasswordDto.passwordConfirmation;
+            user.passwordConfirmation = resetPasswordDto.passwordConfirmation;
             user.passwordResetToken = undefined;
             user.passwordResetExpires = undefined;
             const updatedUser = yield user.save();

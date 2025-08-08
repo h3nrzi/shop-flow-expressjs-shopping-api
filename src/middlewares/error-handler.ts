@@ -1,12 +1,7 @@
 import { ErrorRequestHandler } from "express";
 import { CustomError } from "../errors/custom-error";
 
-export const errorHandler: ErrorRequestHandler = (
-	err,
-	req,
-	res,
-	next
-) => {
+export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
 	// if the error is a CastError, send a 400 error and log the error
 	// CastError is a Mongoose error that occurs when a value is not of the correct type
 	// in this case, we are sending a 400 error and logging the error

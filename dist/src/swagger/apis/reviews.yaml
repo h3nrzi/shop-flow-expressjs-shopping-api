@@ -11,7 +11,7 @@ paths:
       summary: Get all reviews for a product
       description: Returns a paginated list of reviews for a specific product. Supports filtering, sorting, and field selection.
       parameters:
-        - $ref: '#/components/parameters/productId'
+        - $ref: "#/components/parameters/productId"
         - in: query
           name: page
           schema:
@@ -33,7 +33,8 @@ paths:
           name: sort
           schema:
             type: string
-            enum: [-rating, rating, -createdAt, createdAt, -updatedAt, updatedAt]
+            enum:
+              [-rating, rating, -createdAt, createdAt, -updatedAt, updatedAt]
             example: -createdAt
           required: false
           description: ترتیب مرتب‌سازی نتایج (صعودی یا نزولی)
@@ -86,7 +87,7 @@ paths:
           name: user
           schema:
             type: string
-            pattern: '^[0-9a-fA-F]{24}$'
+            pattern: "^[0-9a-fA-F]{24}$"
             example: "60d21b4667d0d8992e610c86"
           required: false
           description: فیلتر بر اساس شناسه کاربر نویسنده نظر
@@ -121,14 +122,14 @@ paths:
                     type: integer
                     example: 10
                   pagination:
-                    $ref: '#/components/schemas/Pagination'
+                    $ref: "#/components/schemas/Pagination"
                   data:
                     type: object
                     properties:
                       reviews:
                         type: array
                         items:
-                          $ref: '#/components/schemas/Review'
+                          $ref: "#/components/schemas/Review"
         "404":
           description: Page exceeds total pages
           content:
@@ -161,13 +162,13 @@ paths:
         - cookieAuth: []
         - bearerAuth: []
       parameters:
-        - $ref: '#/components/parameters/productId'
+        - $ref: "#/components/parameters/productId"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/Dtos/CreateReviewDto'
+              $ref: "#/components/Dtos/CreateReviewDto"
       responses:
         "201":
           description: Review created successfully
@@ -183,7 +184,7 @@ paths:
                     type: object
                     properties:
                       review:
-                        $ref: '#/components/schemas/Review'
+                        $ref: "#/components/schemas/Review"
         "400":
           description: Validation error
           content:
@@ -206,7 +207,7 @@ paths:
                           type: string
                           example: "امتیاز باید بین 1 تا 5 باشد"
         "401":
-          $ref: '#/components/responses/Unauthorized'
+          $ref: "#/components/responses/Unauthorized"
 
   /api/products/{productId}/reviews/{id}:
     # ------------------------------------------------ GET REVIEW BY ID ----------------------------------------------------
@@ -216,8 +217,8 @@ paths:
       summary: Get a specific review by ID
       description: Returns a single review by its ID for a specific product
       parameters:
-        - $ref: '#/components/parameters/productId'
-        - $ref: '#/components/parameters/reviewId'
+        - $ref: "#/components/parameters/productId"
+        - $ref: "#/components/parameters/reviewId"
       responses:
         "200":
           description: Review retrieved successfully
@@ -233,9 +234,9 @@ paths:
                     type: object
                     properties:
                       review:
-                        $ref: '#/components/schemas/Review'
+                        $ref: "#/components/schemas/Review"
         "401":
-          $ref: '#/components/responses/Unauthorized'
+          $ref: "#/components/responses/Unauthorized"
         "404":
           description: Review or product not found
           content:
@@ -268,14 +269,14 @@ paths:
         - cookieAuth: []
         - bearerAuth: []
       parameters:
-        - $ref: '#/components/parameters/productId'
-        - $ref: '#/components/parameters/reviewId'
+        - $ref: "#/components/parameters/productId"
+        - $ref: "#/components/parameters/reviewId"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/Dtos/UpdateReviewDto'
+              $ref: "#/components/Dtos/UpdateReviewDto"
       responses:
         "200":
           description: Review updated successfully
@@ -291,7 +292,7 @@ paths:
                     type: object
                     properties:
                       review:
-                        $ref: '#/components/schemas/Review'
+                        $ref: "#/components/schemas/Review"
         "400":
           description: Validation error
           content:
@@ -314,7 +315,7 @@ paths:
                           type: string
                           example: "امتیاز باید بین 1 تا 5 باشد"
         "401":
-          $ref: '#/components/responses/Unauthorized'
+          $ref: "#/components/responses/Unauthorized"
         "403":
           description: User cannot update another user's review
           content:
@@ -368,13 +369,13 @@ paths:
         - cookieAuth: []
         - bearerAuth: []
       parameters:
-        - $ref: '#/components/parameters/productId'
-        - $ref: '#/components/parameters/reviewId'
+        - $ref: "#/components/parameters/productId"
+        - $ref: "#/components/parameters/reviewId"
       responses:
         "204":
           description: Review deleted successfully
         "401":
-          $ref: '#/components/responses/Unauthorized'
+          $ref: "#/components/responses/Unauthorized"
         "403":
           description: User cannot delete another user's review
           content:
@@ -474,7 +475,6 @@ components:
           format: date-time
           example: "2021-06-22T14:30:00.000Z"
 
-
   Dtos:
     CreateReviewDto:
       type: object
@@ -514,7 +514,7 @@ components:
       required: true
       schema:
         type: string
-        pattern: '^[0-9a-fA-F]{24}$'
+        pattern: "^[0-9a-fA-F]{24}$"
         example: "60d21b4667d0d8992e610c87"
       description: "شناسه محصول"
 
@@ -524,7 +524,6 @@ components:
       required: true
       schema:
         type: string
-        pattern: '^[0-9a-fA-F]{24}$'
+        pattern: "^[0-9a-fA-F]{24}$"
         example: "60d21b4667d0d8992e610c85"
       description: "شناسه نظر"
-

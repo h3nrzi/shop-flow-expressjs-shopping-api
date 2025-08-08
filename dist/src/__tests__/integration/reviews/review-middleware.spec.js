@@ -22,7 +22,10 @@ describe("Review Middleware Integration Tests", () => {
     }));
     describe("beforeGetAll Middleware", () => {
         it("sets initialFilter with productId from URL params", () => __awaiter(void 0, void 0, void 0, function* () {
-            yield (0, reviews_helper_1.createTestReview)(product._id.toString(), user._id.toString(), { rating: 4, comment: "Product review" });
+            yield (0, reviews_helper_1.createTestReview)(product._id.toString(), user._id.toString(), {
+                rating: 4,
+                comment: "Product review",
+            });
             const anotherProduct = yield (0, reviews_helper_1.createTestProduct)();
             yield (0, reviews_helper_1.createTestReview)(anotherProduct._id.toString(), user._id.toString(), { rating: 3, comment: "Another product review" });
             const res = yield (0, reviews_helper_1.getAllReviewsRequest)(product._id.toString(), {}, cookie);
@@ -214,8 +217,8 @@ describe("Review Middleware Integration Tests", () => {
             expect(allReviewsRes.status).toBe(200);
             expect(allReviewsRes.body.results).toBe(3);
             const reviewUserIds = allReviewsRes.body.data.reviews.map((r) => r.user._id);
-            const expectedUserIds = users.map(u => u._id.toString());
-            expectedUserIds.forEach(userId => {
+            const expectedUserIds = users.map((u) => u._id.toString());
+            expectedUserIds.forEach((userId) => {
                 expect(reviewUserIds).toContain(userId);
             });
         }));

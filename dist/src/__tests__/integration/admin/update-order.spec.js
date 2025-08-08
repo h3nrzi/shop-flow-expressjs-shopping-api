@@ -198,7 +198,7 @@ describe("PATCH /api/orders/:id (Admin Only)", () => {
         }));
         it("admin update updates the updatedAt timestamp", () => __awaiter(void 0, void 0, void 0, function* () {
             const originalUpdatedAt = order.updatedAt;
-            yield new Promise(resolve => setTimeout(resolve, 10));
+            yield new Promise((resolve) => setTimeout(resolve, 10));
             const updateData = { paymentMethod: "Cash" };
             const res = yield (0, orders_helper_1.updateOrderRequest)(order._id.toString(), updateData, adminCookie);
             expect(res.status).toBe(200);

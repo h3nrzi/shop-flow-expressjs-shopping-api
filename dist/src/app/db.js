@@ -10,5 +10,5 @@ module.exports = () => {
     }
     return mongoose_1.default
         .connect(process.env.MONGODB_URL)
-        .then(conn => console.log(`🔹MongoDB Connected: ${conn.connection.host}`));
+        .then((conn) => console.log(`🔹MongoDB Connected: ${conn.connection.host}`));
 };

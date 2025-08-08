@@ -17,9 +17,7 @@ describe("GET /api/products/:productId/reviews/:id", () => {
 
 	beforeEach(async () => {
 		product = await createTestProduct();
-		const testUser = await createTestUserAndGetCookie(
-			"reviewer"
-		);
+		const testUser = await createTestUserAndGetCookie("reviewer");
 		user = testUser.user;
 		cookie = testUser.cookie;
 
@@ -27,7 +25,7 @@ describe("GET /api/products/:productId/reviews/:id", () => {
 		review = await createTestReview(
 			product._id.toString(),
 			user._id.toString(),
-			{ rating: 4, comment: "Good product" }
+			{ rating: 4, comment: "Good product" },
 		);
 	});
 
@@ -35,12 +33,12 @@ describe("GET /api/products/:productId/reviews/:id", () => {
 		it("user is not authenticated (no token)", async () => {
 			const res = await getReviewByIdRequest(
 				product._id.toString(),
-				review._id.toString()
+				review._id.toString(),
 			);
 
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].message).toBe(
-				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
+				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید",
 			);
 		});
 
@@ -49,12 +47,12 @@ describe("GET /api/products/:productId/reviews/:id", () => {
 			const res = await getReviewByIdRequest(
 				product._id.toString(),
 				review._id.toString(),
-				invalidCookie
+				invalidCookie,
 			);
 
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].message).toBe(
-				"کاربر متعلق به این توکن دیگر وجود ندارد!"
+				"کاربر متعلق به این توکن دیگر وجود ندارد!",
 			);
 		});
 	});
@@ -64,7 +62,7 @@ describe("GET /api/products/:productId/reviews/:id", () => {
 			const res = await getReviewByIdRequest(
 				getInvalidId(),
 				review._id.toString(),
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(400);
@@ -74,13 +72,11 @@ describe("GET /api/products/:productId/reviews/:id", () => {
 			const res = await getReviewByIdRequest(
 				product._id.toString(),
 				getInvalidId(),
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(400);
-			expect(res.body.errors[0].message).toBe(
-				"شناسه نظر معتبر نیست"
-			);
+			expect(res.body.errors[0].message).toBe("شناسه نظر معتبر نیست");
 		});
 	});
 
@@ -90,7 +86,7 @@ describe("GET /api/products/:productId/reviews/:id", () => {
 			const res = await getReviewByIdRequest(
 				nonExistentProductId,
 				review._id.toString(),
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(404);
@@ -101,13 +97,11 @@ describe("GET /api/products/:productId/reviews/:id", () => {
 			const res = await getReviewByIdRequest(
 				product._id.toString(),
 				nonExistentReviewId,
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(404);
-			expect(res.body.errors[0].message).toBe(
-				"نظری با این شناسه یافت نشد"
-			);
+			expect(res.body.errors[0].message).toBe("نظری با این شناسه یافت نشد");
 		});
 
 		it("review exists but belongs to different product", async () => {
@@ -116,20 +110,18 @@ describe("GET /api/products/:productId/reviews/:id", () => {
 			const anotherReview = await createTestReview(
 				anotherProduct._id.toString(),
 				user._id.toString(),
-				{ rating: 3, comment: "Different product review" }
+				{ rating: 3, comment: "Different product review" },
 			);
 
 			// Try to get the other product's review using wrong product ID
 			const res = await getReviewByIdRequest(
 				product._id.toString(),
 				anotherReview._id.toString(),
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(404);
-			expect(res.body.errors[0].message).toBe(
-				"نظری با این شناسه یافت نشد"
-			);
+			expect(res.body.errors[0].message).toBe("نظری با این شناسه یافت نشد");
 		});
 	});
 
@@ -138,7 +130,7 @@ describe("GET /api/products/:productId/reviews/:id", () => {
 			const res = await getReviewByIdRequest(
 				product._id.toString(),
 				review._id.toString(),
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(200);
@@ -157,7 +149,7 @@ describe("GET /api/products/:productId/reviews/:id", () => {
 			const res = await getReviewByIdRequest(
 				product._id.toString(),
 				review._id.toString(),
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(200);
@@ -175,7 +167,7 @@ describe("GET /api/products/:productId/reviews/:id", () => {
 			const res = await getReviewByIdRequest(
 				product._id.toString(),
 				review._id.toString(),
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(200);
@@ -186,19 +178,15 @@ describe("GET /api/products/:productId/reviews/:id", () => {
 			expect(returnedReview.product).toHaveProperty("_id");
 			expect(returnedReview.product).toHaveProperty("name");
 			expect(returnedReview.product).toHaveProperty("price");
-			expect(returnedReview.product).toHaveProperty(
-				"description"
-			);
-			expect(returnedReview.product._id).toBe(
-				product._id.toString()
-			);
+			expect(returnedReview.product).toHaveProperty("description");
+			expect(returnedReview.product._id).toBe(product._id.toString());
 		});
 
 		it("returns review with all expected fields", async () => {
 			const res = await getReviewByIdRequest(
 				product._id.toString(),
 				review._id.toString(),
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(200);
@@ -229,13 +217,13 @@ describe("GET /api/products/:productId/reviews/:id", () => {
 			const minRatingReview = await createTestReview(
 				product._id.toString(),
 				user._id.toString(),
-				{ rating: 1, comment: "Poor product" }
+				{ rating: 1, comment: "Poor product" },
 			);
 
 			const res1 = await getReviewByIdRequest(
 				product._id.toString(),
 				minRatingReview._id.toString(),
-				cookie
+				cookie,
 			);
 
 			expect(res1.status).toBe(200);
@@ -245,13 +233,13 @@ describe("GET /api/products/:productId/reviews/:id", () => {
 			const maxRatingReview = await createTestReview(
 				product._id.toString(),
 				user._id.toString(),
-				{ rating: 5, comment: "Excellent product" }
+				{ rating: 5, comment: "Excellent product" },
 			);
 
 			const res2 = await getReviewByIdRequest(
 				product._id.toString(),
 				maxRatingReview._id.toString(),
-				cookie
+				cookie,
 			);
 
 			expect(res2.status).toBe(200);
@@ -266,27 +254,21 @@ describe("GET /api/products/:productId/reviews/:id", () => {
 			const anotherReview = await createTestReview(
 				product._id.toString(),
 				anotherUser._id.toString(),
-				{ rating: 3, comment: "Average product" }
+				{ rating: 3, comment: "Average product" },
 			);
 
 			// Original user should be able to view other user's review
 			const res = await getReviewByIdRequest(
 				product._id.toString(),
 				anotherReview._id.toString(),
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(200);
-			expect(res.body.data.review._id).toBe(
-				anotherReview._id.toString()
-			);
-			expect(res.body.data.review.user._id).toBe(
-				anotherUser._id.toString()
-			);
+			expect(res.body.data.review._id).toBe(anotherReview._id.toString());
+			expect(res.body.data.review.user._id).toBe(anotherUser._id.toString());
 			expect(res.body.data.review.rating).toBe(3);
-			expect(res.body.data.review.comment).toBe(
-				"Average product"
-			);
+			expect(res.body.data.review.comment).toBe("Average product");
 		});
 	});
 
@@ -296,13 +278,13 @@ describe("GET /api/products/:productId/reviews/:id", () => {
 			const longCommentReview = await createTestReview(
 				product._id.toString(),
 				user._id.toString(),
-				{ rating: 4, comment: longComment }
+				{ rating: 4, comment: longComment },
 			);
 
 			const res = await getReviewByIdRequest(
 				product._id.toString(),
 				longCommentReview._id.toString(),
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(200);
@@ -316,13 +298,13 @@ describe("GET /api/products/:productId/reviews/:id", () => {
 			const specialReview = await createTestReview(
 				product._id.toString(),
 				user._id.toString(),
-				{ rating: 5, comment: specialComment }
+				{ rating: 5, comment: specialComment },
 			);
 
 			const res = await getReviewByIdRequest(
 				product._id.toString(),
 				specialReview._id.toString(),
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(200);
@@ -334,13 +316,13 @@ describe("GET /api/products/:productId/reviews/:id", () => {
 			const unicodeReview = await createTestReview(
 				product._id.toString(),
 				user._id.toString(),
-				{ rating: 5, comment: unicodeComment }
+				{ rating: 5, comment: unicodeComment },
 			);
 
 			const res = await getReviewByIdRequest(
 				product._id.toString(),
 				unicodeReview._id.toString(),
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(200);
@@ -353,8 +335,7 @@ describe("GET /api/products/:productId/reviews/:id", () => {
 				{ rating: 1, comment: "Bad" },
 				{
 					rating: 3,
-					comment:
-						"Average product with moderate length comment",
+					comment: "Average product with moderate length comment",
 				},
 				{ rating: 5, comment: "Excellent! " + "A".repeat(500) },
 			];
@@ -363,23 +344,20 @@ describe("GET /api/products/:productId/reviews/:id", () => {
 				const testReview = await createTestReview(
 					product._id.toString(),
 					user._id.toString(),
-					reviewData
+					reviewData,
 				);
 
 				const res = await getReviewByIdRequest(
 					product._id.toString(),
 					testReview._id.toString(),
-					cookie
+					cookie,
 				);
 
 				expect(res.status).toBe(200);
 				expect(res.body).toHaveProperty("status", "success");
 				expect(res.body).toHaveProperty("data");
 				expect(res.body.data).toHaveProperty("review");
-				expectValidReviewResponse(
-					res.body.data.review,
-					reviewData
-				);
+				expectValidReviewResponse(res.body.data.review, reviewData);
 			}
 		});
 
@@ -391,18 +369,16 @@ describe("GET /api/products/:productId/reviews/:id", () => {
 					getReviewByIdRequest(
 						product._id.toString(),
 						review._id.toString(),
-						cookie
-					)
+						cookie,
+					),
 				);
 
 			const responses = await Promise.all(promises);
 
 			// All requests should succeed
-			responses.forEach(res => {
+			responses.forEach((res) => {
 				expect(res.status).toBe(200);
-				expect(res.body.data.review._id).toBe(
-					review._id.toString()
-				);
+				expect(res.body.data.review._id).toBe(review._id.toString());
 			});
 		});
 	});
@@ -412,30 +388,24 @@ describe("GET /api/products/:productId/reviews/:id", () => {
 			const res1 = await getReviewByIdRequest(
 				product._id.toString(),
 				review._id.toString(),
-				cookie
+				cookie,
 			);
 
 			const res2 = await getReviewByIdRequest(
 				product._id.toString(),
 				review._id.toString(),
-				cookie
+				cookie,
 			);
 
 			expect(res1.status).toBe(200);
 			expect(res2.status).toBe(200);
 
 			// Compare the review data
-			expect(res1.body.data.review._id).toBe(
-				res2.body.data.review._id
-			);
-			expect(res1.body.data.review.rating).toBe(
-				res2.body.data.review.rating
-			);
-			expect(res1.body.data.review.comment).toBe(
-				res2.body.data.review.comment
-			);
+			expect(res1.body.data.review._id).toBe(res2.body.data.review._id);
+			expect(res1.body.data.review.rating).toBe(res2.body.data.review.rating);
+			expect(res1.body.data.review.comment).toBe(res2.body.data.review.comment);
 			expect(res1.body.data.review.createdAt).toBe(
-				res2.body.data.review.createdAt
+				res2.body.data.review.createdAt,
 			);
 		});
 
@@ -443,7 +413,7 @@ describe("GET /api/products/:productId/reviews/:id", () => {
 			const res = await getReviewByIdRequest(
 				product._id.toString(),
 				review._id.toString(),
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(200);
@@ -454,12 +424,8 @@ describe("GET /api/products/:productId/reviews/:id", () => {
 			expect(returnedReview._id).toBe(review._id.toString());
 			expect(returnedReview.rating).toBe(review.rating);
 			expect(returnedReview.comment).toBe(review.comment);
-			expect(returnedReview.user._id).toBe(
-				review.user.toString()
-			);
-			expect(returnedReview.product._id).toBe(
-				review.product.toString()
-			);
+			expect(returnedReview.user._id).toBe(review.user.toString());
+			expect(returnedReview.product._id).toBe(review.product.toString());
 		});
 	});
 });

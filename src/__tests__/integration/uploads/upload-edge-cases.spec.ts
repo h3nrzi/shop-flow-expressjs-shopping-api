@@ -40,9 +40,7 @@ describe("Upload Edge Cases and Error Handling", () => {
 			public_id: "Azooghe/test",
 		});
 
-		const testUser = await createTestUserAndGetCookie(
-			"edgecase"
-		);
+		const testUser = await createTestUserAndGetCookie("edgecase");
 		cookie = testUser.cookie;
 		user = await userRepository.findByEmail(testUser.user.email);
 	});
@@ -51,7 +49,7 @@ describe("Upload Edge Cases and Error Handling", () => {
 		it("should handle Cloudinary upload failure", async () => {
 			// Mock Cloudinary to throw an error
 			mockCloudinaryUpload.mockRejectedValue(
-				new Error("Cloudinary upload failed")
+				new Error("Cloudinary upload failed"),
 			);
 
 			const imageBuffer = Buffer.from([
@@ -62,7 +60,7 @@ describe("Upload Edge Cases and Error Handling", () => {
 				imageBuffer,
 				"test.png",
 				"image/png",
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(500);
@@ -70,9 +68,7 @@ describe("Upload Edge Cases and Error Handling", () => {
 
 		it("should handle Cloudinary timeout", async () => {
 			// Mock Cloudinary to timeout
-			mockCloudinaryUpload.mockRejectedValue(
-				new Error("Request timeout")
-			);
+			mockCloudinaryUpload.mockRejectedValue(new Error("Request timeout"));
 
 			const imageBuffer = Buffer.from([
 				0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a,
@@ -82,7 +78,7 @@ describe("Upload Edge Cases and Error Handling", () => {
 				imageBuffer,
 				"test.png",
 				"image/png",
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(500);
@@ -100,7 +96,7 @@ describe("Upload Edge Cases and Error Handling", () => {
 				imageBuffer,
 				"test.png",
 				"image/png",
-				cookie
+				cookie,
 			);
 
 			// Should still return 201 but with undefined secure_url
@@ -123,12 +119,12 @@ describe("Upload Edge Cases and Error Handling", () => {
 				imageBuffer,
 				"test.png",
 				"image/png",
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].message).toBe(
-				"کاربری که به این ایمیل مرتبط است غیرفعال شده!"
+				"کاربری که به این ایمیل مرتبط است غیرفعال شده!",
 			);
 		});
 
@@ -144,12 +140,12 @@ describe("Upload Edge Cases and Error Handling", () => {
 				imageBuffer,
 				"test.png",
 				"image/png",
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].message).toBe(
-				"کاربر متعلق به این توکن دیگر وجود ندارد!"
+				"کاربر متعلق به این توکن دیگر وجود ندارد!",
 			);
 		});
 	});
@@ -162,7 +158,7 @@ describe("Upload Edge Cases and Error Handling", () => {
 				emptyBuffer,
 				"empty.png",
 				"image/png",
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(201);
@@ -179,7 +175,7 @@ describe("Upload Edge Cases and Error Handling", () => {
 				imageBuffer,
 				veryLongName,
 				"image/png",
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(201);
@@ -194,7 +190,7 @@ describe("Upload Edge Cases and Error Handling", () => {
 				imageBuffer,
 				"تست-عکس-۱۲۳.png",
 				"image/png",
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(201);
@@ -217,7 +213,7 @@ describe("Upload Edge Cases and Error Handling", () => {
 					imageBuffer,
 					filename,
 					mimetype,
-					cookie
+					cookie,
 				);
 
 				expect(res.status).toBe(201);
@@ -231,7 +227,7 @@ describe("Upload Edge Cases and Error Handling", () => {
 				undefined,
 				undefined,
 				undefined,
-				cookie
+				cookie,
 			);
 
 			// The controller doesn't validate for missing files
@@ -249,7 +245,7 @@ describe("Upload Edge Cases and Error Handling", () => {
 				imageBuffer,
 				"corrupted.png",
 				"image/png",
-				cookie
+				cookie,
 			);
 
 			// Should either succeed or fail gracefully
@@ -267,14 +263,12 @@ describe("Upload Edge Cases and Error Handling", () => {
 				imageBuffer,
 				"test.png",
 				"image/png",
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(201);
 			expect(res.body.status).toBe("success");
-			expect(res.body.data.image).toMatch(
-				/^https:\/\/res\.cloudinary\.com/
-			);
+			expect(res.body.data.image).toMatch(/^https:\/\/res\.cloudinary\.com/);
 			expect(res.body.data.image).toContain("Azooghe");
 		});
 
@@ -289,7 +283,7 @@ describe("Upload Edge Cases and Error Handling", () => {
 					imageBuffer,
 					`test${i}.png`,
 					"image/png",
-					cookie
+					cookie,
 				);
 
 				expect(res.status).toBe(201);

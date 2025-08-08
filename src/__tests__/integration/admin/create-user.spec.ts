@@ -52,8 +52,7 @@ const validationCases = [
 		field: "passwordConfirmation",
 	},
 	{
-		description:
-			"If the password and password confirmation do not match",
+		description: "If the password and password confirmation do not match",
 		body: {
 			name: "test",
 			email: "test@test.com",
@@ -78,9 +77,7 @@ beforeEach(async () => {
 	const admin = getUniqueUser("admin");
 	const adminRes = await signupRequest(admin);
 	adminCookie = adminRes.headers["set-cookie"][0];
-	const adminUser = await userRepository.findByEmail(
-		admin.email
-	);
+	const adminUser = await userRepository.findByEmail(admin.email);
 	adminUser!.role = "admin";
 	await adminUser!.save({ validateBeforeSave: false });
 });
@@ -93,16 +90,13 @@ describe("POST /api/users", () => {
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
-				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
+				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید",
 			);
 		});
 
 		it("If token is invalid", async () => {
 			const user = getUniqueUser("user");
-			const res = await createUserRequest(
-				"jwt=invalid-token",
-				user
-			);
+			const res = await createUserRequest("jwt=invalid-token", user);
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe("توکن معتبر نیست");
@@ -111,14 +105,11 @@ describe("POST /api/users", () => {
 		it("If user for token does not exist", async () => {
 			const fakeToken = getInvalidToken();
 			const user = getUniqueUser("user");
-			const res = await createUserRequest(
-				`jwt=${fakeToken}`,
-				user
-			);
+			const res = await createUserRequest(`jwt=${fakeToken}`, user);
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
-				"کاربر متعلق به این توکن دیگر وجود ندارد!"
+				"کاربر متعلق به این توکن دیگر وجود ندارد!",
 			);
 		});
 
@@ -126,16 +117,14 @@ describe("POST /api/users", () => {
 			const user = getUniqueUser("inactive");
 			const signupRes = await signupRequest(user);
 			const cookie = signupRes.headers["set-cookie"][0];
-			const repoUser = await userRepository.findByEmail(
-				user.email
-			);
+			const repoUser = await userRepository.findByEmail(user.email);
 			repoUser!.active = false;
 			await repoUser!.save({ validateBeforeSave: false });
 			const res = await createUserRequest(cookie, user);
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
-				"کاربری که به این ایمیل مرتبط است غیرفعال شده!"
+				"کاربری که به این ایمیل مرتبط است غیرفعال شده!",
 			);
 		});
 
@@ -163,31 +152,27 @@ describe("POST /api/users", () => {
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
-				"شما اجازه انجام این عمل را ندارید!"
+				"شما اجازه انجام این عمل را ندارید!",
 			);
 		});
 	});
 
 	describe("should return 400", () => {
-		validationCases.forEach(
-			({ description, body, error, field }) => {
-				it(description, async () => {
-					const res = await createUserRequest(adminCookie, body);
-					expect(res.status).toBe(400);
-					expect(res.body.errors[0].field).toBe(field);
-					expect(res.body.errors[0].message).toBe(error);
-				});
-			}
-		);
+		validationCases.forEach(({ description, body, error, field }) => {
+			it(description, async () => {
+				const res = await createUserRequest(adminCookie, body);
+				expect(res.status).toBe(400);
+				expect(res.body.errors[0].field).toBe(field);
+				expect(res.body.errors[0].message).toBe(error);
+			});
+		});
 
 		it("If the email is already in use", async () => {
 			const newUser = getUniqueUser("new-user");
 			await createUserRequest(adminCookie, newUser);
 			const res = await createUserRequest(adminCookie, newUser);
 			expect(res.status).toBe(400);
-			expect(res.body.errors[0].message).toBe(
-				"این ایمیل قبلا استفاده شده است"
-			);
+			expect(res.body.errors[0].message).toBe("این ایمیل قبلا استفاده شده است");
 		});
 	});
 

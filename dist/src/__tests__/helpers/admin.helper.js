@@ -16,22 +16,15 @@ exports.createProductRequest = exports.getUsersCountByDayRequest = exports.delet
 const app_1 = __importDefault(require("@/app"));
 const supertest_1 = __importDefault(require("supertest"));
 const allUsersRequest = (cookie) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield (0, supertest_1.default)(app_1.default)
-        .get("/api/users")
-        .set("Cookie", cookie);
+    return yield (0, supertest_1.default)(app_1.default).get("/api/users").set("Cookie", cookie);
 });
 exports.allUsersRequest = allUsersRequest;
 const getUserRequest = (cookie, userId) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield (0, supertest_1.default)(app_1.default)
-        .get(`/api/users/${userId}`)
-        .set("Cookie", cookie);
+    return yield (0, supertest_1.default)(app_1.default).get(`/api/users/${userId}`).set("Cookie", cookie);
 });
 exports.getUserRequest = getUserRequest;
 const createUserRequest = (cookie, body) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield (0, supertest_1.default)(app_1.default)
-        .post("/api/users")
-        .set("Cookie", cookie)
-        .send(body);
+    return yield (0, supertest_1.default)(app_1.default).post("/api/users").set("Cookie", cookie).send(body);
 });
 exports.createUserRequest = createUserRequest;
 const updateUserRequest = (cookie, userId, body) => __awaiter(void 0, void 0, void 0, function* () {

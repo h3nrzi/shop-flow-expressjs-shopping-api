@@ -79,7 +79,7 @@ const productSchema = new Schema<IProductDoc>(
 			virtuals: true,
 		},
 		timestamps: true,
-	}
+	},
 );
 
 // ================================

@@ -37,7 +37,7 @@ describe("POST /api/users/forgot-password", () => {
 			});
 			expect(res.status).toBe(404);
 			expect(res.body.errors[0].message).toBe(
-				"هیچ کاربری با این آدرس ایمیل وجود ندارد."
+				"هیچ کاربری با این آدرس ایمیل وجود ندارد.",
 			);
 		});
 	});
@@ -46,9 +46,7 @@ describe("POST /api/users/forgot-password", () => {
 		it("User is not active", async () => {
 			const user = getUniqueUser("user");
 			await signupRequest(user);
-			const userDoc = await userRepository.findByEmail(
-				user.email
-			);
+			const userDoc = await userRepository.findByEmail(user.email);
 			userDoc!.active = false;
 			await userDoc!.save({ validateBeforeSave: false });
 			const res = await forgotPasswordRequest({
@@ -56,7 +54,7 @@ describe("POST /api/users/forgot-password", () => {
 			});
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].message).toBe(
-				"کاربری که به این ایمیل مرتبط است مسدود شده است!"
+				"کاربری که به این ایمیل مرتبط است مسدود شده است!",
 			);
 		});
 	});
@@ -72,20 +70,18 @@ describe("POST /api/users/forgot-password", () => {
 			// check if the response is 200
 			expect(res.status).toBe(200);
 			expect(res.body.message).toBe(
-				"ایمیل بازیابی رمز عبور با موفقیت ارسال شد"
+				"ایمیل بازیابی رمز عبور با موفقیت ارسال شد",
 			);
 
 			// check if sendEmail was called with the correct arguments
 			expect(sendEmail).toHaveBeenCalledWith(
 				user.email,
 				expect.any(String),
-				"درخواست برای ریست کردن رمز عبور"
+				"درخواست برای ریست کردن رمز عبور",
 			);
 
 			// check if the user has a passwordResetToken and passwordResetExpires
-			const userDoc = await userRepository.findByEmail(
-				user.email
-			);
+			const userDoc = await userRepository.findByEmail(user.email);
 			expect(userDoc!.passwordResetToken).toBeDefined();
 			expect(userDoc!.passwordResetExpires).toBeDefined();
 		});

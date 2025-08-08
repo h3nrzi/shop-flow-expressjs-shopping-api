@@ -10,7 +10,7 @@ describe("POST /api/users/logout", () => {
 			const user = getUniqueUser("user");
 			const signupResponse = await signupRequest(user);
 			const logoutResponse = await logoutRequest(
-				signupResponse.headers["set-cookie"]
+				signupResponse.headers["set-cookie"],
 			);
 			expect(logoutResponse.status).toBe(204);
 			const cookie = logoutResponse.headers["set-cookie"];

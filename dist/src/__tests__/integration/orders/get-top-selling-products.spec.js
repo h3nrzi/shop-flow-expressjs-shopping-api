@@ -45,24 +45,16 @@ describe("GET /api/orders/top-selling-products", () => {
             const product2 = yield (0, orders_helper_1.createTestProduct)();
             const product3 = yield (0, orders_helper_1.createTestProduct)();
             yield (0, orders_helper_1.createTestOrder)(user._id.toString(), product1._id.toString(), {
-                orderItems: [
-                    { productId: product1._id.toString(), qty: 5 },
-                ],
+                orderItems: [{ productId: product1._id.toString(), qty: 5 }],
             });
             yield (0, orders_helper_1.createTestOrder)(user._id.toString(), product2._id.toString(), {
-                orderItems: [
-                    { productId: product2._id.toString(), qty: 3 },
-                ],
+                orderItems: [{ productId: product2._id.toString(), qty: 3 }],
             });
             yield (0, orders_helper_1.createTestOrder)(user._id.toString(), product3._id.toString(), {
-                orderItems: [
-                    { productId: product3._id.toString(), qty: 8 },
-                ],
+                orderItems: [{ productId: product3._id.toString(), qty: 8 }],
             });
             yield (0, orders_helper_1.createTestOrder)(user._id.toString(), product1._id.toString(), {
-                orderItems: [
-                    { productId: product1._id.toString(), qty: 2 },
-                ],
+                orderItems: [{ productId: product1._id.toString(), qty: 2 }],
             });
             const res = yield (0, orders_helper_1.getTopSellingProductsRequest)(cookie);
             expect(res.status).toBe(200);
@@ -76,24 +68,16 @@ describe("GET /api/orders/top-selling-products", () => {
             const product2 = yield (0, orders_helper_1.createTestProduct)();
             const product3 = yield (0, orders_helper_1.createTestProduct)();
             yield (0, orders_helper_1.createTestOrder)(user._id.toString(), product1._id.toString(), {
-                orderItems: [
-                    { productId: product1._id.toString(), qty: 5 },
-                ],
+                orderItems: [{ productId: product1._id.toString(), qty: 5 }],
             });
             yield (0, orders_helper_1.createTestOrder)(user._id.toString(), product1._id.toString(), {
-                orderItems: [
-                    { productId: product1._id.toString(), qty: 2 },
-                ],
+                orderItems: [{ productId: product1._id.toString(), qty: 2 }],
             });
             yield (0, orders_helper_1.createTestOrder)(user._id.toString(), product2._id.toString(), {
-                orderItems: [
-                    { productId: product2._id.toString(), qty: 3 },
-                ],
+                orderItems: [{ productId: product2._id.toString(), qty: 3 }],
             });
             yield (0, orders_helper_1.createTestOrder)(user._id.toString(), product3._id.toString(), {
-                orderItems: [
-                    { productId: product3._id.toString(), qty: 10 },
-                ],
+                orderItems: [{ productId: product3._id.toString(), qty: 10 }],
             });
             const res = yield (0, orders_helper_1.getTopSellingProductsRequest)(cookie);
             expect(res.status).toBe(200);
@@ -106,9 +90,7 @@ describe("GET /api/orders/top-selling-products", () => {
         it("includes product information in the response", () => __awaiter(void 0, void 0, void 0, function* () {
             const product = yield (0, orders_helper_1.createTestProduct)();
             yield (0, orders_helper_1.createTestOrder)(user._id.toString(), product._id.toString(), {
-                orderItems: [
-                    { productId: product._id.toString(), qty: 2 },
-                ],
+                orderItems: [{ productId: product._id.toString(), qty: 2 }],
             });
             const res = yield (0, orders_helper_1.getTopSellingProductsRequest)(cookie);
             expect(res.status).toBe(200);
@@ -129,9 +111,7 @@ describe("GET /api/orders/top-selling-products", () => {
                 const product = yield (0, orders_helper_1.createTestProduct)();
                 products.push(product);
                 yield (0, orders_helper_1.createTestOrder)(user._id.toString(), product._id.toString(), {
-                    orderItems: [
-                        { productId: product._id.toString(), qty: i + 1 },
-                    ],
+                    orderItems: [{ productId: product._id.toString(), qty: i + 1 }],
                 });
             }
             const res = yield (0, orders_helper_1.getTopSellingProductsRequest)(cookie);
@@ -148,19 +128,15 @@ describe("GET /api/orders/top-selling-products", () => {
                 ],
             });
             yield (0, orders_helper_1.createTestOrder)(user._id.toString(), product1._id.toString(), {
-                orderItems: [
-                    { productId: product1._id.toString(), qty: 1 },
-                ],
+                orderItems: [{ productId: product1._id.toString(), qty: 1 }],
             });
             const res = yield (0, orders_helper_1.getTopSellingProductsRequest)(cookie);
             expect(res.status).toBe(200);
             expect(res.body.data.orders).toHaveLength(2);
             const product1Result = res.body.data.orders.find((item) => item.product[0] &&
-                item.product[0]._id.toString() ===
-                    product1._id.toString());
+                item.product[0]._id.toString() === product1._id.toString());
             const product2Result = res.body.data.orders.find((item) => item.product[0] &&
-                item.product[0]._id.toString() ===
-                    product2._id.toString());
+                item.product[0]._id.toString() === product2._id.toString());
             expect(product1Result.totalSold).toBe(4);
             expect(product2Result.totalSold).toBe(2);
         }));

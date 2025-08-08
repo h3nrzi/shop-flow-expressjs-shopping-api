@@ -22,7 +22,7 @@ describe("DELETE /api/users/delete-me", () => {
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
-				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
+				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید",
 			);
 		});
 
@@ -39,7 +39,7 @@ describe("DELETE /api/users/delete-me", () => {
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
-				"کاربر متعلق به این توکن دیگر وجود ندارد!"
+				"کاربر متعلق به این توکن دیگر وجود ندارد!",
 			);
 		});
 
@@ -47,16 +47,14 @@ describe("DELETE /api/users/delete-me", () => {
 			const user = getUniqueUser("inactive");
 			const signupRes = await signupRequest(user);
 			const cookie = signupRes.headers["set-cookie"][0];
-			const repoUser = await userRepository.findByEmail(
-				user.email
-			);
+			const repoUser = await userRepository.findByEmail(user.email);
 			repoUser!.active = false;
 			await repoUser!.save({ validateBeforeSave: false });
 			const res = await deleteMeRequest(cookie);
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
-				"کاربری که به این ایمیل مرتبط است غیرفعال شده!"
+				"کاربری که به این ایمیل مرتبط است غیرفعال شده!",
 			);
 		});
 
@@ -94,9 +92,7 @@ describe("DELETE /api/users/delete-me", () => {
 				password: user.password,
 			});
 			expect(res.status).toBe(401);
-			expect(res.body.errors[0].message).toBe(
-				"ایمیل یا رمز عبور اشتباه است!"
-			);
+			expect(res.body.errors[0].message).toBe("ایمیل یا رمز عبور اشتباه است!");
 		});
 	});
 });

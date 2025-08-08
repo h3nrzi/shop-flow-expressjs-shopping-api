@@ -7,7 +7,7 @@ exports.generateRefreshToken = exports.verifyRefreshToken = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const not_authorized_error_1 = require("../errors/not-authorized-error");
 const verifyRefreshToken = (token) => {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
         jsonwebtoken_1.default.verify(token, process.env.JWT_REFRESH_SECRET, (err, decoded) => {
             if (err)
                 throw new not_authorized_error_1.NotAuthorizedError("توکن تازه‌سازی معتبر نیست");

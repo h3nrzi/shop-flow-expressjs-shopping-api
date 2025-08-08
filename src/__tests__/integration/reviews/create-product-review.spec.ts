@@ -15,23 +15,18 @@ describe("POST /api/products/:productId/reviews", () => {
 
 	beforeEach(async () => {
 		product = await createTestProduct();
-		const testUser = await createTestUserAndGetCookie(
-			"reviewer"
-		);
+		const testUser = await createTestUserAndGetCookie("reviewer");
 		cookie = testUser.cookie;
 	});
 
 	describe("should return 401, if", () => {
 		it("user is not authenticated (no token)", async () => {
 			const reviewData = getValidReviewData();
-			const res = await createReviewRequest(
-				product.id,
-				reviewData
-			);
+			const res = await createReviewRequest(product.id, reviewData);
 
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].message).toBe(
-				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
+				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید",
 			);
 		});
 
@@ -41,12 +36,12 @@ describe("POST /api/products/:productId/reviews", () => {
 			const res = await createReviewRequest(
 				product.id,
 				reviewData,
-				invalidCookie
+				invalidCookie,
 			);
 
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].message).toBe(
-				"کاربر متعلق به این توکن دیگر وجود ندارد!"
+				"کاربر متعلق به این توکن دیگر وجود ندارد!",
 			);
 		});
 	});
@@ -54,30 +49,20 @@ describe("POST /api/products/:productId/reviews", () => {
 	describe("should return 400, if", () => {
 		it("product ID is not a valid ObjectId", async () => {
 			const reviewData = getValidReviewData();
-			const res = await createReviewRequest(
-				getInvalidId(),
-				reviewData,
-				cookie
-			);
+			const res = await createReviewRequest(getInvalidId(), reviewData, cookie);
 
 			expect(res.status).toBe(400);
 		});
 
 		const invalidDataCases = getInvalidReviewData();
-		invalidDataCases.forEach(
-			({ testCase, data, expectedError }) => {
-				it(testCase, async () => {
-					const res = await createReviewRequest(
-						product.id,
-						data,
-						cookie
-					);
+		invalidDataCases.forEach(({ testCase, data, expectedError }) => {
+			it(testCase, async () => {
+				const res = await createReviewRequest(product.id, data, cookie);
 
-					expect(res.status).toBe(400);
-					expect(res.body.errors[0].message).toBe(expectedError);
-				});
-			}
-		);
+				expect(res.status).toBe(400);
+				expect(res.body.errors[0].message).toBe(expectedError);
+			});
+		});
 	});
 
 	describe("should return 404, if", () => {
@@ -87,7 +72,7 @@ describe("POST /api/products/:productId/reviews", () => {
 			const res = await createReviewRequest(
 				nonExistentProductId,
 				reviewData,
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(404);
@@ -97,11 +82,7 @@ describe("POST /api/products/:productId/reviews", () => {
 	describe("should return 201, if", () => {
 		it("review is created successfully with valid data", async () => {
 			const reviewData = getValidReviewData(4, "Great product!");
-			const res = await createReviewRequest(
-				product.id,
-				reviewData,
-				cookie
-			);
+			const res = await createReviewRequest(product.id, reviewData, cookie);
 
 			expect(res.status).toBe(201);
 		});

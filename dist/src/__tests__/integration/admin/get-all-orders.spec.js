@@ -88,9 +88,9 @@ describe("GET /api/orders (Admin Only)", () => {
         }));
         it("admin gets orders sorted by creation date (newest first)", () => __awaiter(void 0, void 0, void 0, function* () {
             yield (0, orders_helper_1.createMultipleTestOrders)(user._id.toString(), 1);
-            yield new Promise(resolve => setTimeout(resolve, 10));
+            yield new Promise((resolve) => setTimeout(resolve, 10));
             yield (0, orders_helper_1.createMultipleTestOrders)(user._id.toString(), 1);
-            yield new Promise(resolve => setTimeout(resolve, 10));
+            yield new Promise((resolve) => setTimeout(resolve, 10));
             yield (0, orders_helper_1.createMultipleTestOrders)(user._id.toString(), 1);
             const res = yield (0, orders_helper_1.getAllOrdersRequest)(adminCookie);
             expect(res.status).toBe(200);

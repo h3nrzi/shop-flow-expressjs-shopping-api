@@ -4,10 +4,7 @@ import viewMiddleware from "../../middlewares/view";
 
 const router = express.Router();
 
-router.get(
-	"/login",
-	viewController.getLoginPage.bind(viewController),
-);
+router.get("/login", viewController.getLoginPage.bind(viewController));
 
 router.use(viewMiddleware.isLoggedIn);
 

@@ -20,13 +20,9 @@ router.get("/:id", (0, express_validator_1.param)("id").isMongoId().withMessage(
 router.use(auth_1.default.protect);
 router.post("/", [
     review_1.default.beforeCreate,
-    (0, express_validator_1.body)("rating")
-        .isInt({ min: 1, max: 5 })
-        .withMessage("امتیاز الزامی است"),
+    (0, express_validator_1.body)("rating").isInt({ min: 1, max: 5 }).withMessage("امتیاز الزامی است"),
     (0, express_validator_1.body)("comment").isString().withMessage("نظر الزامی است"),
-    (0, express_validator_1.body)("product")
-        .isMongoId()
-        .withMessage("شناسه محصول الزامی است"),
+    (0, express_validator_1.body)("product").isMongoId().withMessage("شناسه محصول الزامی است"),
     (0, express_validator_1.body)("user").isMongoId().withMessage("شناسه کاربر الزامی است"),
     validate_request_1.validateRequest,
     __1.reviewController.createReview.bind(__1.reviewController),
@@ -38,18 +34,13 @@ router.patch("/:id", [
         .optional()
         .isInt({ min: 1, max: 5 })
         .withMessage("امتیاز باید بین 1 و 5 باشد"),
-    (0, express_validator_1.body)("comment")
-        .optional()
-        .isString()
-        .withMessage("فرمت نظر معتبر نیست"),
+    (0, express_validator_1.body)("comment").optional().isString().withMessage("فرمت نظر معتبر نیست"),
     validate_request_1.validateRequest,
     __1.reviewController.updateReview.bind(__1.reviewController),
 ]);
 router.delete("/:id", [
     review_1.default.beforeDelete,
-    (0, express_validator_1.param)("productId")
-        .isMongoId()
-        .withMessage("شناسه نظر معتبر نیست"),
+    (0, express_validator_1.param)("productId").isMongoId().withMessage("شناسه نظر معتبر نیست"),
     (0, express_validator_1.param)("id").isMongoId().withMessage("شناسه نظر معتبر نیست"),
     validate_request_1.validateRequest,
     __1.reviewController.deleteReview.bind(__1.reviewController),

@@ -11,19 +11,13 @@ describe("POST /api/users/refresh-token", () => {
 		it("No refresh token provided", async () => {
 			const res = await refreshTokenRequest();
 			expect(res.status).toBe(401);
-			expect(res.body.errors[0].message).toBe(
-				"توکن تازه‌سازی ارائه نشده است"
-			);
+			expect(res.body.errors[0].message).toBe("توکن تازه‌سازی ارائه نشده است");
 		});
 
 		it("Invalid refresh token", async () => {
-			const res = await refreshTokenRequest(
-				"refreshToken=invalid-token"
-			);
+			const res = await refreshTokenRequest("refreshToken=invalid-token");
 			expect(res.status).toBe(401);
-			expect(res.body.errors[0].message).toBe(
-				"توکن تازه‌سازی معتبر نیست"
-			);
+			expect(res.body.errors[0].message).toBe("توکن تازه‌سازی معتبر نیست");
 		});
 
 		it("User is inactive", async () => {
@@ -32,9 +26,7 @@ describe("POST /api/users/refresh-token", () => {
 			const loginRes = await loginRequest(user);
 
 			// Deactivate user
-			const userDoc = await userRepository.findByEmail(
-				user.email
-			);
+			const userDoc = await userRepository.findByEmail(user.email);
 			userDoc!.active = false;
 			await userDoc!.save({ validateBeforeSave: false });
 
@@ -42,9 +34,7 @@ describe("POST /api/users/refresh-token", () => {
 
 			const res = await refreshTokenRequest(refreshCookie);
 			expect(res.status).toBe(401);
-			expect(res.body.errors[0].message).toBe(
-				"حساب کاربری غیرفعال است"
-			);
+			expect(res.body.errors[0].message).toBe("حساب کاربری غیرفعال است");
 		});
 
 		it("Refresh token expired", async () => {
@@ -53,9 +43,7 @@ describe("POST /api/users/refresh-token", () => {
 			const loginRes = await loginRequest(user);
 
 			// Expire refresh token
-			const userDoc = await userRepository.findByEmail(
-				user.email
-			);
+			const userDoc = await userRepository.findByEmail(user.email);
 			userDoc!.refreshTokenExpires = new Date(Date.now() - 1000);
 			await userDoc!.save({ validateBeforeSave: false });
 
@@ -64,7 +52,7 @@ describe("POST /api/users/refresh-token", () => {
 			const res = await refreshTokenRequest(refreshCookie);
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].message).toBe(
-				"توکن تازه‌سازی نامعتبر یا منقضی شده است"
+				"توکن تازه‌سازی نامعتبر یا منقضی شده است",
 			);
 		});
 	});

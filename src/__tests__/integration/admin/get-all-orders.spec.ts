@@ -12,16 +12,11 @@ describe("GET /api/orders (Admin Only)", () => {
 	let user: any;
 
 	beforeEach(async () => {
-		const testUser = await createTestUserAndGetCookie(
-			"orderuser"
-		);
+		const testUser = await createTestUserAndGetCookie("orderuser");
 		userCookie = testUser.cookie;
 		user = testUser.user;
 
-		const testAdmin = await createTestUserAndGetCookie(
-			"admin",
-			"admin"
-		);
+		const testAdmin = await createTestUserAndGetCookie("admin", "admin");
 		adminCookie = testAdmin.cookie;
 	});
 
@@ -31,7 +26,7 @@ describe("GET /api/orders (Admin Only)", () => {
 
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].message).toBe(
-				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
+				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید",
 			);
 		});
 
@@ -41,7 +36,7 @@ describe("GET /api/orders (Admin Only)", () => {
 
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].message).toBe(
-				"کاربر متعلق به این توکن دیگر وجود ندارد!"
+				"کاربر متعلق به این توکن دیگر وجود ندارد!",
 			);
 		});
 	});
@@ -69,10 +64,7 @@ describe("GET /api/orders (Admin Only)", () => {
 			await createMultipleTestOrders(user._id.toString(), 2);
 
 			const user2 = await createTestUserAndGetCookie("user2");
-			await createMultipleTestOrders(
-				user2.user._id.toString(),
-				3
-			);
+			await createMultipleTestOrders(user2.user._id.toString(), 3);
 
 			const res = await getAllOrdersRequest(adminCookie);
 
@@ -87,9 +79,7 @@ describe("GET /api/orders (Admin Only)", () => {
 			});
 
 			// Check that orders from both users are included
-			const userIds = res.body.data.orders.map(
-				(order: any) => order.user
-			);
+			const userIds = res.body.data.orders.map((order: any) => order.user);
 			expect(userIds).toContain(user._id.toString());
 			expect(userIds).toContain(user2.user._id.toString());
 		});
@@ -124,9 +114,9 @@ describe("GET /api/orders (Admin Only)", () => {
 		it("admin gets orders sorted by creation date (newest first)", async () => {
 			// Create orders with slight delay to ensure different timestamps
 			await createMultipleTestOrders(user._id.toString(), 1);
-			await new Promise(resolve => setTimeout(resolve, 10));
+			await new Promise((resolve) => setTimeout(resolve, 10));
 			await createMultipleTestOrders(user._id.toString(), 1);
-			await new Promise(resolve => setTimeout(resolve, 10));
+			await new Promise((resolve) => setTimeout(resolve, 10));
 			await createMultipleTestOrders(user._id.toString(), 1);
 
 			const res = await getAllOrdersRequest(adminCookie);
@@ -139,9 +129,9 @@ describe("GET /api/orders (Admin Only)", () => {
 			for (let i = 0; i < orders.length - 1; i++) {
 				const currentOrderDate = new Date(orders[i].createdAt);
 				const nextOrderDate = new Date(orders[i + 1].createdAt);
-				expect(
-					currentOrderDate.getTime()
-				).toBeGreaterThanOrEqual(nextOrderDate.getTime());
+				expect(currentOrderDate.getTime()).toBeGreaterThanOrEqual(
+					nextOrderDate.getTime(),
+				);
 			}
 		});
 
@@ -180,10 +170,7 @@ describe("GET /api/orders (Admin Only)", () => {
 			await createMultipleTestOrders(user._id.toString(), 1);
 
 			const user2 = await createTestUserAndGetCookie("user2");
-			await createMultipleTestOrders(
-				user2.user._id.toString(),
-				1
-			);
+			await createMultipleTestOrders(user2.user._id.toString(), 1);
 
 			const res = await getAllOrdersRequest(adminCookie);
 

@@ -27,14 +27,7 @@ module.exports = {
 	transform: {
 		"^.+\\.tsx?$": "ts-jest",
 	},
-	moduleFileExtensions: [
-		"ts",
-		"tsx",
-		"js",
-		"jsx",
-		"json",
-		"node",
-	],
+	moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
 	setupFilesAfterEnv: ["<rootDir>/src/__tests__/setup.ts"],
 	testTimeout: 30000,
 	moduleNameMapper: {
@@ -86,8 +79,7 @@ beforeAll(async () => {
 beforeEach(async () => {
 	// Clean database between tests
 	const collections = await mongoose.connection.db.collections();
-	for (let collection of collections)
-		await collection.deleteMany({});
+	for (let collection of collections) await collection.deleteMany({});
 });
 
 afterAll(async () => {
@@ -159,24 +151,16 @@ src/__tests__/
 
 ```typescript
 // Request helpers
-export const signupRequest = async (
-	body: ISignupDto
-): Promise<Response> => {
+export const signupRequest = async (body: ISignupDto): Promise<Response> => {
 	return await request(app).post("/api/users/signup").send(body);
 };
 
-export const loginRequest = async (
-	body: ILoginDto
-): Promise<Response> => {
+export const loginRequest = async (body: ILoginDto): Promise<Response> => {
 	return await request(app).post("/api/users/login").send(body);
 };
 
-export const logoutRequest = async (
-	cookie: string
-): Promise<Response> => {
-	return await request(app)
-		.post("/api/users/logout")
-		.set("Cookie", cookie);
+export const logoutRequest = async (cookie: string): Promise<Response> => {
+	return await request(app).post("/api/users/logout").set("Cookie", cookie);
 };
 
 // Utility functions
@@ -208,15 +192,13 @@ Similar helpers exist for other domains:
 
 ```typescript
 // Product test helpers
-export const getAllProductsRequest = async (
-	query: any
-): Promise<Response> => {
+export const getAllProductsRequest = async (query: any): Promise<Response> => {
 	return await request(app).get("/api/products").query(query);
 };
 
 export const createProductRequest = async (
 	body: CreateProductDto,
-	token: string
+	token: string,
 ): Promise<Response> => {
 	return await request(app)
 		.post("/api/products")
@@ -249,16 +231,14 @@ describe("POST /api/users/signin", () => {
 		it("User is not active", async () => {
 			const user = getUniqueUser("user");
 			await signupRequest(user);
-			const userDoc = await userRepository.findByEmail(
-				user.email
-			);
+			const userDoc = await userRepository.findByEmail(user.email);
 			userDoc!.active = false;
 			await userDoc!.save({ validateBeforeSave: false });
 
 			const res = await loginRequest(user);
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].message).toBe(
-				"کاربری که به این ایمیل مرتبط است مسدود شده است! لطفا با پشتیبانی تماس بگیرید."
+				"کاربری که به این ایمیل مرتبط است مسدود شده است! لطفا با پشتیبانی تماس بگیرید.",
 			);
 		});
 	});
@@ -359,9 +339,7 @@ const user2 = getUniqueUser("2");
 #### 2. **Factory Functions**
 
 ```typescript
-const createTestProduct = (
-	overrides: Partial<CreateProductDto> = {}
-) => ({
+const createTestProduct = (overrides: Partial<CreateProductDto> = {}) => ({
 	name: "Test Product",
 	price: 10000,
 	countInStock: 10,
@@ -465,9 +443,7 @@ it("should update user in database", async () => {
 	expect(res.status).toBe(200);
 
 	// Verify database state
-	const updatedUser = await userRepository.findByEmail(
-		user.email
-	);
+	const updatedUser = await userRepository.findByEmail(user.email);
 	expect(updatedUser!.name).toBe("Updated Name");
 });
 ```
@@ -485,9 +461,7 @@ describe("Error Handling", () => {
 		const res = await getUserRequest(userId, token);
 
 		expect(res.status).toBe(500);
-		expect(res.body.errors[0].message).toBe(
-			"یک چیزی خیلی اشتباه پیش رفت"
-		);
+		expect(res.body.errors[0].message).toBe("یک چیزی خیلی اشتباه پیش رفت");
 	});
 });
 ```
@@ -532,12 +506,10 @@ jest.mock("@/utils/email", () => ({
 }));
 
 // Usage in tests
-const mockSendEmail = sendEmail as jest.MockedFunction<
-	typeof sendEmail
->;
+const mockSendEmail = sendEmail as jest.MockedFunction<typeof sendEmail>;
 expect(mockSendEmail).toHaveBeenCalledWith(
 	user.email,
-	expect.stringContaining("reset-token")
+	expect.stringContaining("reset-token"),
 );
 ```
 
@@ -545,9 +517,7 @@ expect(mockSendEmail).toHaveBeenCalledWith(
 
 ```typescript
 // Mock specific repository methods
-jest
-	.spyOn(userRepository, "findById")
-	.mockResolvedValue(mockUser);
+jest.spyOn(userRepository, "findById").mockResolvedValue(mockUser);
 jest
 	.spyOn(productRepository, "createOne")
 	.mockRejectedValue(new Error("Database error"));
@@ -574,7 +544,7 @@ describe("Performance Tests", () => {
 
 		const responses = await Promise.all(requests);
 
-		responses.forEach(res => {
+		responses.forEach((res) => {
 			expect(res.status).toBe(200);
 		});
 	});

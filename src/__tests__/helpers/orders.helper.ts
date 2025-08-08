@@ -1,11 +1,7 @@
 import app from "@/app";
 import request, { Response } from "supertest";
 import { signupRequest, getUniqueUser } from "./auth.helper";
-import {
-	orderRepository,
-	productRepository,
-	userRepository,
-} from "@/core";
+import { orderRepository, productRepository, userRepository } from "@/core";
 import { validProduct } from "./products.helper";
 import { CreateOrderDto } from "@/core/orders/dtos/create-order.dto";
 import { UpdateOrderDto } from "@/core/orders/dtos/update-order.dto";
@@ -17,7 +13,7 @@ import mongoose from "mongoose";
 
 export const createOrderRequest = (
 	body: CreateOrderDto,
-	cookie?: string
+	cookie?: string,
 ): Promise<Response> => {
 	const req = request(app).post("/api/orders").send(body);
 
@@ -29,7 +25,7 @@ export const createOrderRequest = (
 };
 
 export const getCurrentUserOrdersRequest = (
-	cookie?: string
+	cookie?: string,
 ): Promise<Response> => {
 	const req = request(app).get("/api/orders/get-myorders");
 
@@ -42,7 +38,7 @@ export const getCurrentUserOrdersRequest = (
 
 export const getOrderByIdRequest = (
 	orderId: string,
-	cookie?: string
+	cookie?: string,
 ): Promise<Response> => {
 	const req = request(app).get(`/api/orders/${orderId}`);
 
@@ -55,7 +51,7 @@ export const getOrderByIdRequest = (
 
 export const updateOrderToPaidRequest = (
 	orderId: string,
-	cookie?: string
+	cookie?: string,
 ): Promise<Response> => {
 	const req = request(app).patch(`/api/orders/${orderId}/pay`);
 
@@ -67,11 +63,9 @@ export const updateOrderToPaidRequest = (
 };
 
 export const getTopSellingProductsRequest = (
-	cookie?: string
+	cookie?: string,
 ): Promise<Response> => {
-	const req = request(app).get(
-		"/api/orders/top-selling-products"
-	);
+	const req = request(app).get("/api/orders/top-selling-products");
 
 	if (cookie) {
 		req.set("Cookie", cookie);
@@ -81,9 +75,7 @@ export const getTopSellingProductsRequest = (
 };
 
 // Admin only requests
-export const getAllOrdersRequest = (
-	cookie?: string
-): Promise<Response> => {
+export const getAllOrdersRequest = (cookie?: string): Promise<Response> => {
 	const req = request(app).get("/api/orders");
 
 	if (cookie) {
@@ -96,11 +88,9 @@ export const getAllOrdersRequest = (
 export const updateOrderRequest = (
 	orderId: string,
 	body: UpdateOrderDto,
-	cookie?: string
+	cookie?: string,
 ): Promise<Response> => {
-	const req = request(app)
-		.patch(`/api/orders/${orderId}`)
-		.send(body);
+	const req = request(app).patch(`/api/orders/${orderId}`).send(body);
 
 	if (cookie) {
 		req.set("Cookie", cookie);
@@ -111,7 +101,7 @@ export const updateOrderRequest = (
 
 export const deleteOrderRequest = (
 	orderId: string,
-	cookie?: string
+	cookie?: string,
 ): Promise<Response> => {
 	const req = request(app).delete(`/api/orders/${orderId}`);
 
@@ -124,11 +114,9 @@ export const deleteOrderRequest = (
 
 export const updateOrderToDeliverRequest = (
 	orderId: string,
-	cookie?: string
+	cookie?: string,
 ): Promise<Response> => {
-	const req = request(app).patch(
-		`/api/orders/${orderId}/deliver`
-	);
+	const req = request(app).patch(`/api/orders/${orderId}/deliver`);
 
 	if (cookie) {
 		req.set("Cookie", cookie);
@@ -162,12 +150,11 @@ export const validOrderData: CreateOrderDto = {
 
 export const getValidOrderData = (
 	productId?: string,
-	qty: number = 2
+	qty: number = 2,
 ): CreateOrderDto => ({
 	orderItems: [
 		{
-			productId:
-				productId || new mongoose.Types.ObjectId().toString(),
+			productId: productId || new mongoose.Types.ObjectId().toString(),
 			qty,
 		},
 	],
@@ -441,7 +428,7 @@ export const getInvalidOrderData = () => [
 
 export const createTestUserAndGetCookie = async (
 	suffix: string = "orderuser",
-	role: string = "user"
+	role: string = "user",
 ) => {
 	const user = getUniqueUser(suffix);
 	const signupResponse = await signupRequest(user);
@@ -459,31 +446,23 @@ export const createTestUserAndGetCookie = async (
 	}
 
 	// Convert to plain object to ensure _id is accessible
-	const plainUser = userDoc.toObject
-		? userDoc.toObject()
-		: userDoc;
+	const plainUser = userDoc.toObject ? userDoc.toObject() : userDoc;
 	return { user: plainUser, cookie, userData: user };
 };
 
 export const createTestProduct = async () => {
-	const product = await productRepository.createOne(
-		validProduct
-	);
+	const product = await productRepository.createOne(validProduct);
 	if (!product) {
-		throw new Error(
-			"Failed to create test product - product is null"
-		);
+		throw new Error("Failed to create test product - product is null");
 	}
 	if (!product._id) {
-		throw new Error(
-			"Failed to create test product - _id is missing"
-		);
+		throw new Error("Failed to create test product - _id is missing");
 	}
 	// Ensure _id is accessible by converting to plain object or accessing directly
 	const result = product.toObject ? product.toObject() : product;
 	if (!result._id) {
 		throw new Error(
-			"Failed to create test product - _id lost after conversion"
+			"Failed to create test product - _id lost after conversion",
 		);
 	}
 	return result;
@@ -492,15 +471,12 @@ export const createTestProduct = async () => {
 export const createTestOrder = async (
 	userId: string,
 	productId?: string,
-	orderData?: Partial<CreateOrderDto>
+	orderData?: Partial<CreateOrderDto>,
 ) => {
 	const defaultOrderData = getValidOrderData(productId);
 	const finalOrderData = { ...defaultOrderData, ...orderData };
 
-	const order = await orderRepository.create(
-		finalOrderData,
-		userId
-	);
+	const order = await orderRepository.create(finalOrderData, userId);
 
 	if (!order || !order._id) {
 		throw new Error("Failed to create test order");
@@ -511,19 +487,15 @@ export const createTestOrder = async (
 
 export const createMultipleTestOrders = async (
 	userId: string,
-	count: number = 3
+	count: number = 3,
 ) => {
 	const orders = [];
 	for (let i = 0; i < count; i++) {
 		const product = await createTestProduct();
-		const order = await createTestOrder(
-			userId,
-			product._id.toString(),
-			{
-				itemsPrice: (i + 1) * 10000,
-				totalPrice: (i + 1) * 15000,
-			}
-		);
+		const order = await createTestOrder(userId, product._id.toString(), {
+			itemsPrice: (i + 1) * 10000,
+			totalPrice: (i + 1) * 15000,
+		});
 		orders.push(order);
 	}
 	return orders;
@@ -538,10 +510,7 @@ export const getInvalidId = () => "invalid-id";
 // ============ Assertion Helpers ===============
 // ===============================================
 
-export const expectValidOrderResponse = (
-	order: any,
-	expectedData?: any
-) => {
+export const expectValidOrderResponse = (order: any, expectedData?: any) => {
 	expect(order).toHaveProperty("id");
 	expect(order).toHaveProperty("user");
 	expect(order).toHaveProperty("orderItems");
@@ -578,7 +547,7 @@ export const expectValidOrderResponse = (
 export const expectOrderStatusUpdate = (
 	order: any,
 	isPaid?: boolean,
-	isDelivered?: boolean
+	isDelivered?: boolean,
 ) => {
 	if (isPaid !== undefined) {
 		expect(order.isPaid).toBe(isPaid);

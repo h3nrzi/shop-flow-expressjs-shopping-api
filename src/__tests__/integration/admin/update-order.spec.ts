@@ -17,36 +17,25 @@ describe("PATCH /api/orders/:id (Admin Only)", () => {
 	let product: any;
 
 	beforeEach(async () => {
-		const testUser = await createTestUserAndGetCookie(
-			"orderuser"
-		);
+		const testUser = await createTestUserAndGetCookie("orderuser");
 		userCookie = testUser.cookie;
 		user = testUser.user;
 
-		const testAdmin = await createTestUserAndGetCookie(
-			"admin",
-			"admin"
-		);
+		const testAdmin = await createTestUserAndGetCookie("admin", "admin");
 		adminCookie = testAdmin.cookie;
 
 		product = await createTestProduct();
-		order = await createTestOrder(
-			user._id.toString(),
-			product._id.toString()
-		);
+		order = await createTestOrder(user._id.toString(), product._id.toString());
 	});
 
 	describe("should return 401, if", () => {
 		it("user is not authenticated (no token)", async () => {
 			const updateData = { paymentMethod: "PayPal" };
-			const res = await updateOrderRequest(
-				order._id.toString(),
-				updateData
-			);
+			const res = await updateOrderRequest(order._id.toString(), updateData);
 
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].message).toBe(
-				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
+				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید",
 			);
 		});
 
@@ -56,12 +45,12 @@ describe("PATCH /api/orders/:id (Admin Only)", () => {
 			const res = await updateOrderRequest(
 				order._id.toString(),
 				updateData,
-				invalidCookie
+				invalidCookie,
 			);
 
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].message).toBe(
-				"کاربر متعلق به این توکن دیگر وجود ندارد!"
+				"کاربر متعلق به این توکن دیگر وجود ندارد!",
 			);
 		});
 	});
@@ -72,7 +61,7 @@ describe("PATCH /api/orders/:id (Admin Only)", () => {
 			const res = await updateOrderRequest(
 				getInvalidId(),
 				updateData,
-				adminCookie
+				adminCookie,
 			);
 
 			expect(res.status).toBe(400);
@@ -90,13 +79,11 @@ describe("PATCH /api/orders/:id (Admin Only)", () => {
 			const res = await updateOrderRequest(
 				order._id.toString(),
 				updateData,
-				adminCookie
+				adminCookie,
 			);
 
 			expect(res.status).toBe(400);
-			expect(res.body.errors[0].message).toBe(
-				"فرمت شناسه محصول معتبر نیست"
-			);
+			expect(res.body.errors[0].message).toBe("فرمت شناسه محصول معتبر نیست");
 		});
 
 		it("orderItems[0].qty is less than 1", async () => {
@@ -111,13 +98,11 @@ describe("PATCH /api/orders/:id (Admin Only)", () => {
 			const res = await updateOrderRequest(
 				order._id.toString(),
 				updateData,
-				adminCookie
+				adminCookie,
 			);
 
 			expect(res.status).toBe(400);
-			expect(res.body.errors[0].message).toBe(
-				"فرمت تعداد محصولات معتبر نیست"
-			);
+			expect(res.body.errors[0].message).toBe("فرمت تعداد محصولات معتبر نیست");
 		});
 
 		it("itemsPrice is not numeric", async () => {
@@ -125,13 +110,11 @@ describe("PATCH /api/orders/:id (Admin Only)", () => {
 			const res = await updateOrderRequest(
 				order._id.toString(),
 				updateData,
-				adminCookie
+				adminCookie,
 			);
 
 			expect(res.status).toBe(400);
-			expect(res.body.errors[0].message).toBe(
-				"فرمت قیمت محصولات معتبر نیست"
-			);
+			expect(res.body.errors[0].message).toBe("فرمت قیمت محصولات معتبر نیست");
 		});
 
 		it("shippingPrice is not numeric", async () => {
@@ -141,13 +124,11 @@ describe("PATCH /api/orders/:id (Admin Only)", () => {
 			const res = await updateOrderRequest(
 				order._id.toString(),
 				updateData,
-				adminCookie
+				adminCookie,
 			);
 
 			expect(res.status).toBe(400);
-			expect(res.body.errors[0].message).toBe(
-				"فرمت قیمت حمل و نقل معتبر نیست"
-			);
+			expect(res.body.errors[0].message).toBe("فرمت قیمت حمل و نقل معتبر نیست");
 		});
 
 		it("taxPrice is not numeric", async () => {
@@ -155,13 +136,11 @@ describe("PATCH /api/orders/:id (Admin Only)", () => {
 			const res = await updateOrderRequest(
 				order._id.toString(),
 				updateData,
-				adminCookie
+				adminCookie,
 			);
 
 			expect(res.status).toBe(400);
-			expect(res.body.errors[0].message).toBe(
-				"فرمت مالیات معتبر نیست"
-			);
+			expect(res.body.errors[0].message).toBe("فرمت مالیات معتبر نیست");
 		});
 
 		it("totalPrice is not numeric", async () => {
@@ -169,13 +148,11 @@ describe("PATCH /api/orders/:id (Admin Only)", () => {
 			const res = await updateOrderRequest(
 				order._id.toString(),
 				updateData,
-				adminCookie
+				adminCookie,
 			);
 
 			expect(res.status).toBe(400);
-			expect(res.body.errors[0].message).toBe(
-				"فرمت قیمت کل معتبر نیست"
-			);
+			expect(res.body.errors[0].message).toBe("فرمت قیمت کل معتبر نیست");
 		});
 	});
 
@@ -185,7 +162,7 @@ describe("PATCH /api/orders/:id (Admin Only)", () => {
 			const res = await updateOrderRequest(
 				order._id.toString(),
 				updateData,
-				userCookie
+				userCookie,
 			);
 
 			expect(res.status).toBe(403);
@@ -199,7 +176,7 @@ describe("PATCH /api/orders/:id (Admin Only)", () => {
 			const res = await updateOrderRequest(
 				nonExistentOrderId,
 				updateData,
-				adminCookie
+				adminCookie,
 			);
 
 			expect(res.status).toBe(404);
@@ -212,7 +189,7 @@ describe("PATCH /api/orders/:id (Admin Only)", () => {
 			const res = await updateOrderRequest(
 				order._id.toString(),
 				updateData,
-				adminCookie
+				adminCookie,
 			);
 
 			expect(res.status).toBe(200);
@@ -235,7 +212,7 @@ describe("PATCH /api/orders/:id (Admin Only)", () => {
 			const res = await updateOrderRequest(
 				order._id.toString(),
 				updateData,
-				adminCookie
+				adminCookie,
 			);
 
 			expect(res.status).toBe(200);
@@ -254,18 +231,14 @@ describe("PATCH /api/orders/:id (Admin Only)", () => {
 			const res = await updateOrderRequest(
 				order._id.toString(),
 				updateData,
-				adminCookie
+				adminCookie,
 			);
 
 			expect(res.status).toBe(200);
-			expect(res.body.data.order.shippingAddress.province).toBe(
-				"Isfahan"
-			);
-			expect(res.body.data.order.shippingAddress.city).toBe(
-				"Isfahan"
-			);
+			expect(res.body.data.order.shippingAddress.province).toBe("Isfahan");
+			expect(res.body.data.order.shippingAddress.city).toBe("Isfahan");
 			expect(res.body.data.order.shippingAddress.street).toBe(
-				"Chahar Bagh Street, No. 456"
+				"Chahar Bagh Street, No. 456",
 			);
 		});
 
@@ -279,7 +252,7 @@ describe("PATCH /api/orders/:id (Admin Only)", () => {
 			const res = await updateOrderRequest(
 				order._id.toString(),
 				updateData,
-				adminCookie
+				adminCookie,
 			);
 
 			expect(res.status).toBe(200);
@@ -303,18 +276,14 @@ describe("PATCH /api/orders/:id (Admin Only)", () => {
 			const res = await updateOrderRequest(
 				order._id.toString(),
 				updateData,
-				adminCookie
+				adminCookie,
 			);
 
 			expect(res.status).toBe(200);
-			expect(res.body.data.order.paymentMethod).toBe(
-				"Bank Transfer"
-			);
+			expect(res.body.data.order.paymentMethod).toBe("Bank Transfer");
 			expect(res.body.data.order.itemsPrice).toBe(35000);
 			expect(res.body.data.order.totalPrice).toBe(42000);
-			expect(res.body.data.order.shippingAddress.province).toBe(
-				"Shiraz"
-			);
+			expect(res.body.data.order.shippingAddress.province).toBe("Shiraz");
 		});
 
 		it("admin update preserves unchanged fields", async () => {
@@ -325,16 +294,12 @@ describe("PATCH /api/orders/:id (Admin Only)", () => {
 			const res = await updateOrderRequest(
 				order._id.toString(),
 				updateData,
-				adminCookie
+				adminCookie,
 			);
 
 			expect(res.status).toBe(200);
-			expect(res.body.data.order.paymentMethod).toBe(
-				originalPaymentMethod
-			);
-			expect(res.body.data.order.itemsPrice).toBe(
-				originalItemsPrice
-			);
+			expect(res.body.data.order.paymentMethod).toBe(originalPaymentMethod);
+			expect(res.body.data.order.itemsPrice).toBe(originalItemsPrice);
 			expect(res.body.data.order.shippingPrice).toBe(7000);
 		});
 
@@ -342,19 +307,19 @@ describe("PATCH /api/orders/:id (Admin Only)", () => {
 			const originalUpdatedAt = order.updatedAt;
 
 			// Wait a moment to ensure timestamp difference
-			await new Promise(resolve => setTimeout(resolve, 10));
+			await new Promise((resolve) => setTimeout(resolve, 10));
 
 			const updateData = { paymentMethod: "Cash" };
 			const res = await updateOrderRequest(
 				order._id.toString(),
 				updateData,
-				adminCookie
+				adminCookie,
 			);
 
 			expect(res.status).toBe(200);
-			expect(
-				new Date(res.body.data.order.updatedAt).getTime()
-			).toBeGreaterThan(new Date(originalUpdatedAt).getTime());
+			expect(new Date(res.body.data.order.updatedAt).getTime()).toBeGreaterThan(
+				new Date(originalUpdatedAt).getTime(),
+			);
 		});
 
 		it("admin can update order with empty update data", async () => {
@@ -362,7 +327,7 @@ describe("PATCH /api/orders/:id (Admin Only)", () => {
 			const res = await updateOrderRequest(
 				order._id.toString(),
 				updateData,
-				adminCookie
+				adminCookie,
 			);
 
 			expect(res.status).toBe(200);

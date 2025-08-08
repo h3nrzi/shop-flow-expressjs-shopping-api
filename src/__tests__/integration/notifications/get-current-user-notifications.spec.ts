@@ -29,7 +29,9 @@ describe("GET /api/notifications", () => {
 			const res = await getNotificationsRequest();
 
 			expect(res.status).toBe(401);
-			expect(res.body.errors[0].message).toBe("شما وارد نشده اید! لطفا برای دسترسی وارد شوید");
+			expect(res.body.errors[0].message).toBe(
+				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید",
+			);
 		});
 
 		it("user is not authenticated (invalid token)", async () => {
@@ -37,7 +39,9 @@ describe("GET /api/notifications", () => {
 			const res = await getNotificationsRequest(invalidCookie);
 
 			expect(res.status).toBe(401);
-			expect(res.body.errors[0].message).toBe("کاربر متعلق به این توکن دیگر وجود ندارد!");
+			expect(res.body.errors[0].message).toBe(
+				"کاربر متعلق به این توکن دیگر وجود ندارد!",
+			);
 		});
 	});
 
@@ -95,9 +99,18 @@ describe("GET /api/notifications", () => {
 
 		it("notifications are sorted by creation date (newest first)", async () => {
 			// Create multiple notifications
-			const notification1 = { ...getValidNotificationData(user._id), title: "First Notification" };
-			const notification2 = { ...getValidNotificationData(user._id), title: "Second Notification" };
-			const notification3 = { ...getValidNotificationData(user._id), title: "Third Notification" };
+			const notification1 = {
+				...getValidNotificationData(user._id),
+				title: "First Notification",
+			};
+			const notification2 = {
+				...getValidNotificationData(user._id),
+				title: "Second Notification",
+			};
+			const notification3 = {
+				...getValidNotificationData(user._id),
+				title: "Third Notification",
+			};
 
 			await createNotificationRequest(notification1, adminCookie);
 			await createNotificationRequest(notification2, adminCookie);
@@ -115,15 +128,28 @@ describe("GET /api/notifications", () => {
 			expect(notifications[2].title).toBe("First Notification");
 
 			// Verify dates are in descending order
-			expect(new Date(notifications[0].createdAt).getTime()).toBeGreaterThan(new Date(notifications[1].createdAt).getTime());
-			expect(new Date(notifications[1].createdAt).getTime()).toBeGreaterThan(new Date(notifications[2].createdAt).getTime());
+			expect(new Date(notifications[0].createdAt).getTime()).toBeGreaterThan(
+				new Date(notifications[1].createdAt).getTime(),
+			);
+			expect(new Date(notifications[1].createdAt).getTime()).toBeGreaterThan(
+				new Date(notifications[2].createdAt).getTime(),
+			);
 		});
 
 		it("unread count is calculated correctly", async () => {
 			// Create multiple notifications
-			await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
-			await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
-			await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
+			await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
+			await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
+			await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
 
 			const res = await getNotificationsRequest(userCookie);
 

@@ -21,8 +21,11 @@ export class NotificationRepository {
 		return this.notificationModel.create(notification);
 	}
 
-	async createMany(notifications: CreateNotificationDto[]): Promise<INotificationDoc[]> {
-		const createdNotifications = await this.notificationModel.insertMany(notifications);
+	async createMany(
+		notifications: CreateNotificationDto[],
+	): Promise<INotificationDoc[]> {
+		const createdNotifications =
+			await this.notificationModel.insertMany(notifications);
 		return createdNotifications.map((notification) => notification.toObject());
 	}
 
@@ -36,7 +39,7 @@ export class NotificationRepository {
 						readAt: new Date(),
 					},
 				},
-				{ new: true }
+				{ new: true },
 			)
 			.populate("user", "name email");
 	}
@@ -52,7 +55,7 @@ export class NotificationRepository {
 					isRead: true,
 					readAt: new Date(),
 				},
-			}
+			},
 		);
 	}
 

@@ -9,7 +9,7 @@ import ProductRepository from "../products/product.repository";
 export class ReviewService {
 	constructor(
 		private readonly reviewRepository: ReviewRepository,
-		private readonly productRepository: ProductRepository
+		private readonly productRepository: ProductRepository,
 	) {}
 
 	async getAllReviews(query: any): Promise<{
@@ -37,16 +37,12 @@ export class ReviewService {
 		return review;
 	}
 
-	async createReview(
-		createReviewDto: ICreateReviewDto
-	): Promise<IReviewDoc> {
+	async createReview(createReviewDto: ICreateReviewDto): Promise<IReviewDoc> {
 		const product = await this.productRepository.getOne(
-			createReviewDto.product
+			createReviewDto.product,
 		);
 		if (!product) {
-			throw new NotFoundError(
-				"آیدی محصول ارائه برای درج نظر وجود ندارد."
-			);
+			throw new NotFoundError("آیدی محصول ارائه برای درج نظر وجود ندارد.");
 		}
 
 		return this.reviewRepository.create(createReviewDto);
@@ -54,7 +50,7 @@ export class ReviewService {
 
 	async updateReview(
 		id: string,
-		updateReviewDto: IUpdateReviewDto
+		updateReviewDto: IUpdateReviewDto,
 	): Promise<IReviewDoc | null> {
 		// check if review exists, if not throw error
 		await this.getReviewById(id);
@@ -66,12 +62,10 @@ export class ReviewService {
 	async deleteReview(
 		id: string,
 		productId: string,
-		userId: string
+		userId: string,
 	): Promise<IReviewDoc | null> {
 		// Check if product exists
-		const product = await this.productRepository.getOne(
-			productId
-		);
+		const product = await this.productRepository.getOne(productId);
 		if (!product) {
 			throw new NotFoundError("محصولی با این شناسه یافت نشد");
 		}

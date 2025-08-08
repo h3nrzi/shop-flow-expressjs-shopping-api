@@ -20,7 +20,7 @@ class OrderService {
     }
     getAllOrders(query) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { pagination, skip, total, orders } = yield this.orderRepository.findAll(query);
+            const { pagination, skip, total, orders } = yield this.orderRepository.findAll(query, {}, "user orderItems.product");
             if (query.page && skip >= total) {
                 throw new not_found_error_1.NotFoundError("این صفحه وجود ندارد");
             }
@@ -31,7 +31,7 @@ class OrderService {
         return __awaiter(this, void 0, void 0, function* () {
             const { pagination, skip, total, orders } = yield this.orderRepository.findAll(query, {
                 user: userId,
-            });
+            }, "user orderItems.product");
             if (query.page && skip >= total) {
                 throw new not_found_error_1.NotFoundError("این صفحه وجود ندارد");
             }
@@ -94,8 +94,7 @@ class OrderService {
                 if (!product) {
                     throw new not_found_error_1.NotFoundError("محصولی با این شناسه یافت نشد");
                 }
-                if (product.countInStock <= 0 ||
-                    product.countInStock < item.qty) {
+                if (product.countInStock <= 0 || product.countInStock < item.qty) {
                     throw new bad_request_error_1.BadRequestError("موجودی محصول کافی نیست");
                 }
                 product.countInStock -= item.qty;

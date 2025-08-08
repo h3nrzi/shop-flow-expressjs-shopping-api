@@ -32,7 +32,12 @@ module.exports = (app) => {
         },
     }));
     const corsOptions = {
-        origin: ["http://localhost:5173", "http://localhost:3000", "https://azogeh.onrender.com", "https://lozi.onrender.com"],
+        origin: [
+            "http://localhost:5173",
+            "http://localhost:3000",
+            "https://azogeh.onrender.com",
+            "https://lozi.onrender.com",
+        ],
         methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
         allowedHeaders: ["Content-Type", "Authorization"],
         credentials: true,
@@ -51,6 +56,15 @@ module.exports = (app) => {
     app.use((0, express_mongo_sanitize_1.default)());
     app.use(security_1.default.sanitizeXSS);
     app.use((0, hpp_1.default)({
-        whitelist: ["countInStock", "brand", "category", "rating", "numReviews", "price", "discount", "discountedPrice"],
+        whitelist: [
+            "countInStock",
+            "brand",
+            "category",
+            "rating",
+            "numReviews",
+            "price",
+            "discount",
+            "discountedPrice",
+        ],
     }));
 };

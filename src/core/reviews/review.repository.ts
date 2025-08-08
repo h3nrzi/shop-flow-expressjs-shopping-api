@@ -11,10 +11,7 @@ export class ReviewRepository {
 		total: number;
 		reviews: IReviewDoc[];
 	}> {
-		const features = new APIFeatures(
-			this.reviewModel as any,
-			query
-		);
+		const features = new APIFeatures(this.reviewModel as any, query);
 		const { pagination, skip, total } = await features
 			.filter()
 			.search()
@@ -27,9 +24,7 @@ export class ReviewRepository {
 		return { pagination, skip, total, reviews };
 	}
 
-	create(
-		createReviewDto: ICreateReviewDto
-	): Promise<IReviewDoc> {
+	create(createReviewDto: ICreateReviewDto): Promise<IReviewDoc> {
 		return this.reviewModel.create(createReviewDto);
 	}
 
@@ -39,15 +34,11 @@ export class ReviewRepository {
 
 	update(
 		id: string,
-		updateReviewDto: IUpdateReviewDto
+		updateReviewDto: IUpdateReviewDto,
 	): Promise<IReviewDoc | null> {
-		return this.reviewModel.findByIdAndUpdate(
-			id,
-			updateReviewDto,
-			{
-				new: true,
-			}
-		);
+		return this.reviewModel.findByIdAndUpdate(id, updateReviewDto, {
+			new: true,
+		});
 	}
 
 	delete(id: string): Promise<IReviewDoc | null> {

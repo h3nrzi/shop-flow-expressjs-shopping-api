@@ -12,11 +12,7 @@ import swaggerUi from "swagger-ui-express";
 
 module.exports = (app: Express) => {
 	// Swagger UI route
-	app.use(
-		"/api-docs",
-		swaggerUi.serve,
-		swaggerUi.setup(swaggerSpec),
-	);
+	app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 	// Home route
 	app.get("/", (req, res) => res.send("API is running..."));

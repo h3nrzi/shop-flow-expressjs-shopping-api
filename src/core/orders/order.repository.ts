@@ -13,15 +13,25 @@ export class OrderRepository {
 	async findAll(
 		query: any,
 		initialFilter?: any,
-		populate?: string
+		populate?: string,
 	): Promise<{
 		pagination: any;
 		skip: number;
 		total: number;
 		orders: OrderDoc[];
 	}> {
-		const features = new APIFeatures(this.orderModel as any, query, initialFilter, populate);
-		const { pagination, skip, total } = await features.filter().search().sort().limitFields().pagination();
+		const features = new APIFeatures(
+			this.orderModel as any,
+			query,
+			initialFilter,
+			populate,
+		);
+		const { pagination, skip, total } = await features
+			.filter()
+			.search()
+			.sort()
+			.limitFields()
+			.pagination();
 
 		const orders = await features.dbQuery;
 
@@ -90,7 +100,10 @@ export class OrderRepository {
 		});
 	}
 
-	async updateById(orderId: string, payload: UpdateOrderDto): Promise<OrderDoc | null> {
+	async updateById(
+		orderId: string,
+		payload: UpdateOrderDto,
+	): Promise<OrderDoc | null> {
 		return this.orderModel.findByIdAndUpdate(orderId, payload, {
 			new: true,
 		});

@@ -27,15 +27,11 @@ const loginRequest = (body) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.loginRequest = loginRequest;
 const logoutRequest = (cookie) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield (0, supertest_1.default)(app_1.default)
-        .post("/api/users/logout")
-        .set("Cookie", cookie);
+    return yield (0, supertest_1.default)(app_1.default).post("/api/users/logout").set("Cookie", cookie);
 });
 exports.logoutRequest = logoutRequest;
 const forgotPasswordRequest = (body) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield (0, supertest_1.default)(app_1.default)
-        .post("/api/users/forgot-password")
-        .send(body);
+    return yield (0, supertest_1.default)(app_1.default).post("/api/users/forgot-password").send(body);
 });
 exports.forgotPasswordRequest = forgotPasswordRequest;
 const resetPasswordRequest = (body, query) => __awaiter(void 0, void 0, void 0, function* () {

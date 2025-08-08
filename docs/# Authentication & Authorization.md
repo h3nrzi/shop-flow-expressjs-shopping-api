@@ -296,12 +296,7 @@ router.get("/profile", protect, getUserProfile);
 ### Admin Only Route
 
 ```javascript
-router.delete(
-	"/users/:id",
-	protect,
-	restrictTo("admin"),
-	deleteUser
-);
+router.delete("/users/:id", protect, restrictTo("admin"), deleteUser);
 ```
 
 ### Client Token Refresh

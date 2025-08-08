@@ -29,13 +29,7 @@ const createSendTokenAndResponse = (user, statusCode, res) => {
         .json({
         status: "success",
         data: {
-            user: lodash_1.default.pick(user, [
-                "id",
-                "name",
-                "email",
-                "role",
-                "photo",
-            ]),
+            user: lodash_1.default.pick(user, ["id", "name", "email", "role", "photo"]),
         },
     });
 };

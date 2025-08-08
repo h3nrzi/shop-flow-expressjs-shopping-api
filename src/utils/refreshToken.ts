@@ -2,15 +2,11 @@ import jwt from "jsonwebtoken";
 import { NotAuthorizedError } from "../errors/not-authorized-error";
 
 export const verifyRefreshToken = (token: string) => {
-	return new Promise(resolve => {
-		jwt.verify(
-			token,
-			process.env.JWT_REFRESH_SECRET!,
-			(err, decoded) => {
-				if (err) throw new NotAuthorizedError("توکن تازه‌سازی معتبر نیست");
-				resolve(decoded);
-			},
-		);
+	return new Promise((resolve) => {
+		jwt.verify(token, process.env.JWT_REFRESH_SECRET!, (err, decoded) => {
+			if (err) throw new NotAuthorizedError("توکن تازه‌سازی معتبر نیست");
+			resolve(decoded);
+		});
 	});
 };
 

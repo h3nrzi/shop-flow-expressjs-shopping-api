@@ -18,9 +18,7 @@ describe("PATCH /api/products/:productId/reviews/:id", () => {
 
 	beforeEach(async () => {
 		product = await createTestProduct();
-		const testUser = await createTestUserAndGetCookie(
-			"reviewer"
-		);
+		const testUser = await createTestUserAndGetCookie("reviewer");
 		user = testUser.user;
 		cookie = testUser.cookie;
 
@@ -28,7 +26,7 @@ describe("PATCH /api/products/:productId/reviews/:id", () => {
 		review = await createTestReview(
 			product._id.toString(),
 			user._id.toString(),
-			{ rating: 3, comment: "Average product" }
+			{ rating: 3, comment: "Average product" },
 		);
 	});
 
@@ -41,12 +39,12 @@ describe("PATCH /api/products/:productId/reviews/:id", () => {
 			const res = await updateReviewRequest(
 				product._id.toString(),
 				review._id.toString(),
-				updateData
+				updateData,
 			);
 
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].message).toBe(
-				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
+				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید",
 			);
 		});
 
@@ -60,12 +58,12 @@ describe("PATCH /api/products/:productId/reviews/:id", () => {
 				product._id.toString(),
 				review._id.toString(),
 				updateData,
-				invalidCookie
+				invalidCookie,
 			);
 
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].message).toBe(
-				"کاربر متعلق به این توکن دیگر وجود ندارد!"
+				"کاربر متعلق به این توکن دیگر وجود ندارد!",
 			);
 		});
 	});
@@ -80,7 +78,7 @@ describe("PATCH /api/products/:productId/reviews/:id", () => {
 				getInvalidId(),
 				review._id.toString(),
 				updateData,
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(400);
@@ -95,13 +93,11 @@ describe("PATCH /api/products/:productId/reviews/:id", () => {
 				product._id.toString(),
 				getInvalidId(),
 				updateData,
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(400);
-			expect(res.body.errors[0].message).toBe(
-				"شناسه نظر معتبر نیست"
-			);
+			expect(res.body.errors[0].message).toBe("شناسه نظر معتبر نیست");
 		});
 
 		it("rating is below minimum (0)", async () => {
@@ -110,13 +106,11 @@ describe("PATCH /api/products/:productId/reviews/:id", () => {
 				product._id.toString(),
 				review._id.toString(),
 				updateData,
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(400);
-			expect(res.body.errors[0].message).toBe(
-				"امتیاز باید بین 1 و 5 باشد"
-			);
+			expect(res.body.errors[0].message).toBe("امتیاز باید بین 1 و 5 باشد");
 		});
 
 		it("rating is above maximum (6)", async () => {
@@ -125,13 +119,11 @@ describe("PATCH /api/products/:productId/reviews/:id", () => {
 				product._id.toString(),
 				review._id.toString(),
 				updateData,
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(400);
-			expect(res.body.errors[0].message).toBe(
-				"امتیاز باید بین 1 و 5 باشد"
-			);
+			expect(res.body.errors[0].message).toBe("امتیاز باید بین 1 و 5 باشد");
 		});
 
 		it("rating is not a number", async () => {
@@ -140,13 +132,11 @@ describe("PATCH /api/products/:productId/reviews/:id", () => {
 				product._id.toString(),
 				review._id.toString(),
 				updateData,
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(400);
-			expect(res.body.errors[0].message).toBe(
-				"امتیاز باید بین 1 و 5 باشد"
-			);
+			expect(res.body.errors[0].message).toBe("امتیاز باید بین 1 و 5 باشد");
 		});
 
 		it("comment is not a string", async () => {
@@ -155,13 +145,11 @@ describe("PATCH /api/products/:productId/reviews/:id", () => {
 				product._id.toString(),
 				review._id.toString(),
 				updateData,
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(400);
-			expect(res.body.errors[0].message).toBe(
-				"فرمت نظر معتبر نیست"
-			);
+			expect(res.body.errors[0].message).toBe("فرمت نظر معتبر نیست");
 		});
 
 		it("product field is provided (should be ignored by middleware)", async () => {
@@ -174,14 +162,12 @@ describe("PATCH /api/products/:productId/reviews/:id", () => {
 				product._id.toString(),
 				review._id.toString(),
 				updateData,
-				cookie
+				cookie,
 			);
 
 			// Should succeed because middleware filters out product field
 			expect(res.status).toBe(200);
-			expect(res.body.data.review.product._id).toBe(
-				product._id.toString()
-			);
+			expect(res.body.data.review.product._id).toBe(product._id.toString());
 		});
 	});
 
@@ -195,7 +181,7 @@ describe("PATCH /api/products/:productId/reviews/:id", () => {
 			const anotherReview = await createTestReview(
 				product._id.toString(),
 				anotherUser._id.toString(),
-				{ rating: 2, comment: "Poor product" }
+				{ rating: 2, comment: "Poor product" },
 			);
 
 			// Try to update another user's review
@@ -207,7 +193,7 @@ describe("PATCH /api/products/:productId/reviews/:id", () => {
 				product._id.toString(),
 				anotherReview._id.toString(),
 				updateData,
-				cookie // Using original user's cookie
+				cookie, // Using original user's cookie
 			);
 
 			expect(res.status).toBe(403);
@@ -225,7 +211,7 @@ describe("PATCH /api/products/:productId/reviews/:id", () => {
 				nonExistentProductId,
 				review._id.toString(),
 				updateData,
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(404);
@@ -241,13 +227,11 @@ describe("PATCH /api/products/:productId/reviews/:id", () => {
 				product._id.toString(),
 				nonExistentReviewId,
 				updateData,
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(404);
-			expect(res.body.errors[0].message).toBe(
-				"نظری با این شناسه یافت نشد"
-			);
+			expect(res.body.errors[0].message).toBe("نظری با این شناسه یافت نشد");
 		});
 
 		it("review exists but belongs to different product", async () => {
@@ -256,7 +240,7 @@ describe("PATCH /api/products/:productId/reviews/:id", () => {
 			const anotherReview = await createTestReview(
 				anotherProduct._id.toString(),
 				user._id.toString(),
-				{ rating: 3, comment: "Different product review" }
+				{ rating: 3, comment: "Different product review" },
 			);
 
 			// Try to update the other product's review using wrong product ID
@@ -268,13 +252,11 @@ describe("PATCH /api/products/:productId/reviews/:id", () => {
 				product._id.toString(),
 				anotherReview._id.toString(),
 				updateData,
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(404);
-			expect(res.body.errors[0].message).toBe(
-				"نظری با این شناسه یافت نشد"
-			);
+			expect(res.body.errors[0].message).toBe("نظری با این شناسه یافت نشد");
 		});
 	});
 
@@ -288,7 +270,7 @@ describe("PATCH /api/products/:productId/reviews/:id", () => {
 				product._id.toString(),
 				review._id.toString(),
 				updateData,
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(200);
@@ -299,9 +281,7 @@ describe("PATCH /api/products/:productId/reviews/:id", () => {
 			expectValidReviewResponse(updatedReview, updateData);
 			expect(updatedReview._id).toBe(review._id.toString());
 			expect(updatedReview.rating).toBe(5);
-			expect(updatedReview.comment).toBe(
-				"Excellent product after update!"
-			);
+			expect(updatedReview.comment).toBe("Excellent product after update!");
 		});
 
 		it("review is updated with only rating", async () => {
@@ -310,7 +290,7 @@ describe("PATCH /api/products/:productId/reviews/:id", () => {
 				product._id.toString(),
 				review._id.toString(),
 				updateData,
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(200);
@@ -326,7 +306,7 @@ describe("PATCH /api/products/:productId/reviews/:id", () => {
 				product._id.toString(),
 				review._id.toString(),
 				updateData,
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(200);
@@ -345,7 +325,7 @@ describe("PATCH /api/products/:productId/reviews/:id", () => {
 				product._id.toString(),
 				review._id.toString(),
 				updateData,
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(200);
@@ -361,7 +341,7 @@ describe("PATCH /api/products/:productId/reviews/:id", () => {
 				product._id.toString(),
 				review._id.toString(),
 				updateData,
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(200);
@@ -370,11 +350,7 @@ describe("PATCH /api/products/:productId/reviews/:id", () => {
 
 		it("product rating is recalculated after review update", async () => {
 			// Verify initial product rating (should be 3 from the single review)
-			await expectProductRatingUpdate(
-				product._id.toString(),
-				3,
-				1
-			);
+			await expectProductRatingUpdate(product._id.toString(), 3, 1);
 
 			// Update the review rating
 			const updateData = { rating: 5 };
@@ -382,36 +358,25 @@ describe("PATCH /api/products/:productId/reviews/:id", () => {
 				product._id.toString(),
 				review._id.toString(),
 				updateData,
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(200);
 
 			// Verify product rating is updated to 5
-			await expectProductRatingUpdate(
-				product._id.toString(),
-				5,
-				1
-			);
+			await expectProductRatingUpdate(product._id.toString(), 5, 1);
 		});
 
 		it("product average rating is recalculated correctly with multiple reviews", async () => {
 			// Create second review with rating 5
-			const { user: user2 } = await createTestUserAndGetCookie(
-				"reviewer2"
-			);
-			await createTestReview(
-				product._id.toString(),
-				user2._id.toString(),
-				{ rating: 5, comment: "Excellent!" }
-			);
+			const { user: user2 } = await createTestUserAndGetCookie("reviewer2");
+			await createTestReview(product._id.toString(), user2._id.toString(), {
+				rating: 5,
+				comment: "Excellent!",
+			});
 
 			// Initial average should be (3 + 5) / 2 = 4
-			await expectProductRatingUpdate(
-				product._id.toString(),
-				4,
-				2
-			);
+			await expectProductRatingUpdate(product._id.toString(), 4, 2);
 
 			// Update first review from 3 to 1
 			const updateData = { rating: 1 };
@@ -419,17 +384,13 @@ describe("PATCH /api/products/:productId/reviews/:id", () => {
 				product._id.toString(),
 				review._id.toString(),
 				updateData,
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(200);
 
 			// New average should be (1 + 5) / 2 = 3
-			await expectProductRatingUpdate(
-				product._id.toString(),
-				3,
-				2
-			);
+			await expectProductRatingUpdate(product._id.toString(), 3, 2);
 		});
 
 		it("updated review includes populated user and product data", async () => {
@@ -441,7 +402,7 @@ describe("PATCH /api/products/:productId/reviews/:id", () => {
 				product._id.toString(),
 				review._id.toString(),
 				updateData,
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(200);
@@ -458,16 +419,14 @@ describe("PATCH /api/products/:productId/reviews/:id", () => {
 			expect(updatedReview.product).toHaveProperty("_id");
 			expect(updatedReview.product).toHaveProperty("name");
 			expect(updatedReview.product).toHaveProperty("price");
-			expect(updatedReview.product._id).toBe(
-				product._id.toString()
-			);
+			expect(updatedReview.product._id).toBe(product._id.toString());
 		});
 
 		it("updatedAt timestamp is modified after update", async () => {
 			const originalUpdatedAt = review.updatedAt;
 
 			// Wait a moment to ensure timestamp difference
-			await new Promise(resolve => setTimeout(resolve, 10));
+			await new Promise((resolve) => setTimeout(resolve, 10));
 
 			const updateData = {
 				rating: 4,
@@ -477,15 +436,15 @@ describe("PATCH /api/products/:productId/reviews/:id", () => {
 				product._id.toString(),
 				review._id.toString(),
 				updateData,
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(200);
 
 			const updatedReview = res.body.data.review;
-			expect(
-				new Date(updatedReview.updatedAt).getTime()
-			).toBeGreaterThan(new Date(originalUpdatedAt).getTime());
+			expect(new Date(updatedReview.updatedAt).getTime()).toBeGreaterThan(
+				new Date(originalUpdatedAt).getTime(),
+			);
 		});
 
 		it("createdAt timestamp remains unchanged after update", async () => {
@@ -499,15 +458,13 @@ describe("PATCH /api/products/:productId/reviews/:id", () => {
 				product._id.toString(),
 				review._id.toString(),
 				updateData,
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(200);
 
 			const updatedReview = res.body.data.review;
-			expect(updatedReview.createdAt).toBe(
-				originalCreatedAt.toISOString()
-			);
+			expect(updatedReview.createdAt).toBe(originalCreatedAt.toISOString());
 		});
 	});
 
@@ -518,7 +475,7 @@ describe("PATCH /api/products/:productId/reviews/:id", () => {
 				product._id.toString(),
 				review._id.toString(),
 				updateData,
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(200);
@@ -536,7 +493,7 @@ describe("PATCH /api/products/:productId/reviews/:id", () => {
 				product._id.toString(),
 				review._id.toString(),
 				updateData,
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(200);
@@ -552,7 +509,7 @@ describe("PATCH /api/products/:productId/reviews/:id", () => {
 				product._id.toString(),
 				review._id.toString(),
 				updateData,
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(200);
@@ -566,7 +523,7 @@ describe("PATCH /api/products/:productId/reviews/:id", () => {
 				product._id.toString(),
 				review._id.toString(),
 				updateData,
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(200);
@@ -585,7 +542,7 @@ describe("PATCH /api/products/:productId/reviews/:id", () => {
 				product._id.toString(),
 				review._id.toString(),
 				updateData,
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(200);
@@ -610,13 +567,13 @@ describe("PATCH /api/products/:productId/reviews/:id", () => {
 					product._id.toString(),
 					review._id.toString(),
 					updateData1,
-					cookie
+					cookie,
 				),
 				updateReviewRequest(
 					product._id.toString(),
 					review._id.toString(),
 					updateData2,
-					cookie
+					cookie,
 				),
 			]);
 
@@ -642,7 +599,7 @@ describe("PATCH /api/products/:productId/reviews/:id", () => {
 				product._id.toString(),
 				review._id.toString(),
 				updateData,
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(200);
@@ -651,9 +608,7 @@ describe("PATCH /api/products/:productId/reviews/:id", () => {
 			expect(updatedReview.rating).toBe(4);
 			expect(updatedReview.comment).toBe("Updated comment");
 			expect(updatedReview.user._id).toBe(user._id.toString()); // Should remain original
-			expect(updatedReview.product._id).toBe(
-				product._id.toString()
-			); // Should remain original
+			expect(updatedReview.product._id).toBe(product._id.toString()); // Should remain original
 			expect(updatedReview._id).toBe(review._id.toString()); // Should remain original
 		});
 	});

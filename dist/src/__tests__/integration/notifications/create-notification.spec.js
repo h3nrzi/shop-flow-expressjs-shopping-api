@@ -82,7 +82,12 @@ describe("POST /api/notifications", () => {
             expect(notification.user).toBe(user._id);
         }));
         it("notification is created with all valid notification types", () => __awaiter(void 0, void 0, void 0, function* () {
-            const types = ["order", "promotion", "system", "review"];
+            const types = [
+                "order",
+                "promotion",
+                "system",
+                "review",
+            ];
             for (const type of types) {
                 const notificationData = Object.assign(Object.assign({}, (0, notifications_helper_1.getValidNotificationData)(user._id)), { type });
                 const res = yield (0, notifications_helper_1.createNotificationRequest)(notificationData, adminCookie);

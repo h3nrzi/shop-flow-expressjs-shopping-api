@@ -61,7 +61,10 @@ describe("Notification Edge Cases", () => {
             const notificationId = createRes.body.data.notification._id;
             const markReadPromise = (0, notifications_helper_1.markAsReadRequest)(notificationId, userCookie);
             const getNotificationPromise = require("@/__tests__/helpers/notifications.helper").getNotificationByIdRequest(notificationId, userCookie);
-            const [markReadRes, getRes] = yield Promise.all([markReadPromise, getNotificationPromise]);
+            const [markReadRes, getRes] = yield Promise.all([
+                markReadPromise,
+                getNotificationPromise,
+            ]);
             expect(markReadRes.status).toBe(200);
             expect(getRes.status).toBe(200);
         }));
@@ -84,7 +87,10 @@ describe("Notification Edge Cases", () => {
             const notificationId = createRes.body.data.notification._id;
             const markReadPromise = (0, notifications_helper_1.markAsReadRequest)(notificationId, userCookie);
             const deletePromise = (0, notifications_helper_1.deleteNotificationRequest)(notificationId, userCookie);
-            const results = yield Promise.allSettled([markReadPromise, deletePromise]);
+            const results = yield Promise.allSettled([
+                markReadPromise,
+                deletePromise,
+            ]);
             const successCount = results.filter((result) => result.status === "fulfilled" && result.value.status < 400).length;
             expect(successCount).toBeGreaterThanOrEqual(1);
         }));
@@ -249,7 +255,11 @@ describe("Notification Edge Cases", () => {
                 .map(() => (0, notifications_helper_1.getNotificationsRequest)(userCookie));
             const createPromise = (0, notifications_helper_1.createNotificationRequest)((0, notifications_helper_1.getValidNotificationData)(user._id), adminCookie);
             const countPromise = (0, notifications_helper_1.getUnreadCountRequest)(userCookie);
-            const results = yield Promise.all([...listPromises, createPromise, countPromise]);
+            const results = yield Promise.all([
+                ...listPromises,
+                createPromise,
+                countPromise,
+            ]);
             listPromises.forEach((_, index) => {
                 expect(results[index].status).toBe(200);
             });

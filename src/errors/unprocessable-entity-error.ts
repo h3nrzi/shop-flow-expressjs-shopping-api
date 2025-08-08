@@ -5,10 +5,7 @@ export class UnprocessableEntityError extends CustomError {
 
 	constructor(public override message: string) {
 		super(message);
-		Object.setPrototypeOf(
-			this,
-			UnprocessableEntityError.prototype
-		);
+		Object.setPrototypeOf(this, UnprocessableEntityError.prototype);
 	}
 
 	serializeErrors = () => [

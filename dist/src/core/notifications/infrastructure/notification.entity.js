@@ -9,7 +9,11 @@ const NotificationSchema = new mongoose_1.default.Schema({
     user: { type: mongoose_1.default.Schema.Types.ObjectId, ref: "User", required: true },
     title: { type: String, required: true },
     message: { type: String, required: true },
-    type: { type: String, enum: ["order", "promotion", "system", "review"], required: true },
+    type: {
+        type: String,
+        enum: ["order", "promotion", "system", "review"],
+        required: true,
+    },
     isRead: { type: Boolean, default: false },
     data: { type: mongoose_1.default.Schema.Types.Mixed },
     readAt: { type: Date },

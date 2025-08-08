@@ -28,7 +28,10 @@ describe("PATCH /api/notifications/mark-read/:id", () => {
 
 		// Create a test notification for the user
 		const notificationData = getValidNotificationData(user._id);
-		const createRes = await createNotificationRequest(notificationData, adminCookie);
+		const createRes = await createNotificationRequest(
+			notificationData,
+			adminCookie,
+		);
 		notificationId = createRes.body.data.notification._id;
 	});
 
@@ -37,7 +40,9 @@ describe("PATCH /api/notifications/mark-read/:id", () => {
 			const res = await markAsReadRequest(notificationId);
 
 			expect(res.status).toBe(401);
-			expect(res.body.errors[0].message).toBe("شما وارد نشده اید! لطفا برای دسترسی وارد شوید");
+			expect(res.body.errors[0].message).toBe(
+				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید",
+			);
 		});
 
 		it("user is not authenticated (invalid token)", async () => {
@@ -45,7 +50,9 @@ describe("PATCH /api/notifications/mark-read/:id", () => {
 			const res = await markAsReadRequest(notificationId, invalidCookie);
 
 			expect(res.status).toBe(401);
-			expect(res.body.errors[0].message).toBe("کاربر متعلق به این توکن دیگر وجود ندارد!");
+			expect(res.body.errors[0].message).toBe(
+				"کاربر متعلق به این توکن دیگر وجود ندارد!",
+			);
 		});
 	});
 
@@ -60,14 +67,19 @@ describe("PATCH /api/notifications/mark-read/:id", () => {
 		it("user tries to mark another user's notification as read", async () => {
 			// Create notification for admin
 			const adminNotificationData = getValidNotificationData(admin._id);
-			const adminCreateRes = await createNotificationRequest(adminNotificationData, adminCookie);
+			const adminCreateRes = await createNotificationRequest(
+				adminNotificationData,
+				adminCookie,
+			);
 			const adminNotificationId = adminCreateRes.body.data.notification._id;
 
 			// User tries to mark admin's notification as read
 			const res = await markAsReadRequest(adminNotificationId, userCookie);
 
 			expect(res.status).toBe(400);
-			expect(res.body.errors[0].message).toBe("شما مجاز به مشاهده این اعلان نیستید");
+			expect(res.body.errors[0].message).toBe(
+				"شما مجاز به مشاهده این اعلان نیستید",
+			);
 		});
 	});
 
@@ -84,7 +96,10 @@ describe("PATCH /api/notifications/mark-read/:id", () => {
 	describe("should return 200, if", () => {
 		it("notification is marked as read successfully", async () => {
 			// Verify notification is initially unread
-			const initialRes = await getNotificationByIdRequest(notificationId, userCookie);
+			const initialRes = await getNotificationByIdRequest(
+				notificationId,
+				userCookie,
+			);
 			expect(initialRes.body.data.notification.isRead).toBe(false);
 
 			const res = await markAsReadRequest(notificationId, userCookie);
@@ -129,7 +144,10 @@ describe("PATCH /api/notifications/mark-read/:id", () => {
 		it("admin can mark their own notification as read", async () => {
 			// Create notification for admin
 			const adminNotificationData = getValidNotificationData(admin._id);
-			const adminCreateRes = await createNotificationRequest(adminNotificationData, adminCookie);
+			const adminCreateRes = await createNotificationRequest(
+				adminNotificationData,
+				adminCookie,
+			);
 			const adminNotificationId = adminCreateRes.body.data.notification._id;
 
 			const res = await markAsReadRequest(adminNotificationId, adminCookie);

@@ -10,7 +10,7 @@ export const uploadImageRequest = async (
 	file?: Buffer,
 	filename?: string,
 	mimetype?: string,
-	cookie?: string
+	cookie?: string,
 ): Promise<Response> => {
 	const req = request(app).post("/api/uploads");
 
@@ -335,7 +335,7 @@ export const getInvalidImageFiles = () => [
 ];
 
 export const createTestUserAndGetCookie = async (
-	suffix: string = "uploader"
+	suffix: string = "uploader",
 ) => {
 	const user = {
 		name: "test",
@@ -344,9 +344,7 @@ export const createTestUserAndGetCookie = async (
 		passwordConfirmation: "test123456",
 	};
 
-	const res = await request(app)
-		.post("/api/users/signup")
-		.send(user);
+	const res = await request(app).post("/api/users/signup").send(user);
 	return {
 		user,
 		cookie: res.headers["set-cookie"][0],

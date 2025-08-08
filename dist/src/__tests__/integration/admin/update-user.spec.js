@@ -91,14 +91,18 @@ describe("PATCH /api/users/:id", () => {
             expect(res.body.errors[0].message).toBe("شما وارد نشده اید! لطفا برای دسترسی وارد شوید");
         }));
         it("If token is invalid", () => __awaiter(void 0, void 0, void 0, function* () {
-            const res = yield (0, admin_helper_1.updateUserRequest)("jwt=invalid-token", userId, { name: "new name" });
+            const res = yield (0, admin_helper_1.updateUserRequest)("jwt=invalid-token", userId, {
+                name: "new name",
+            });
             expect(res.status).toBe(401);
             expect(res.body.errors[0].field).toBeNull();
             expect(res.body.errors[0].message).toBe("توکن معتبر نیست");
         }));
         it("If user for token does not exist", () => __awaiter(void 0, void 0, void 0, function* () {
             const fakeToken = (0, auth_helper_1.getInvalidToken)();
-            const res = yield (0, admin_helper_1.updateUserRequest)(`jwt=${fakeToken}`, userId, { name: "new name" });
+            const res = yield (0, admin_helper_1.updateUserRequest)(`jwt=${fakeToken}`, userId, {
+                name: "new name",
+            });
             expect(res.status).toBe(401);
             expect(res.body.errors[0].field).toBeNull();
             expect(res.body.errors[0].message).toBe("کاربر متعلق به این توکن دیگر وجود ندارد!");
@@ -132,13 +136,15 @@ describe("PATCH /api/users/:id", () => {
             expect(res.body.errors[0].message).toBe("شما نمی توانید حساب ادمین را آپدیت کنید فقط مدیر سیستم می تواند این کار را انجام دهد");
         }));
         it("If an admin tries to update the main admin", () => __awaiter(void 0, void 0, void 0, function* () {
-            const res = yield (0, admin_helper_1.updateUserRequest)(adminCookie, mainAdminId, { name: "Hacker" });
+            const res = yield (0, admin_helper_1.updateUserRequest)(adminCookie, mainAdminId, {
+                name: "Hacker",
+            });
             expect(res.status).toBe(401);
             expect(res.body.errors[0].message).toBe("شما نمی توانید حساب ادمین را آپدیت کنید فقط مدیر سیستم می تواند این کار را انجام دهد");
         }));
     });
     describe("should return 400", () => {
-        validationCases.forEach(testCase => {
+        validationCases.forEach((testCase) => {
             it(testCase.description, () => __awaiter(void 0, void 0, void 0, function* () {
                 const id = testCase.userId || userId;
                 const res = yield (0, admin_helper_1.updateUserRequest)(adminCookie, id, testCase.body);
@@ -153,7 +159,9 @@ describe("PATCH /api/users/:id", () => {
             admin2Doc.role = "admin";
             yield admin2Doc.save({ validateBeforeSave: false });
             const adminId2 = admin2Doc._id.toString();
-            const res = yield (0, admin_helper_1.updateUserRequest)(mainAdminCookie, adminId2, { email: "admin@gmail.com" });
+            const res = yield (0, admin_helper_1.updateUserRequest)(mainAdminCookie, adminId2, {
+                email: "admin@gmail.com",
+            });
             expect(res.status).toBe(400);
             expect(res.body.errors[0].message).toBe("این ایمیل قبلا استفاده شده است");
         }));
@@ -175,12 +183,16 @@ describe("PATCH /api/users/:id", () => {
             expect(res.body.data.user).toBeDefined();
         }));
         it("If main admin wants to update another admin", () => __awaiter(void 0, void 0, void 0, function* () {
-            const res = yield (0, admin_helper_1.updateUserRequest)(mainAdminCookie, adminId, { name: "Admin Updated" });
+            const res = yield (0, admin_helper_1.updateUserRequest)(mainAdminCookie, adminId, {
+                name: "Admin Updated",
+            });
             expect(res.status).toBe(200);
             expect(res.body.data.user).toBeDefined();
         }));
         it("If main admin wants to update himself", () => __awaiter(void 0, void 0, void 0, function* () {
-            const res = yield (0, admin_helper_1.updateUserRequest)(mainAdminCookie, mainAdminId, { name: "Main Admin Updated" });
+            const res = yield (0, admin_helper_1.updateUserRequest)(mainAdminCookie, mainAdminId, {
+                name: "Main Admin Updated",
+            });
             expect(res.status).toBe(200);
             expect(res.body.data.user).toBeDefined();
         }));

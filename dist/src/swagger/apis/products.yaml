@@ -32,7 +32,22 @@ paths:
           name: sort
           schema:
             type: string
-            enum: [-price, price, -rating, rating, -numReviews, numReviews, -createdAt, createdAt, -updatedAt, updatedAt, -countInStock, countInStock, ...]
+            enum:
+              [
+                -price,
+                price,
+                -rating,
+                rating,
+                -numReviews,
+                numReviews,
+                -createdAt,
+                createdAt,
+                -updatedAt,
+                updatedAt,
+                -countInStock,
+                countInStock,
+                ...,
+              ]
             example: desc
           required: false
           description: ترتیب مرتب‌سازی نتایج (صعودی یا نزولی)
@@ -42,7 +57,7 @@ paths:
             type: string
             example: لپ تاپ
           required: false
-          description: جستجو در نام  
+          description: جستجو در نام
         - in: query
           name: brand
           schema:
@@ -129,14 +144,14 @@ paths:
                     type: integer
                     example: 10
                   pagination:
-                    $ref: '#/components/schemas/Pagination'
+                    $ref: "#/components/schemas/Pagination"
                   data:
                     type: object
                     properties:
                       products:
                         type: array
                         items:
-                          $ref: '#/components/schemas/Product'
+                          $ref: "#/components/schemas/Product"
         "404":
           description: Page exceeds total pages
           content:
@@ -189,9 +204,9 @@ paths:
                     type: object
                     properties:
                       product:
-                        $ref: '#/components/schemas/Product'
+                        $ref: "#/components/schemas/Product"
         "404":
-          $ref: '#/components/responses/NotFound'
+          $ref: "#/components/responses/NotFound"
 
 ######################################################
 ################### REFERENCES #######################
@@ -258,5 +273,3 @@ components:
           type: string
           format: date-time
           example: "2021-06-22T14:30:00.000Z"
-
-

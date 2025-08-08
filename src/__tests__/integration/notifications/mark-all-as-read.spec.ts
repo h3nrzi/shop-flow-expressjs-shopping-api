@@ -31,7 +31,9 @@ describe("PATCH /api/notifications/mark-all-read", () => {
 			const res = await markAllAsReadRequest();
 
 			expect(res.status).toBe(401);
-			expect(res.body.errors[0].message).toBe("شما وارد نشده اید! لطفا برای دسترسی وارد شوید");
+			expect(res.body.errors[0].message).toBe(
+				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید",
+			);
 		});
 
 		it("user is not authenticated (invalid token)", async () => {
@@ -39,7 +41,9 @@ describe("PATCH /api/notifications/mark-all-read", () => {
 			const res = await markAllAsReadRequest(invalidCookie);
 
 			expect(res.status).toBe(401);
-			expect(res.body.errors[0].message).toBe("کاربر متعلق به این توکن دیگر وجود ندارد!");
+			expect(res.body.errors[0].message).toBe(
+				"کاربر متعلق به این توکن دیگر وجود ندارد!",
+			);
 		});
 	});
 
@@ -49,14 +53,25 @@ describe("PATCH /api/notifications/mark-all-read", () => {
 
 			expect(res.status).toBe(200);
 			expect(res.body.status).toBe("success");
-			expect(res.body.message).toBe("همه اعلان‌ها به عنوان خوانده شده علامت‌گذاری شدند");
+			expect(res.body.message).toBe(
+				"همه اعلان‌ها به عنوان خوانده شده علامت‌گذاری شدند",
+			);
 		});
 
 		it("all user notifications are marked as read", async () => {
 			// Create multiple notifications for the user
-			await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
-			await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
-			await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
+			await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
+			await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
+			await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
 
 			// Verify notifications are initially unread
 			const beforeRes = await getUnreadCountRequest(userCookie);
@@ -66,7 +81,9 @@ describe("PATCH /api/notifications/mark-all-read", () => {
 
 			expect(res.status).toBe(200);
 			expect(res.body.status).toBe("success");
-			expect(res.body.message).toBe("همه اعلان‌ها به عنوان خوانده شده علامت‌گذاری شدند");
+			expect(res.body.message).toBe(
+				"همه اعلان‌ها به عنوان خوانده شده علامت‌گذاری شدند",
+			);
 
 			// Verify all notifications are now read
 			const afterRes = await getUnreadCountRequest(userCookie);
@@ -75,9 +92,18 @@ describe("PATCH /api/notifications/mark-all-read", () => {
 
 		it("only current user's notifications are marked as read", async () => {
 			// Create notifications for both users
-			await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
-			await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
-			await createNotificationRequest(getValidNotificationData(admin._id), adminCookie);
+			await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
+			await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
+			await createNotificationRequest(
+				getValidNotificationData(admin._id),
+				adminCookie,
+			);
 
 			// Mark all user notifications as read
 			const res = await markAllAsReadRequest(userCookie);
@@ -94,8 +120,14 @@ describe("PATCH /api/notifications/mark-all-read", () => {
 
 		it("notifications status is correctly updated in database", async () => {
 			// Create notifications
-			await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
-			await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
+			await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
+			await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
 
 			// Mark all as read
 			await markAllAsReadRequest(userCookie);
@@ -113,12 +145,23 @@ describe("PATCH /api/notifications/mark-all-read", () => {
 
 		it("already read notifications remain read", async () => {
 			// Create notifications
-			const createRes1 = await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
-			await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
+			const createRes1 = await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
+			await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
 
 			// Mark one notification as read manually
-			const { markAsReadRequest } = await import("@/__tests__/helpers/notifications.helper");
-			await markAsReadRequest(createRes1.body.data.notification._id, userCookie);
+			const { markAsReadRequest } = await import(
+				"@/__tests__/helpers/notifications.helper"
+			);
+			await markAsReadRequest(
+				createRes1.body.data.notification._id,
+				userCookie,
+			);
 
 			// Verify one read, one unread
 			const beforeRes = await getUnreadCountRequest(userCookie);
@@ -136,10 +179,22 @@ describe("PATCH /api/notifications/mark-all-read", () => {
 
 		it("works when user has mix of different notification types", async () => {
 			// Create notifications of different types
-			const systemNotification = { ...getValidNotificationData(user._id), type: "system" as NotificationType };
-			const orderNotification = { ...getValidNotificationData(user._id), type: "order" as NotificationType };
-			const promotionNotification = { ...getValidNotificationData(user._id), type: "promotion" as NotificationType };
-			const reviewNotification = { ...getValidNotificationData(user._id), type: "review" as NotificationType };
+			const systemNotification = {
+				...getValidNotificationData(user._id),
+				type: "system" as NotificationType,
+			};
+			const orderNotification = {
+				...getValidNotificationData(user._id),
+				type: "order" as NotificationType,
+			};
+			const promotionNotification = {
+				...getValidNotificationData(user._id),
+				type: "promotion" as NotificationType,
+			};
+			const reviewNotification = {
+				...getValidNotificationData(user._id),
+				type: "review" as NotificationType,
+			};
 
 			await createNotificationRequest(systemNotification, adminCookie);
 			await createNotificationRequest(orderNotification, adminCookie);
@@ -162,8 +217,14 @@ describe("PATCH /api/notifications/mark-all-read", () => {
 
 		it("operation is idempotent", async () => {
 			// Create notifications
-			await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
-			await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
+			await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
+			await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
 
 			// Mark all as read first time
 			const res1 = await markAllAsReadRequest(userCookie);

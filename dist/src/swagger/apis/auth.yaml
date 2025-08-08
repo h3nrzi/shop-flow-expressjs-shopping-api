@@ -15,7 +15,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/Dtos/SignupDto'
+              $ref: "#/components/Dtos/SignupDto"
       responses:
         "201":
           description: User registered successfully
@@ -31,7 +31,7 @@ paths:
                     type: object
                     properties:
                       user:
-                        $ref: '#/components/schemas/User'
+                        $ref: "#/components/schemas/User"
         "400":
           description: Validation error
           content:
@@ -66,7 +66,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/Dtos/LoginDto'
+              $ref: "#/components/Dtos/LoginDto"
       responses:
         "200":
           description: User logged in successfully
@@ -82,7 +82,7 @@ paths:
                     type: object
                     properties:
                       user:
-                        $ref: '#/components/schemas/User'
+                        $ref: "#/components/schemas/User"
         "400":
           description: Validation error
           content:
@@ -149,7 +149,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/Dtos/ForgotPasswordDto'
+              $ref: "#/components/Dtos/ForgotPasswordDto"
       responses:
         "200":
           description: Password reset email sent
@@ -186,7 +186,7 @@ paths:
                           type: string
                           example: "فرمت ایمیل صحیح نیست"
         "404":
-          $ref: '#/components/responses/NotFound'
+          $ref: "#/components/responses/NotFound"
 
   /api/users/reset-password:
     # ------------------------------------------------ RESET PASSWORD --------------------------------------------
@@ -207,7 +207,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/Dtos/ResetPasswordDto'
+              $ref: "#/components/Dtos/ResetPasswordDto"
       responses:
         "200":
           description: Password reset successfully
@@ -290,7 +290,7 @@ paths:
                     type: object
                     properties:
                       user:
-                        $ref: '#/components/schemas/User'
+                        $ref: "#/components/schemas/User"
         "401":
           description: Unauthorized
           content:
@@ -340,7 +340,6 @@ paths:
                     errors:
                       - field: null
                         message: "توکن تازه‌سازی نامعتبر یا منقضی شده است"
-
 
 ######################################################
 ################### REFERENCES #######################

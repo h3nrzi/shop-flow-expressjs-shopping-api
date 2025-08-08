@@ -25,9 +25,7 @@ describe("POST /api/uploads", () => {
 	let cookie: string;
 
 	beforeEach(async () => {
-		const testUser = await createTestUserAndGetCookie(
-			"uploader"
-		);
+		const testUser = await createTestUserAndGetCookie("uploader");
 		cookie = testUser.cookie;
 	});
 
@@ -37,12 +35,12 @@ describe("POST /api/uploads", () => {
 			const res = await uploadImageRequest(
 				validImageBuffer,
 				"test.png",
-				"image/png"
+				"image/png",
 			);
 
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].message).toBe(
-				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
+				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید",
 			);
 		});
 
@@ -53,12 +51,12 @@ describe("POST /api/uploads", () => {
 				validImageBuffer,
 				"test.png",
 				"image/png",
-				invalidCookie
+				invalidCookie,
 			);
 
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].message).toBe(
-				"کاربر متعلق به این توکن دیگر وجود ندارد!"
+				"کاربر متعلق به این توکن دیگر وجود ندارد!",
 			);
 		});
 	});
@@ -69,7 +67,7 @@ describe("POST /api/uploads", () => {
 				undefined,
 				undefined,
 				undefined,
-				cookie
+				cookie,
 			);
 
 			// The controller doesn't validate for missing files
@@ -82,49 +80,39 @@ describe("POST /api/uploads", () => {
 	describe("should return 400, if", () => {
 		const invalidFiles = getInvalidImageFiles();
 		invalidFiles.forEach(
-			({
-				buffer,
-				filename,
-				mimetype,
-				description,
-				expectedError,
-			}) => {
+			({ buffer, filename, mimetype, description, expectedError }) => {
 				it(`file is ${description}`, async () => {
 					const res = await uploadImageRequest(
 						buffer,
 						filename,
 						mimetype,
-						cookie
+						cookie,
 					);
 
 					expect(res.status).toBe(400);
 					expect(res.body.errors[0].message).toBe(expectedError);
 				});
-			}
+			},
 		);
 	});
 
 	describe("should return 201, if", () => {
 		const validFiles = getValidImageFiles();
-		validFiles.forEach(
-			({ buffer, filename, mimetype, description }) => {
-				it(`upload is successful with ${description}`, async () => {
-					const res = await uploadImageRequest(
-						buffer,
-						filename,
-						mimetype,
-						cookie
-					);
+		validFiles.forEach(({ buffer, filename, mimetype, description }) => {
+			it(`upload is successful with ${description}`, async () => {
+				const res = await uploadImageRequest(
+					buffer,
+					filename,
+					mimetype,
+					cookie,
+				);
 
-					expect(res.status).toBe(201);
-					expect(res.body.status).toBe("success");
-					expect(res.body.data.image).toBeDefined();
-					expect(res.body.data.image).toMatch(
-						/^https:\/\/res\.cloudinary\.com/
-					);
-				});
-			}
-		);
+				expect(res.status).toBe(201);
+				expect(res.body.status).toBe("success");
+				expect(res.body.data.image).toBeDefined();
+				expect(res.body.data.image).toMatch(/^https:\/\/res\.cloudinary\.com/);
+			});
+		});
 
 		it("upload is successful and returns correct response structure", async () => {
 			const validImageBuffer = createValidImageBuffer();
@@ -132,7 +120,7 @@ describe("POST /api/uploads", () => {
 				validImageBuffer,
 				"test.png",
 				"image/png",
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(201);
@@ -152,7 +140,7 @@ describe("POST /api/uploads", () => {
 				validImageBuffer,
 				longFilename,
 				"image/png",
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(201);
@@ -166,7 +154,7 @@ describe("POST /api/uploads", () => {
 				validImageBuffer,
 				specialFilename,
 				"image/png",
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(201);
@@ -179,7 +167,7 @@ describe("POST /api/uploads", () => {
 				validImageBuffer,
 				"test.webp",
 				"image/webp",
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(201);

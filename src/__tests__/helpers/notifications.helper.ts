@@ -9,49 +9,69 @@ import { getUniqueUser, loginRequest, signupRequest } from "./auth.helper";
 // ============ Helper Requests =================
 // ===============================================
 
-export const getNotificationsRequest = async (cookie?: string): Promise<Response> => {
+export const getNotificationsRequest = async (
+	cookie?: string,
+): Promise<Response> => {
 	const req = request(app).get("/api/notifications");
 	if (cookie) req.set("Cookie", cookie);
 	return await req.send();
 };
 
-export const getNotificationByIdRequest = async (id: string, cookie?: string): Promise<Response> => {
+export const getNotificationByIdRequest = async (
+	id: string,
+	cookie?: string,
+): Promise<Response> => {
 	const req = request(app).get(`/api/notifications/${id}`);
 	if (cookie) req.set("Cookie", cookie);
 	return await req.send();
 };
 
-export const getUnreadCountRequest = async (cookie?: string): Promise<Response> => {
+export const getUnreadCountRequest = async (
+	cookie?: string,
+): Promise<Response> => {
 	const req = request(app).get("/api/notifications/unread-count");
 	if (cookie) req.set("Cookie", cookie);
 	return await req.send();
 };
 
-export const markAsReadRequest = async (id: string, cookie?: string): Promise<Response> => {
+export const markAsReadRequest = async (
+	id: string,
+	cookie?: string,
+): Promise<Response> => {
 	const req = request(app).patch(`/api/mark-read/${id}`);
 	if (cookie) req.set("Cookie", cookie);
 	return await req.send();
 };
 
-export const markAllAsReadRequest = async (cookie?: string): Promise<Response> => {
+export const markAllAsReadRequest = async (
+	cookie?: string,
+): Promise<Response> => {
 	const req = request(app).patch("/api/notifications/mark-all-read");
 	if (cookie) req.set("Cookie", cookie);
 	return await req.send();
 };
 
-export const deleteNotificationRequest = async (id: string, cookie?: string): Promise<Response> => {
+export const deleteNotificationRequest = async (
+	id: string,
+	cookie?: string,
+): Promise<Response> => {
 	const req = request(app).delete(`/api/notifications/${id}`);
 	if (cookie) req.set("Cookie", cookie);
 	return await req.send();
 };
 
-export const deleteAllNotificationsRequest = async (cookie?: string): Promise<Response> => {
+export const deleteAllNotificationsRequest = async (
+	cookie?: string,
+): Promise<Response> => {
 	const req = request(app).delete("/api/notifications/delete-all");
 	if (cookie) req.set("Cookie", cookie);
 	return await req.send();
 };
 
-export const createNotificationRequest = async (body: CreateNotificationDto, cookie?: string): Promise<Response> => {
+export const createNotificationRequest = async (
+	body: CreateNotificationDto,
+	cookie?: string,
+): Promise<Response> => {
 	const req = request(app).post("/api/notifications");
 	if (cookie) req.set("Cookie", cookie);
 	return await req.send(body);
@@ -65,7 +85,7 @@ export const createBulkNotificationsRequest = async (
 		type: NotificationType;
 		data?: any;
 	},
-	cookie?: string
+	cookie?: string,
 ): Promise<Response> => {
 	const req = request(app).post("/api/notifications/bulk");
 	if (cookie) req.set("Cookie", cookie);
@@ -80,7 +100,9 @@ export const getInvalidObjectId = (): string => {
 	return new mongoose.Types.ObjectId().toString();
 };
 
-export const createTestUserAndGetCookie = async (suffix: string): Promise<{ cookie: string; user: any }> => {
+export const createTestUserAndGetCookie = async (
+	suffix: string,
+): Promise<{ cookie: string; user: any }> => {
 	const user = getUniqueUser(suffix);
 	await signupRequest(user);
 	const loginRes = await loginRequest(user);
@@ -88,7 +110,9 @@ export const createTestUserAndGetCookie = async (suffix: string): Promise<{ cook
 	return { cookie, user: loginRes.body.data.user };
 };
 
-export const createTestAdminAndGetCookie = async (suffix: string): Promise<{ cookie: string; user: any }> => {
+export const createTestAdminAndGetCookie = async (
+	suffix: string,
+): Promise<{ cookie: string; user: any }> => {
 	const user = getUniqueUser(suffix);
 	await signupRequest(user);
 	await loginRequest(user);
@@ -105,7 +129,9 @@ export const createTestAdminAndGetCookie = async (suffix: string): Promise<{ coo
 	return { cookie, user: adminLoginRes.body.data.user };
 };
 
-export const getValidNotificationData = (userId: string): CreateNotificationDto => ({
+export const getValidNotificationData = (
+	userId: string,
+): CreateNotificationDto => ({
 	user: userId,
 	title: "Test Notification",
 	message: "This is a test notification message",
@@ -258,7 +284,10 @@ export const getInvalidBulkNotificationData = () => [
 	},
 ];
 
-export const expectValidNotificationResponse = (notification: any, expectedData?: Partial<CreateNotificationDto>) => {
+export const expectValidNotificationResponse = (
+	notification: any,
+	expectedData?: Partial<CreateNotificationDto>,
+) => {
 	expect(notification).toBeDefined();
 	expect(notification._id).toBeDefined();
 	expect(notification.user).toBeDefined();
@@ -271,7 +300,8 @@ export const expectValidNotificationResponse = (notification: any, expectedData?
 
 	if (expectedData) {
 		if (expectedData.title) expect(notification.title).toBe(expectedData.title);
-		if (expectedData.message) expect(notification.message).toBe(expectedData.message);
+		if (expectedData.message)
+			expect(notification.message).toBe(expectedData.message);
 		if (expectedData.type) expect(notification.type).toBe(expectedData.type);
 		if (expectedData.data) expect(notification.data).toEqual(expectedData.data);
 	}

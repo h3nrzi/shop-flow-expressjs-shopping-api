@@ -8,7 +8,7 @@ class RequestValidationError extends custom_error_1.CustomError {
         this.errors = errors;
         this.statusCode = 400;
         this.serializeErrors = () => {
-            return this.errors.map(error => {
+            return this.errors.map((error) => {
                 return {
                     field: error.type === "field" ? error.path : null,
                     message: error.msg,

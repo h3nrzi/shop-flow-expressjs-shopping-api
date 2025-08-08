@@ -3,7 +3,7 @@ import { IProductQuery } from "@/core/products/product.interface";
 import request, { Response } from "supertest";
 
 export const getAllProductsRequest = (
-	query?: IProductQuery
+	query?: IProductQuery,
 ): Promise<Response> => {
 	const queryString = query
 		? Object.entries(query)
@@ -14,9 +14,7 @@ export const getAllProductsRequest = (
 	return request(app).get(`/api/products?${queryString}`);
 };
 
-export const getProductRequest = (
-	id: string
-): Promise<Response> => {
+export const getProductRequest = (id: string): Promise<Response> => {
 	return request(app).get(`/api/products/${id}`);
 };
 

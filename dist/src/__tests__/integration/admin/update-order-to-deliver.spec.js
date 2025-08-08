@@ -111,7 +111,7 @@ describe("PATCH /api/orders/:id/deliver (Admin Only)", () => {
         }));
         it("updatedAt timestamp is updated", () => __awaiter(void 0, void 0, void 0, function* () {
             const originalUpdatedAt = order.updatedAt;
-            yield new Promise(resolve => setTimeout(resolve, 10));
+            yield new Promise((resolve) => setTimeout(resolve, 10));
             const res = yield (0, orders_helper_1.updateOrderToDeliverRequest)(order._id.toString(), adminCookie);
             expect(res.status).toBe(200);
             const updatedOrder = res.body.data.order;

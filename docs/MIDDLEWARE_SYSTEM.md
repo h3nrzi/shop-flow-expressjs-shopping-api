@@ -40,7 +40,7 @@ const protect: RequestHandler = async (req, res, next) => {
 	// Validate token presence
 	if (!token) {
 		throw new NotAuthorizedError(
-			"شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
+			"شما وارد نشده اید! لطفا برای دسترسی وارد شوید",
 		);
 	}
 
@@ -54,21 +54,19 @@ const protect: RequestHandler = async (req, res, next) => {
 	// Validate user existence and status
 	const user = await userRepository.findById(decoded.id);
 	if (!user) {
-		throw new NotAuthorizedError(
-			"کاربر متعلق به این توکن دیگر وجود ندارد!"
-		);
+		throw new NotAuthorizedError("کاربر متعلق به این توکن دیگر وجود ندارد!");
 	}
 
 	if (!user.active) {
 		throw new NotAuthorizedError(
-			"کاربری که به این ایمیل مرتبط است غیرفعال شده!"
+			"کاربری که به این ایمیل مرتبط است غیرفعال شده!",
 		);
 	}
 
 	// Check password change timestamp
 	if (user.changePasswordAfter(decoded.iat)) {
 		throw new NotAuthorizedError(
-			"کاربر اخیرا رمز عبور را تغییر داده است! لطفا دوباره وارد شوید."
+			"کاربر اخیرا رمز عبور را تغییر داده است! لطفا دوباره وارد شوید.",
 		);
 	}
 
@@ -94,9 +92,7 @@ Role-based access control for protected resources:
 const restrictTo = (...roles: string[]): RequestHandler => {
 	return (req, res, next) => {
 		if (!roles.includes(req.user.role)) {
-			throw new ForbiddenError(
-				"شما اجازه انجام این عمل را ندارید!"
-			);
+			throw new ForbiddenError("شما اجازه انجام این عمل را ندارید!");
 		}
 		return next();
 	};
@@ -116,19 +112,14 @@ const restrictTo = (...roles: string[]): RequestHandler => {
 router.get("/profile", protect, getUserProfile);
 
 // Admin-only route
-router.delete(
-	"/users/:id",
-	protect,
-	restrictTo("admin"),
-	deleteUser
-);
+router.delete("/users/:id", protect, restrictTo("admin"), deleteUser);
 
 // Multiple roles allowed
 router.patch(
 	"/orders/:id",
 	protect,
 	restrictTo("admin", "moderator"),
-	updateOrder
+	updateOrder,
 );
 ```
 
@@ -144,11 +135,9 @@ Recursively sanitizes request data to prevent XSS attacks:
 
 ```typescript
 const sanitizeObject = (data: any): any => {
-	if (typeof data === "string")
-		return xss(data, { whiteList: {} });
+	if (typeof data === "string") return xss(data, { whiteList: {} });
 
-	if (Array.isArray(data))
-		return data.map(item => sanitizeObject(item));
+	if (Array.isArray(data)) return data.map((item) => sanitizeObject(item));
 
 	if (typeof data === "object" && data !== null) {
 		const sanitizedObj: any = {};
@@ -184,11 +173,7 @@ export const sanitizeXSS: RequestHandler = (req, res, next) => {
 **Purpose**: Validates request data using express-validator
 
 ```typescript
-export const validateRequest: RequestHandler = (
-	req,
-	res,
-	next
-) => {
+export const validateRequest: RequestHandler = (req, res, next) => {
 	// Extract validation errors
 	const errors = validationResult(req);
 
@@ -221,7 +206,7 @@ router.post(
 			.withMessage("رمز عبور باید حداقل 8 کاراکتر باشد"),
 		validateRequest,
 	],
-	createUser
+	createUser,
 );
 ```
 
@@ -237,12 +222,10 @@ const storage: StorageEngine = multer.memoryStorage();
 const fileFilter = (
 	req: Request,
 	file: Express.Multer.File,
-	callback: multer.FileFilterCallback
+	callback: multer.FileFilterCallback,
 ) => {
 	const fileTypes = /jpg|jpeg|png|webp/;
-	const extname = fileTypes.test(
-		path.extname(file.originalname).toLowerCase()
-	);
+	const extname = fileTypes.test(path.extname(file.originalname).toLowerCase());
 	const mimetype = fileTypes.test(file.mimetype);
 
 	if (!extname || !mimetype) {
@@ -267,18 +250,10 @@ const upload = multer({ storage, fileFilter });
 
 ```typescript
 // Single file upload
-router.post(
-	"/upload",
-	uploadMiddleware.single("image"),
-	uploadImage
-);
+router.post("/upload", uploadMiddleware.single("image"), uploadImage);
 
 // Multiple files
-router.post(
-	"/gallery",
-	uploadMiddleware.array("images", 5),
-	uploadGallery
-);
+router.post("/gallery", uploadMiddleware.array("images", 5), uploadGallery);
 ```
 
 ### 5. Domain-Specific Middleware
@@ -366,14 +341,9 @@ const isLoggedIn: RequestHandler = async (req, res, next) => {
 		try {
 			// Verify token and user
 			const decoded = await verifyToken(token);
-			const currentUser = await userRepository.findById(
-				decoded.id
-			);
+			const currentUser = await userRepository.findById(decoded.id);
 
-			if (
-				!currentUser ||
-				currentUser.changePasswordAfter(decoded.iat)
-			) {
+			if (!currentUser || currentUser.changePasswordAfter(decoded.iat)) {
 				return res.redirect("/admin/login");
 			}
 
@@ -410,9 +380,7 @@ module.exports = (app: Express) => {
 	app.set("view engine", "pug");
 
 	// 2. Static Files
-	app.use(
-		express.static(path.join(path.resolve(), "src", "public"))
-	);
+	app.use(express.static(path.join(path.resolve(), "src", "public")));
 
 	// 3. Development Logging
 	if (process.env.NODE_ENV === "development") {
@@ -426,19 +394,11 @@ module.exports = (app: Express) => {
 				directives: {
 					defaultSrc: ["'self'"],
 					scriptSrc: ["'self'", "https://cdn.jsdelivr.net"],
-					styleSrc: [
-						"'self'",
-						"https://cdn.jsdelivr.net",
-						"'unsafe-inline'",
-					],
-					imgSrc: [
-						"'self'",
-						"data:",
-						"https://res.cloudinary.com",
-					],
+					styleSrc: ["'self'", "https://cdn.jsdelivr.net", "'unsafe-inline'"],
+					imgSrc: ["'self'", "data:", "https://res.cloudinary.com"],
 				},
 			},
-		})
+		}),
 	);
 
 	// 5. CORS Configuration
@@ -452,7 +412,7 @@ module.exports = (app: Express) => {
 			methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
 			allowedHeaders: ["Content-Type", "Authorization"],
 			credentials: true,
-		})
+		}),
 	);
 
 	// 6. Rate Limiting
@@ -462,8 +422,7 @@ module.exports = (app: Express) => {
 		message:
 			"درخواست های IP شما بسیار زیاد است، لطفاً یک ساعت دیگر دوباره امتحان کنید!",
 	});
-	if (process.env.NODE === "production")
-		app.use("/api", limiter);
+	if (process.env.NODE === "production") app.use("/api", limiter);
 
 	// 7. Body Parsing
 	app.use(express.json({ limit: "5mb" }));
@@ -489,7 +448,7 @@ module.exports = (app: Express) => {
 				"discount",
 				"discountedPrice",
 			],
-		})
+		}),
 	);
 };
 ```
@@ -513,12 +472,7 @@ module.exports = (app: Express) => {
 **File**: [`src/middlewares/error-handler.ts`](src/middlewares/error-handler.ts)
 
 ```typescript
-export const errorHandler: ErrorRequestHandler = (
-	err,
-	req,
-	res,
-	next
-) => {
+export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
 	// Handle specific error types
 	if (err.name === "CastError") {
 		/* Handle MongoDB CastError */
@@ -534,9 +488,7 @@ export const errorHandler: ErrorRequestHandler = (
 	console.error(err);
 	return res.status(500).send({
 		status: "error",
-		errors: [
-			{ field: null, message: "یک چیزی خیلی اشتباه پیش رفت" },
-		],
+		errors: [{ field: null, message: "یک چیزی خیلی اشتباه پیش رفت" }],
 	});
 };
 ```
@@ -563,7 +515,7 @@ router.post(
 	restrictTo("admin"),
 	uploadMiddleware.single("image"),
 	validateRequest,
-	createProduct
+	createProduct,
 );
 
 // Domain-specific middleware
@@ -572,7 +524,7 @@ router.post(
 	protect,
 	orderMiddleware.beforeCreate,
 	validateRequest,
-	createOrder
+	createOrder,
 );
 ```
 
@@ -663,9 +615,7 @@ describe("Auth Middleware", () => {
 		const res = mockResponse();
 		const next = jest.fn();
 
-		await expect(protect(req, res, next)).rejects.toThrow(
-			NotAuthorizedError
-		);
+		await expect(protect(req, res, next)).rejects.toThrow(NotAuthorizedError);
 	});
 
 	it("should attach user to request for valid token", async () => {
@@ -688,13 +638,9 @@ describe("Auth Middleware", () => {
 ```typescript
 describe("Protected Routes", () => {
 	it("should require authentication", async () => {
-		const response = await request(app)
-			.get("/api/profile")
-			.expect(401);
+		const response = await request(app).get("/api/profile").expect(401);
 
-		expect(response.body.errors[0].message).toContain(
-			"وارد نشده اید"
-		);
+		expect(response.body.errors[0].message).toContain("وارد نشده اید");
 	});
 
 	it("should allow access with valid token", async () => {

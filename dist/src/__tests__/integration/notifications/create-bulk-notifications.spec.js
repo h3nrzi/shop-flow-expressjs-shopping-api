@@ -69,13 +69,20 @@ describe("POST /api/notifications/bulk", () => {
         }));
         it("some users do not exist", () => __awaiter(void 0, void 0, void 0, function* () {
             const nonExistentUserId = (0, notifications_helper_1.getInvalidObjectId)();
-            const bulkData = (0, notifications_helper_1.getValidBulkNotificationData)([user._id, nonExistentUserId]);
+            const bulkData = (0, notifications_helper_1.getValidBulkNotificationData)([
+                user._id,
+                nonExistentUserId,
+            ]);
             const res = yield (0, notifications_helper_1.createBulkNotificationsRequest)(bulkData, adminCookie);
             expect(res.status).toBe(400);
             expect(res.body.errors[0].message).toBe("برخی از کاربران مورد نظر یافت نشدند");
         }));
         it("duplicate user IDs are provided", () => __awaiter(void 0, void 0, void 0, function* () {
-            const bulkData = (0, notifications_helper_1.getValidBulkNotificationData)([user._id, user._id, admin._id]);
+            const bulkData = (0, notifications_helper_1.getValidBulkNotificationData)([
+                user._id,
+                user._id,
+                admin._id,
+            ]);
             const res = yield (0, notifications_helper_1.createBulkNotificationsRequest)(bulkData, adminCookie);
             expect(res.status).toBe(201);
             expect(res.body.data.notifications).toHaveLength(2);
@@ -83,7 +90,11 @@ describe("POST /api/notifications/bulk", () => {
     });
     describe("should return 201, if", () => {
         it("bulk notifications are created successfully", () => __awaiter(void 0, void 0, void 0, function* () {
-            const bulkData = (0, notifications_helper_1.getValidBulkNotificationData)([user._id, admin._id, anotherUser._id]);
+            const bulkData = (0, notifications_helper_1.getValidBulkNotificationData)([
+                user._id,
+                admin._id,
+                anotherUser._id,
+            ]);
             const res = yield (0, notifications_helper_1.createBulkNotificationsRequest)(bulkData, adminCookie);
             expect(res.status).toBe(201);
             expect(res.body.status).toBe("success");
@@ -109,7 +120,12 @@ describe("POST /api/notifications/bulk", () => {
             expect(res.body.data.notifications[0].user).toBe(user._id);
         }));
         it("bulk notifications with all valid notification types", () => __awaiter(void 0, void 0, void 0, function* () {
-            const types = ["order", "promotion", "system", "review"];
+            const types = [
+                "order",
+                "promotion",
+                "system",
+                "review",
+            ];
             for (const type of types) {
                 const bulkData = Object.assign(Object.assign({}, (0, notifications_helper_1.getValidBulkNotificationData)([user._id, admin._id])), { type });
                 const res = yield (0, notifications_helper_1.createBulkNotificationsRequest)(bulkData, adminCookie);
@@ -121,7 +137,11 @@ describe("POST /api/notifications/bulk", () => {
             }
         }));
         it("bulk notifications with optional data field", () => __awaiter(void 0, void 0, void 0, function* () {
-            const customData = { promotionId: "promo123", discount: 25, validUntil: "2024-12-31" };
+            const customData = {
+                promotionId: "promo123",
+                discount: 25,
+                validUntil: "2024-12-31",
+            };
             const bulkData = Object.assign(Object.assign({}, (0, notifications_helper_1.getValidBulkNotificationData)([user._id, admin._id])), { data: customData });
             const res = yield (0, notifications_helper_1.createBulkNotificationsRequest)(bulkData, adminCookie);
             expect(res.status).toBe(201);
@@ -130,7 +150,10 @@ describe("POST /api/notifications/bulk", () => {
             });
         }));
         it("bulk notifications without optional data field", () => __awaiter(void 0, void 0, void 0, function* () {
-            const _a = (0, notifications_helper_1.getValidBulkNotificationData)([user._id, admin._id]), { data } = _a, bulkDataWithoutData = __rest(_a, ["data"]);
+            const _a = (0, notifications_helper_1.getValidBulkNotificationData)([
+                user._id,
+                admin._id,
+            ]), { data } = _a, bulkDataWithoutData = __rest(_a, ["data"]);
             const res = yield (0, notifications_helper_1.createBulkNotificationsRequest)(bulkDataWithoutData, adminCookie);
             expect(res.status).toBe(201);
             res.body.data.notifications.forEach((notification) => {

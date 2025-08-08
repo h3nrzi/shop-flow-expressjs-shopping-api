@@ -11,9 +11,7 @@ describe("GET /api/orders/top-selling-products", () => {
 	let user: any;
 
 	beforeEach(async () => {
-		const testUser = await createTestUserAndGetCookie(
-			"orderuser"
-		);
+		const testUser = await createTestUserAndGetCookie("orderuser");
 		cookie = testUser.cookie;
 		user = testUser.user;
 	});
@@ -24,19 +22,17 @@ describe("GET /api/orders/top-selling-products", () => {
 
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].message).toBe(
-				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
+				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید",
 			);
 		});
 
 		it("user is not authenticated (invalid token)", async () => {
 			const invalidCookie = `jwt=${getInvalidToken()}`;
-			const res = await getTopSellingProductsRequest(
-				invalidCookie
-			);
+			const res = await getTopSellingProductsRequest(invalidCookie);
 
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].message).toBe(
-				"کاربر متعلق به این توکن دیگر وجود ندارد!"
+				"کاربر متعلق به این توکن دیگر وجود ندارد!",
 			);
 		});
 	});
@@ -58,46 +54,22 @@ describe("GET /api/orders/top-selling-products", () => {
 			const product3 = await createTestProduct();
 
 			// Create orders with different quantities to test sorting
-			await createTestOrder(
-				user._id.toString(),
-				product1._id.toString(),
-				{
-					orderItems: [
-						{ productId: product1._id.toString(), qty: 5 },
-					],
-				}
-			);
+			await createTestOrder(user._id.toString(), product1._id.toString(), {
+				orderItems: [{ productId: product1._id.toString(), qty: 5 }],
+			});
 
-			await createTestOrder(
-				user._id.toString(),
-				product2._id.toString(),
-				{
-					orderItems: [
-						{ productId: product2._id.toString(), qty: 3 },
-					],
-				}
-			);
+			await createTestOrder(user._id.toString(), product2._id.toString(), {
+				orderItems: [{ productId: product2._id.toString(), qty: 3 }],
+			});
 
-			await createTestOrder(
-				user._id.toString(),
-				product3._id.toString(),
-				{
-					orderItems: [
-						{ productId: product3._id.toString(), qty: 8 },
-					],
-				}
-			);
+			await createTestOrder(user._id.toString(), product3._id.toString(), {
+				orderItems: [{ productId: product3._id.toString(), qty: 8 }],
+			});
 
 			// Create another order for product1 to increase its total
-			await createTestOrder(
-				user._id.toString(),
-				product1._id.toString(),
-				{
-					orderItems: [
-						{ productId: product1._id.toString(), qty: 2 },
-					],
-				}
-			);
+			await createTestOrder(user._id.toString(), product1._id.toString(), {
+				orderItems: [{ productId: product1._id.toString(), qty: 2 }],
+			});
 
 			const res = await getTopSellingProductsRequest(cookie);
 
@@ -116,46 +88,22 @@ describe("GET /api/orders/top-selling-products", () => {
 
 			// Create orders with specific quantities
 			// Product1: total 7 (5 + 2)
-			await createTestOrder(
-				user._id.toString(),
-				product1._id.toString(),
-				{
-					orderItems: [
-						{ productId: product1._id.toString(), qty: 5 },
-					],
-				}
-			);
-			await createTestOrder(
-				user._id.toString(),
-				product1._id.toString(),
-				{
-					orderItems: [
-						{ productId: product1._id.toString(), qty: 2 },
-					],
-				}
-			);
+			await createTestOrder(user._id.toString(), product1._id.toString(), {
+				orderItems: [{ productId: product1._id.toString(), qty: 5 }],
+			});
+			await createTestOrder(user._id.toString(), product1._id.toString(), {
+				orderItems: [{ productId: product1._id.toString(), qty: 2 }],
+			});
 
 			// Product2: total 3
-			await createTestOrder(
-				user._id.toString(),
-				product2._id.toString(),
-				{
-					orderItems: [
-						{ productId: product2._id.toString(), qty: 3 },
-					],
-				}
-			);
+			await createTestOrder(user._id.toString(), product2._id.toString(), {
+				orderItems: [{ productId: product2._id.toString(), qty: 3 }],
+			});
 
 			// Product3: total 10
-			await createTestOrder(
-				user._id.toString(),
-				product3._id.toString(),
-				{
-					orderItems: [
-						{ productId: product3._id.toString(), qty: 10 },
-					],
-				}
-			);
+			await createTestOrder(user._id.toString(), product3._id.toString(), {
+				orderItems: [{ productId: product3._id.toString(), qty: 10 }],
+			});
 
 			const res = await getTopSellingProductsRequest(cookie);
 
@@ -171,15 +119,9 @@ describe("GET /api/orders/top-selling-products", () => {
 
 		it("includes product information in the response", async () => {
 			const product = await createTestProduct();
-			await createTestOrder(
-				user._id.toString(),
-				product._id.toString(),
-				{
-					orderItems: [
-						{ productId: product._id.toString(), qty: 2 },
-					],
-				}
-			);
+			await createTestOrder(user._id.toString(), product._id.toString(), {
+				orderItems: [{ productId: product._id.toString(), qty: 2 }],
+			});
 
 			const res = await getTopSellingProductsRequest(cookie);
 
@@ -204,23 +146,15 @@ describe("GET /api/orders/top-selling-products", () => {
 			for (let i = 0; i < 15; i++) {
 				const product = await createTestProduct();
 				products.push(product);
-				await createTestOrder(
-					user._id.toString(),
-					product._id.toString(),
-					{
-						orderItems: [
-							{ productId: product._id.toString(), qty: i + 1 },
-						],
-					}
-				);
+				await createTestOrder(user._id.toString(), product._id.toString(), {
+					orderItems: [{ productId: product._id.toString(), qty: i + 1 }],
+				});
 			}
 
 			const res = await getTopSellingProductsRequest(cookie);
 
 			expect(res.status).toBe(200);
-			expect(res.body.data.orders.length).toBeLessThanOrEqual(
-				10
-			);
+			expect(res.body.data.orders.length).toBeLessThanOrEqual(10);
 		});
 
 		it("handles orders with multiple items correctly", async () => {
@@ -228,27 +162,17 @@ describe("GET /api/orders/top-selling-products", () => {
 			const product2 = await createTestProduct();
 
 			// Create an order with multiple items
-			await createTestOrder(
-				user._id.toString(),
-				product1._id.toString(),
-				{
-					orderItems: [
-						{ productId: product1._id.toString(), qty: 3 },
-						{ productId: product2._id.toString(), qty: 2 },
-					],
-				}
-			);
+			await createTestOrder(user._id.toString(), product1._id.toString(), {
+				orderItems: [
+					{ productId: product1._id.toString(), qty: 3 },
+					{ productId: product2._id.toString(), qty: 2 },
+				],
+			});
 
 			// Create another order for product1
-			await createTestOrder(
-				user._id.toString(),
-				product1._id.toString(),
-				{
-					orderItems: [
-						{ productId: product1._id.toString(), qty: 1 },
-					],
-				}
-			);
+			await createTestOrder(user._id.toString(), product1._id.toString(), {
+				orderItems: [{ productId: product1._id.toString(), qty: 1 }],
+			});
 
 			const res = await getTopSellingProductsRequest(cookie);
 
@@ -259,14 +183,12 @@ describe("GET /api/orders/top-selling-products", () => {
 			const product1Result = res.body.data.orders.find(
 				(item: any) =>
 					item.product[0] &&
-					item.product[0]._id.toString() ===
-						product1._id.toString()
+					item.product[0]._id.toString() === product1._id.toString(),
 			);
 			const product2Result = res.body.data.orders.find(
 				(item: any) =>
 					item.product[0] &&
-					item.product[0]._id.toString() ===
-						product2._id.toString()
+					item.product[0]._id.toString() === product2._id.toString(),
 			);
 
 			expect(product1Result.totalSold).toBe(4); // 3 + 1

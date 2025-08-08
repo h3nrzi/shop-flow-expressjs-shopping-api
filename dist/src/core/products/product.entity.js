@@ -59,8 +59,17 @@ const productSchema = new mongoose_1.Schema({
         default: 0,
     },
 }, {
-    toJSON: { virtuals: true },
-    toObject: { virtuals: true },
+    toJSON: {
+        virtuals: true,
+        transform(doc, ret, options) {
+            doc.id = doc._id;
+            delete doc._id;
+            delete doc.__v;
+        },
+    },
+    toObject: {
+        virtuals: true,
+    },
     timestamps: true,
 });
 productSchema.virtual("discountedPrice").get(function () {

@@ -29,7 +29,10 @@ describe("GET /api/notifications/:id", () => {
 
 		// Create a test notification for the user
 		const notificationData = getValidNotificationData(user._id);
-		const createRes = await createNotificationRequest(notificationData, adminCookie);
+		const createRes = await createNotificationRequest(
+			notificationData,
+			adminCookie,
+		);
 		notificationId = createRes.body.data.notification._id;
 	});
 
@@ -38,15 +41,22 @@ describe("GET /api/notifications/:id", () => {
 			const res = await getNotificationByIdRequest(notificationId);
 
 			expect(res.status).toBe(401);
-			expect(res.body.errors[0].message).toBe("شما وارد نشده اید! لطفا برای دسترسی وارد شوید");
+			expect(res.body.errors[0].message).toBe(
+				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید",
+			);
 		});
 
 		it("user is not authenticated (invalid token)", async () => {
 			const invalidCookie = `jwt=${getInvalidToken()}`;
-			const res = await getNotificationByIdRequest(notificationId, invalidCookie);
+			const res = await getNotificationByIdRequest(
+				notificationId,
+				invalidCookie,
+			);
 
 			expect(res.status).toBe(401);
-			expect(res.body.errors[0].message).toBe("کاربر متعلق به این توکن دیگر وجود ندارد!");
+			expect(res.body.errors[0].message).toBe(
+				"کاربر متعلق به این توکن دیگر وجود ندارد!",
+			);
 		});
 	});
 
@@ -61,14 +71,22 @@ describe("GET /api/notifications/:id", () => {
 		it("user tries to access another user's notification", async () => {
 			// Create notification for admin
 			const adminNotificationData = getValidNotificationData(admin._id);
-			const adminCreateRes = await createNotificationRequest(adminNotificationData, adminCookie);
+			const adminCreateRes = await createNotificationRequest(
+				adminNotificationData,
+				adminCookie,
+			);
 			const adminNotificationId = adminCreateRes.body.data.notification._id;
 
 			// User tries to access admin's notification
-			const res = await getNotificationByIdRequest(adminNotificationId, userCookie);
+			const res = await getNotificationByIdRequest(
+				adminNotificationId,
+				userCookie,
+			);
 
 			expect(res.status).toBe(400);
-			expect(res.body.errors[0].message).toBe("شما مجاز به مشاهده این اعلان نیستید");
+			expect(res.body.errors[0].message).toBe(
+				"شما مجاز به مشاهده این اعلان نیستید",
+			);
 		});
 	});
 
@@ -105,10 +123,16 @@ describe("GET /api/notifications/:id", () => {
 				data: { orderId: "12345", customField: "test" },
 			};
 
-			const createRes = await createNotificationRequest(customData, adminCookie);
+			const createRes = await createNotificationRequest(
+				customData,
+				adminCookie,
+			);
 			const customNotificationId = createRes.body.data.notification._id;
 
-			const res = await getNotificationByIdRequest(customNotificationId, userCookie);
+			const res = await getNotificationByIdRequest(
+				customNotificationId,
+				userCookie,
+			);
 
 			expect(res.status).toBe(200);
 			const notification = res.body.data.notification;
@@ -118,10 +142,16 @@ describe("GET /api/notifications/:id", () => {
 		it("admin can access their own notifications", async () => {
 			// Create notification for admin
 			const adminNotificationData = getValidNotificationData(admin._id);
-			const adminCreateRes = await createNotificationRequest(adminNotificationData, adminCookie);
+			const adminCreateRes = await createNotificationRequest(
+				adminNotificationData,
+				adminCookie,
+			);
 			const adminNotificationId = adminCreateRes.body.data.notification._id;
 
-			const res = await getNotificationByIdRequest(adminNotificationId, adminCookie);
+			const res = await getNotificationByIdRequest(
+				adminNotificationId,
+				adminCookie,
+			);
 
 			expect(res.status).toBe(200);
 			expect(res.body.status).toBe("success");

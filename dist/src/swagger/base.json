@@ -84,10 +84,7 @@
 					},
 					"role": {
 						"type": "string",
-						"enum": [
-							"user",
-							"admin"
-						],
+						"enum": ["user", "admin"],
 						"example": "user"
 					},
 					"active": {
@@ -270,11 +267,7 @@
 			},
 			"ShippingAddress": {
 				"type": "object",
-				"required": [
-					"province",
-					"city",
-					"street"
-				],
+				"required": ["province", "city", "street"],
 				"properties": {
 					"province": {
 						"type": "string",

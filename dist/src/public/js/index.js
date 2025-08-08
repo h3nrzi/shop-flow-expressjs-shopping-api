@@ -44,7 +44,7 @@ if (domElements_js_1.editProductForm) {
     }));
 }
 if (domElements_js_1.deleteProductButtons) {
-    domElements_js_1.deleteProductButtons.forEach(button => {
+    domElements_js_1.deleteProductButtons.forEach((button) => {
         button.addEventListener("click", (e) => __awaiter(void 0, void 0, void 0, function* () {
             const productId = e.target.getAttribute("data-id");
             yield (0, api_js_1.deleteProduct)(productId);

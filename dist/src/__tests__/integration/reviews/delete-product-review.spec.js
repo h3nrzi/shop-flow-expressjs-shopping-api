@@ -97,7 +97,10 @@ describe("DELETE /api/products/:productId/reviews/:id", () => {
         }));
         it("product average rating is recalculated correctly after deletion with multiple reviews", () => __awaiter(void 0, void 0, void 0, function* () {
             const { user: user2 } = yield (0, reviews_helper_1.createTestUserAndGetCookie)("reviewer2");
-            yield (0, reviews_helper_1.createTestReview)(product._id.toString(), user2._id.toString(), { rating: 2, comment: "Poor product" });
+            yield (0, reviews_helper_1.createTestReview)(product._id.toString(), user2._id.toString(), {
+                rating: 2,
+                comment: "Poor product",
+            });
             yield (0, reviews_helper_1.expectProductRatingUpdate)(product._id.toString(), 3, 2);
             const res = yield (0, reviews_helper_1.deleteReviewRequest)(product._id.toString(), review._id.toString(), cookie);
             expect(res.status).toBe(204);

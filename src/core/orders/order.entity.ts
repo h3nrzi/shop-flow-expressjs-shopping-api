@@ -1,5 +1,10 @@
 import mongoose from "mongoose";
-import { IOrderItem, IShippingAddress, OrderDoc, OrderModel } from "./order.interface";
+import {
+	IOrderItem,
+	IShippingAddress,
+	OrderDoc,
+	OrderModel,
+} from "./order.interface";
 
 const orderItemSchema = new mongoose.Schema<IOrderItem>(
 	{
@@ -17,7 +22,7 @@ const orderItemSchema = new mongoose.Schema<IOrderItem>(
 				delete ret._id;
 			},
 		},
-	}
+	},
 );
 
 const shippingAddressSchema = new mongoose.Schema<IShippingAddress>(
@@ -33,7 +38,7 @@ const shippingAddressSchema = new mongoose.Schema<IShippingAddress>(
 				delete ret._id;
 			},
 		},
-	}
+	},
 );
 
 const orderSchema = new mongoose.Schema<OrderDoc>(
@@ -69,7 +74,7 @@ const orderSchema = new mongoose.Schema<OrderDoc>(
 				delete ret.__v;
 			},
 		},
-	}
+	},
 );
 
 const Order = mongoose.model<OrderDoc, OrderModel>("Order", orderSchema);

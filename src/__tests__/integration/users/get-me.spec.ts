@@ -21,7 +21,7 @@ describe("GET /api/users/get-me", () => {
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
-				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
+				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید",
 			);
 		});
 
@@ -38,7 +38,7 @@ describe("GET /api/users/get-me", () => {
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
-				"کاربر متعلق به این توکن دیگر وجود ندارد!"
+				"کاربر متعلق به این توکن دیگر وجود ندارد!",
 			);
 		});
 
@@ -46,16 +46,14 @@ describe("GET /api/users/get-me", () => {
 			const user = getUniqueUser("inactive");
 			const signupRes = await signupRequest(user);
 			const cookie = signupRes.headers["set-cookie"][0];
-			const repoUser = await userRepository.findByEmail(
-				user.email
-			);
+			const repoUser = await userRepository.findByEmail(user.email);
 			repoUser!.active = false;
 			await repoUser!.save({ validateBeforeSave: false });
 			const res = await getMeRequest(cookie);
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
-				"کاربری که به این ایمیل مرتبط است غیرفعال شده!"
+				"کاربری که به این ایمیل مرتبط است غیرفعال شده!",
 			);
 		});
 

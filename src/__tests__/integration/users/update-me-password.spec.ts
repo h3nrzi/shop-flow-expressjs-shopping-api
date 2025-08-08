@@ -8,8 +8,7 @@ import { userRepository } from "@/core";
 
 const validationCases = [
 	{
-		description:
-			"should return 400 if passwordCurrent is not provided",
+		description: "should return 400 if passwordCurrent is not provided",
 		body: {
 			passwordCurrent: "",
 			password: "newpassword",
@@ -27,8 +26,7 @@ const validationCases = [
 		expectedError: "رمز عبور کاربر الزامی است",
 	},
 	{
-		description:
-			"should return 400 if passwordConfirmation is not provided",
+		description: "should return 400 if passwordConfirmation is not provided",
 		body: {
 			passwordCurrent: "password",
 			password: "newpassword",
@@ -73,19 +71,16 @@ describe("PUT /api/users/update-me-password", () => {
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
-				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
+				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید",
 			);
 		});
 
 		it("Token is invalid", async () => {
-			const res = await updateMePasswordRequest(
-				"jwt=invalid-token",
-				{
-					passwordCurrent: "password",
-					password: "newpassword",
-					passwordConfirmation: "newpassword",
-				}
-			);
+			const res = await updateMePasswordRequest("jwt=invalid-token", {
+				passwordCurrent: "password",
+				password: "newpassword",
+				passwordConfirmation: "newpassword",
+			});
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe("توکن معتبر نیست");
@@ -93,18 +88,15 @@ describe("PUT /api/users/update-me-password", () => {
 
 		it("User for token does not exist", async () => {
 			const fakeToken = getInvalidToken();
-			const res = await updateMePasswordRequest(
-				`jwt=${fakeToken}`,
-				{
-					passwordCurrent: "password",
-					password: "newpassword",
-					passwordConfirmation: "newpassword",
-				}
-			);
+			const res = await updateMePasswordRequest(`jwt=${fakeToken}`, {
+				passwordCurrent: "password",
+				password: "newpassword",
+				passwordConfirmation: "newpassword",
+			});
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
-				"کاربر متعلق به این توکن دیگر وجود ندارد!"
+				"کاربر متعلق به این توکن دیگر وجود ندارد!",
 			);
 		});
 
@@ -112,9 +104,7 @@ describe("PUT /api/users/update-me-password", () => {
 			const user = getUniqueUser("inactive");
 			const signupRes = await signupRequest(user);
 			const cookie = signupRes.headers["set-cookie"][0];
-			const repoUser = await userRepository.findByEmail(
-				user.email
-			);
+			const repoUser = await userRepository.findByEmail(user.email);
 			repoUser!.active = false;
 			await repoUser!.save({ validateBeforeSave: false });
 			const res = await updateMePasswordRequest(cookie, {
@@ -125,7 +115,7 @@ describe("PUT /api/users/update-me-password", () => {
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
-				"کاربری که به این ایمیل مرتبط است غیرفعال شده!"
+				"کاربری که به این ایمیل مرتبط است غیرفعال شده!",
 			);
 		});
 
@@ -153,16 +143,14 @@ describe("PUT /api/users/update-me-password", () => {
 	});
 
 	describe("should return 400, if", () => {
-		validationCases.forEach(
-			({ description, body, expectedError }) => {
-				it(description, async () => {
-					const res = await updateMePasswordRequest(token, body);
-					expect(res.status).toBe(400);
-					expect(res.body.errors).toBeDefined();
-					expect(res.body.errors[0].message).toBe(expectedError);
-				});
-			}
-		);
+		validationCases.forEach(({ description, body, expectedError }) => {
+			it(description, async () => {
+				const res = await updateMePasswordRequest(token, body);
+				expect(res.status).toBe(400);
+				expect(res.body.errors).toBeDefined();
+				expect(res.body.errors[0].message).toBe(expectedError);
+			});
+		});
 	});
 
 	describe("should return 403, if", () => {
@@ -174,9 +162,7 @@ describe("PUT /api/users/update-me-password", () => {
 			});
 			expect(res.status).toBe(403);
 			expect(res.body.errors).toBeDefined();
-			expect(res.body.errors[0].message).toBe(
-				"رمز عبور فعلی شما اشتباه است"
-			);
+			expect(res.body.errors[0].message).toBe("رمز عبور فعلی شما اشتباه است");
 		});
 	});
 

@@ -34,7 +34,7 @@ const reviewSchema = new Schema<IReviewDoc>({
 // Static method for calculating Average Ratings
 reviewSchema.statics.calcAverageRatings = async function (
 	this: Model<IReviewDoc>,
-	productId: string
+	productId: string,
 ) {
 	try {
 		const stats = await this.aggregate([
@@ -57,10 +57,7 @@ reviewSchema.statics.calcAverageRatings = async function (
 	} catch (error) {
 		// Silently handle database connection errors during tests
 		if (process.env.NODE_ENV === "test") {
-			console.warn(
-				"Database operation failed during test setup:",
-				error
-			);
+			console.warn("Database operation failed during test setup:", error);
 		} else {
 			throw error;
 		}
@@ -73,19 +70,13 @@ reviewSchema.statics.calcAverageRatings = async function (
 reviewSchema.post("save", async function (doc, next) {
 	try {
 		await (doc.constructor as ReviewModel).calcAverageRatings(
-			doc.product as any
+			doc.product as any,
 		);
 	} catch (error) {
 		if (process.env.NODE_ENV === "test") {
-			console.warn(
-				"Failed to calculate average ratings during test:",
-				error
-			);
+			console.warn("Failed to calculate average ratings during test:", error);
 		} else {
-			console.error(
-				"Failed to calculate average ratings:",
-				error
-			);
+			console.error("Failed to calculate average ratings:", error);
 		}
 	}
 	next();
@@ -94,39 +85,27 @@ reviewSchema.post("save", async function (doc, next) {
 //////////// Query Middleware ////////////
 
 // Populating (product and user) field on Review
-reviewSchema.pre(
-	/^find/,
-	async function (this: Query<any, IReviewDoc>, next) {
-		this.populate("user product");
-		next();
-	}
-);
+reviewSchema.pre(/^find/, async function (this: Query<any, IReviewDoc>, next) {
+	this.populate("user product");
+	next();
+});
 
 // Calculating Average Ratings based on update and delete review
 reviewSchema.post(/^findOneAnd/, async function (doc) {
 	if (doc) {
 		try {
 			await (doc.constructor as ReviewModel).calcAverageRatings(
-				doc.product._id
+				doc.product._id,
 			);
 		} catch (error) {
 			if (process.env.NODE_ENV === "test") {
-				console.warn(
-					"Failed to calculate average ratings during test:",
-					error
-				);
+				console.warn("Failed to calculate average ratings during test:", error);
 			} else {
-				console.error(
-					"Failed to calculate average ratings:",
-					error
-				);
+				console.error("Failed to calculate average ratings:", error);
 			}
 		}
 	}
 });
 
-const Review = model<IReviewDoc, ReviewModel>(
-	"Review",
-	reviewSchema
-);
+const Review = model<IReviewDoc, ReviewModel>("Review", reviewSchema);
 export { Review };

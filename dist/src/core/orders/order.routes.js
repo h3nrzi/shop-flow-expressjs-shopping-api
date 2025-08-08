@@ -25,30 +25,14 @@ router
     (0, express_validator_1.body)("orderItems[*].qty")
         .isInt({ min: 1 })
         .withMessage("تعداد محصولات الزامی است"),
-    (0, express_validator_1.body)("shippingAddress.province")
-        .isString()
-        .withMessage("استان الزامی است"),
-    (0, express_validator_1.body)("shippingAddress.city")
-        .isString()
-        .withMessage("شهر الزامی است"),
-    (0, express_validator_1.body)("shippingAddress.street")
-        .isString()
-        .withMessage("خیابان الزامی است"),
-    (0, express_validator_1.body)("paymentMethod")
-        .isString()
-        .withMessage("روش پرداخت الزامی است"),
-    (0, express_validator_1.body)("itemsPrice")
-        .isNumeric()
-        .withMessage("قیمت محصولات الزامی است"),
-    (0, express_validator_1.body)("shippingPrice")
-        .isNumeric()
-        .withMessage("قیمت حمل و نقل الزامی است"),
-    (0, express_validator_1.body)("taxPrice")
-        .isNumeric()
-        .withMessage("مالیات الزامی است"),
-    (0, express_validator_1.body)("totalPrice")
-        .isNumeric()
-        .withMessage("قیمت کل الزامی است"),
+    (0, express_validator_1.body)("shippingAddress.province").isString().withMessage("استان الزامی است"),
+    (0, express_validator_1.body)("shippingAddress.city").isString().withMessage("شهر الزامی است"),
+    (0, express_validator_1.body)("shippingAddress.street").isString().withMessage("خیابان الزامی است"),
+    (0, express_validator_1.body)("paymentMethod").isString().withMessage("روش پرداخت الزامی است"),
+    (0, express_validator_1.body)("itemsPrice").isNumeric().withMessage("قیمت محصولات الزامی است"),
+    (0, express_validator_1.body)("shippingPrice").isNumeric().withMessage("قیمت حمل و نقل الزامی است"),
+    (0, express_validator_1.body)("taxPrice").isNumeric().withMessage("مالیات الزامی است"),
+    (0, express_validator_1.body)("totalPrice").isNumeric().withMessage("قیمت کل الزامی است"),
     validate_request_1.validateRequest,
     __1.orderController.createOrder.bind(__1.orderController),
 ]);
@@ -58,31 +42,23 @@ router
 router
     .route("/:id")
     .get([
-    (0, express_validator_1.param)("id")
-        .isMongoId()
-        .withMessage("شناسه سفارش معتبر نیست"),
+    (0, express_validator_1.param)("id").isMongoId().withMessage("شناسه سفارش معتبر نیست"),
     validate_request_1.validateRequest,
     __1.orderController.getOrderById.bind(__1.orderController),
 ]);
 router
     .route("/:id/pay")
     .patch([
-    (0, express_validator_1.param)("id")
-        .isMongoId()
-        .withMessage("شناسه سفارش معتبر نیست"),
+    (0, express_validator_1.param)("id").isMongoId().withMessage("شناسه سفارش معتبر نیست"),
     validate_request_1.validateRequest,
     __1.orderController.updateOrderToPaid.bind(__1.orderController),
 ]);
 router.use(auth_1.default.restrictTo("admin"));
-router
-    .route("/")
-    .get(__1.orderController.getAllOrders.bind(__1.orderController));
+router.route("/").get(__1.orderController.getAllOrders.bind(__1.orderController));
 router
     .route("/:id")
     .patch([
-    (0, express_validator_1.param)("id")
-        .isMongoId()
-        .withMessage("شناسه سفارش معتبر نیست"),
+    (0, express_validator_1.param)("id").isMongoId().withMessage("شناسه سفارش معتبر نیست"),
     (0, express_validator_1.body)("orderItems[*].productId")
         .optional()
         .isMongoId()
@@ -127,18 +103,14 @@ router
     __1.orderController.updateOrder.bind(__1.orderController),
 ])
     .delete([
-    (0, express_validator_1.param)("id")
-        .isMongoId()
-        .withMessage("شناسه سفارش معتبر نیست"),
+    (0, express_validator_1.param)("id").isMongoId().withMessage("شناسه سفارش معتبر نیست"),
     validate_request_1.validateRequest,
     __1.orderController.deleteOrder.bind(__1.orderController),
 ]);
 router
     .route("/:id/deliver")
     .patch([
-    (0, express_validator_1.param)("id")
-        .isMongoId()
-        .withMessage("شناسه سفارش معتبر نیست"),
+    (0, express_validator_1.param)("id").isMongoId().withMessage("شناسه سفارش معتبر نیست"),
     validate_request_1.validateRequest,
     __1.orderController.updateOrderToDeliver.bind(__1.orderController),
 ]);

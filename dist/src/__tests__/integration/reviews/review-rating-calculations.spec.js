@@ -33,8 +33,7 @@ describe("Review Rating Calculations Integration Tests", () => {
         }));
         it("calculates correct average rating with multiple reviews", () => __awaiter(void 0, void 0, void 0, function* () {
             const ratings = [5, 4, 3, 2, 1];
-            const expectedAverage = ratings.reduce((sum, rating) => sum + rating, 0) /
-                ratings.length;
+            const expectedAverage = ratings.reduce((sum, rating) => sum + rating, 0) / ratings.length;
             for (let i = 0; i < ratings.length; i++) {
                 const res = yield (0, reviews_helper_1.createReviewRequest)(product._id.toString(), { rating: ratings[i], comment: `Review ${i + 1}` }, cookies[i]);
                 expect(res.status).toBe(201);
@@ -154,7 +153,7 @@ describe("Review Rating Calculations Integration Tests", () => {
                 }, cookies[i]));
             }
             const results = yield Promise.all(concurrentPromises);
-            results.forEach(res => {
+            results.forEach((res) => {
                 expect(res.status).toBe(201);
             });
             yield (0, reviews_helper_1.expectProductRatingUpdate)(product._id.toString(), 3, 5);

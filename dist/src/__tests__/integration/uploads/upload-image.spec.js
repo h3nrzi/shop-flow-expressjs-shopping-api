@@ -52,7 +52,7 @@ describe("POST /api/uploads", () => {
     });
     describe("should return 400, if", () => {
         const invalidFiles = (0, uploads_helper_1.getInvalidImageFiles)();
-        invalidFiles.forEach(({ buffer, filename, mimetype, description, expectedError, }) => {
+        invalidFiles.forEach(({ buffer, filename, mimetype, description, expectedError }) => {
             it(`file is ${description}`, () => __awaiter(void 0, void 0, void 0, function* () {
                 const res = yield (0, uploads_helper_1.uploadImageRequest)(buffer, filename, mimetype, cookie);
                 expect(res.status).toBe(400);

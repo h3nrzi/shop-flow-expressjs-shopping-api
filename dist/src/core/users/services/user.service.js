@@ -86,8 +86,7 @@ class UserService {
     updateCurrentUserInfo(currentUser, updateUserDto) {
         return __awaiter(this, void 0, void 0, function* () {
             var _a, _b, _c;
-            if (updateUserDto.password ||
-                updateUserDto.passwordConfirmation) {
+            if (updateUserDto.password || updateUserDto.passwordConfirmation) {
                 throw new unprocessable_entity_error_1.UnprocessableEntityError("با این درخواست نمی توانید رمز عبور را آپدیت کنید");
             }
             const updatedUser = yield this.userRepository.update(currentUser.id, {

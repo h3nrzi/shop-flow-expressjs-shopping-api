@@ -55,15 +55,13 @@ describe("POST /api/users/signin", () => {
 		it("User is not active", async () => {
 			const user = getUniqueUser("user");
 			await signupRequest(user);
-			const userDoc = await userRepository.findByEmail(
-				user.email
-			);
+			const userDoc = await userRepository.findByEmail(user.email);
 			userDoc!.active = false;
 			await userDoc!.save({ validateBeforeSave: false });
 			const res = await loginRequest(user);
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].message).toBe(
-				"کاربری که به این ایمیل مرتبط است مسدود شده است! لطفا با پشتیبانی تماس بگیرید."
+				"کاربری که به این ایمیل مرتبط است مسدود شده است! لطفا با پشتیبانی تماس بگیرید.",
 			);
 		});
 
@@ -71,9 +69,7 @@ describe("POST /api/users/signin", () => {
 			const user = getUniqueUser("user");
 			const res = await loginRequest(user);
 			expect(res.status).toBe(401);
-			expect(res.body.errors[0].message).toBe(
-				"ایمیل یا رمز عبور اشتباه است!"
-			);
+			expect(res.body.errors[0].message).toBe("ایمیل یا رمز عبور اشتباه است!");
 		});
 
 		it("User's credentials are incorrect (password)", async () => {
@@ -84,9 +80,7 @@ describe("POST /api/users/signin", () => {
 				password: "wrong-password",
 			});
 			expect(res.status).toBe(401);
-			expect(res.body.errors[0].message).toBe(
-				"ایمیل یا رمز عبور اشتباه است!"
-			);
+			expect(res.body.errors[0].message).toBe("ایمیل یا رمز عبور اشتباه است!");
 		});
 	});
 

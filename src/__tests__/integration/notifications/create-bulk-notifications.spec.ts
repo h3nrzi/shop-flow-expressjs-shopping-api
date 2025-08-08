@@ -28,7 +28,9 @@ describe("POST /api/notifications/bulk", () => {
 		admin = testAdmin.user;
 
 		// Create another test user for bulk operations
-		const anotherTestUser = await createTestUserAndGetCookie("anothernotificationuser");
+		const anotherTestUser = await createTestUserAndGetCookie(
+			"anothernotificationuser",
+		);
 		anotherUser = anotherTestUser.user;
 	});
 
@@ -38,7 +40,9 @@ describe("POST /api/notifications/bulk", () => {
 			const res = await createBulkNotificationsRequest(bulkData);
 
 			expect(res.status).toBe(401);
-			expect(res.body.errors[0].message).toBe("شما وارد نشده اید! لطفا برای دسترسی وارد شوید");
+			expect(res.body.errors[0].message).toBe(
+				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید",
+			);
 		});
 
 		it("user is not authenticated (invalid token)", async () => {
@@ -47,7 +51,9 @@ describe("POST /api/notifications/bulk", () => {
 			const res = await createBulkNotificationsRequest(bulkData, invalidCookie);
 
 			expect(res.status).toBe(401);
-			expect(res.body.errors[0].message).toBe("کاربر متعلق به این توکن دیگر وجود ندارد!");
+			expect(res.body.errors[0].message).toBe(
+				"کاربر متعلق به این توکن دیگر وجود ندارد!",
+			);
 		});
 	});
 
@@ -57,29 +63,46 @@ describe("POST /api/notifications/bulk", () => {
 			const res = await createBulkNotificationsRequest(bulkData, userCookie);
 
 			expect(res.status).toBe(403);
-			expect(res.body.errors[0].message).toBe("شما مجاز به انجام این عمل نیستید");
+			expect(res.body.errors[0].message).toBe(
+				"شما مجاز به انجام این عمل نیستید",
+			);
 		});
 	});
 
 	describe("should return 400, if", () => {
-		it.each(getInvalidBulkNotificationData())("$testCase", async ({ data, expectedError }) => {
-			const res = await createBulkNotificationsRequest(data as any, adminCookie);
+		it.each(getInvalidBulkNotificationData())(
+			"$testCase",
+			async ({ data, expectedError }) => {
+				const res = await createBulkNotificationsRequest(
+					data as any,
+					adminCookie,
+				);
 
-			expect(res.status).toBe(400);
-			expect(res.body.errors[0].message).toBe(expectedError);
-		});
+				expect(res.status).toBe(400);
+				expect(res.body.errors[0].message).toBe(expectedError);
+			},
+		);
 
 		it("some users do not exist", async () => {
 			const nonExistentUserId = getInvalidObjectId();
-			const bulkData = getValidBulkNotificationData([user._id, nonExistentUserId]);
+			const bulkData = getValidBulkNotificationData([
+				user._id,
+				nonExistentUserId,
+			]);
 			const res = await createBulkNotificationsRequest(bulkData, adminCookie);
 
 			expect(res.status).toBe(400);
-			expect(res.body.errors[0].message).toBe("برخی از کاربران مورد نظر یافت نشدند");
+			expect(res.body.errors[0].message).toBe(
+				"برخی از کاربران مورد نظر یافت نشدند",
+			);
 		});
 
 		it("duplicate user IDs are provided", async () => {
-			const bulkData = getValidBulkNotificationData([user._id, user._id, admin._id]);
+			const bulkData = getValidBulkNotificationData([
+				user._id,
+				user._id,
+				admin._id,
+			]);
 			const res = await createBulkNotificationsRequest(bulkData, adminCookie);
 
 			expect(res.status).toBe(201); // Should still work but create notifications for unique users
@@ -89,7 +112,11 @@ describe("POST /api/notifications/bulk", () => {
 
 	describe("should return 201, if", () => {
 		it("bulk notifications are created successfully", async () => {
-			const bulkData = getValidBulkNotificationData([user._id, admin._id, anotherUser._id]);
+			const bulkData = getValidBulkNotificationData([
+				user._id,
+				admin._id,
+				anotherUser._id,
+			]);
 			const res = await createBulkNotificationsRequest(bulkData, adminCookie);
 
 			expect(res.status).toBe(201);
@@ -122,10 +149,18 @@ describe("POST /api/notifications/bulk", () => {
 		});
 
 		it("bulk notifications with all valid notification types", async () => {
-			const types: NotificationType[] = ["order", "promotion", "system", "review"];
+			const types: NotificationType[] = [
+				"order",
+				"promotion",
+				"system",
+				"review",
+			];
 
 			for (const type of types) {
-				const bulkData = { ...getValidBulkNotificationData([user._id, admin._id]), type };
+				const bulkData = {
+					...getValidBulkNotificationData([user._id, admin._id]),
+					type,
+				};
 				const res = await createBulkNotificationsRequest(bulkData, adminCookie);
 
 				expect(res.status).toBe(201);
@@ -137,8 +172,15 @@ describe("POST /api/notifications/bulk", () => {
 		});
 
 		it("bulk notifications with optional data field", async () => {
-			const customData = { promotionId: "promo123", discount: 25, validUntil: "2024-12-31" };
-			const bulkData = { ...getValidBulkNotificationData([user._id, admin._id]), data: customData };
+			const customData = {
+				promotionId: "promo123",
+				discount: 25,
+				validUntil: "2024-12-31",
+			};
+			const bulkData = {
+				...getValidBulkNotificationData([user._id, admin._id]),
+				data: customData,
+			};
 			const res = await createBulkNotificationsRequest(bulkData, adminCookie);
 
 			expect(res.status).toBe(201);
@@ -148,8 +190,14 @@ describe("POST /api/notifications/bulk", () => {
 		});
 
 		it("bulk notifications without optional data field", async () => {
-			const { data, ...bulkDataWithoutData } = getValidBulkNotificationData([user._id, admin._id]);
-			const res = await createBulkNotificationsRequest(bulkDataWithoutData, adminCookie);
+			const { data, ...bulkDataWithoutData } = getValidBulkNotificationData([
+				user._id,
+				admin._id,
+			]);
+			const res = await createBulkNotificationsRequest(
+				bulkDataWithoutData,
+				adminCookie,
+			);
 
 			expect(res.status).toBe(201);
 			res.body.data.notifications.forEach((notification: any) => {
@@ -174,8 +222,14 @@ describe("POST /api/notifications/bulk", () => {
 			const adminNotifications = await getNotificationsRequest(adminCookie);
 
 			// Find the newly created notifications
-			const userNewNotification = userNotifications.body.data.notifications.find((n: any) => n.title === bulkData.title);
-			const adminNewNotification = adminNotifications.body.data.notifications.find((n: any) => n.title === bulkData.title);
+			const userNewNotification =
+				userNotifications.body.data.notifications.find(
+					(n: any) => n.title === bulkData.title,
+				);
+			const adminNewNotification =
+				adminNotifications.body.data.notifications.find(
+					(n: any) => n.title === bulkData.title,
+				);
 
 			expect(userNewNotification).toBeDefined();
 			expect(adminNewNotification).toBeDefined();
@@ -200,7 +254,8 @@ describe("POST /api/notifications/bulk", () => {
 
 		it("bulk notifications with custom title and message", async () => {
 			const customTitle = "Special Bulk Notification";
-			const customMessage = "This is a special bulk notification with emojis 🎉📢";
+			const customMessage =
+				"This is a special bulk notification with emojis 🎉📢";
 
 			const bulkData = {
 				...getValidBulkNotificationData([user._id, admin._id]),
@@ -234,7 +289,9 @@ describe("POST /api/notifications/bulk", () => {
 			expect(res.body.data.notifications).toHaveLength(5);
 
 			// Verify all users received their notifications
-			const createdUserIds = res.body.data.notifications.map((n: any) => n.user);
+			const createdUserIds = res.body.data.notifications.map(
+				(n: any) => n.user,
+			);
 			userIds.forEach((userId) => {
 				expect(createdUserIds).toContain(userId);
 			});

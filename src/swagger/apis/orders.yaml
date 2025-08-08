@@ -18,7 +18,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/Dtos/CreateOrderDto'
+              $ref: "#/components/Dtos/CreateOrderDto"
       responses:
         "201":
           description: Order created successfully
@@ -34,11 +34,11 @@ paths:
                     type: object
                     properties:
                       order:
-                        $ref: '#/components/schemas/Order'
+                        $ref: "#/components/schemas/Order"
         "400":
-          $ref: '#/components/responses/ValidationError'
+          $ref: "#/components/responses/ValidationError"
         "401":
-          $ref: '#/components/responses/Unauthorized'
+          $ref: "#/components/responses/Unauthorized"
 
   /api/orders/get-myorders:
     # ------------------------------------------------ GET CURRENT USER ORDERS ----------------------------------------------------
@@ -72,7 +72,29 @@ paths:
           name: sort
           schema:
             type: string
-            enum: [-totalPrice, totalPrice, -itemsPrice, itemsPrice, -shippingPrice, shippingPrice, -taxPrice, taxPrice, -createdAt, createdAt, -updatedAt, updatedAt, -paidAt, paidAt, -deliveredAt, deliveredAt, -isPaid, isPaid, -isDelivered, isDelivered]
+            enum:
+              [
+                -totalPrice,
+                totalPrice,
+                -itemsPrice,
+                itemsPrice,
+                -shippingPrice,
+                shippingPrice,
+                -taxPrice,
+                taxPrice,
+                -createdAt,
+                createdAt,
+                -updatedAt,
+                updatedAt,
+                -paidAt,
+                paidAt,
+                -deliveredAt,
+                deliveredAt,
+                -isPaid,
+                isPaid,
+                -isDelivered,
+                isDelivered,
+              ]
             example: -createdAt
           required: false
           description: ترتیب مرتب‌سازی نتایج (صعودی یا نزولی)
@@ -176,16 +198,16 @@ paths:
                     type: integer
                     example: 3
                   pagination:
-                    $ref: '#/components/schemas/Pagination'
+                    $ref: "#/components/schemas/Pagination"
                   data:
                     type: object
                     properties:
                       orders:
                         type: array
                         items:
-                          $ref: '#/components/schemas/Order'
+                          $ref: "#/components/schemas/Order"
         "401":
-          $ref: '#/components/responses/Unauthorized'
+          $ref: "#/components/responses/Unauthorized"
 
   /api/orders/top-selling-products:
     # ------------------------------------------------ GET TOP SELLING PRODUCTS ----------------------------------------------------
@@ -222,7 +244,7 @@ paths:
                             product:
                               type: array
                               items:
-                                $ref: '#/components/schemas/Product'
+                                $ref: "#/components/schemas/Product"
 
   /api/orders/{id}:
     # ------------------------------------------------ GET ORDER BY ID ----------------------------------------------------
@@ -235,7 +257,7 @@ paths:
         - cookieAuth: []
         - bearerAuth: []
       parameters:
-        - $ref: '#/components/parameters/orderId'
+        - $ref: "#/components/parameters/orderId"
       responses:
         "200":
           description: Order retrieved successfully
@@ -251,9 +273,9 @@ paths:
                     type: object
                     properties:
                       order:
-                        $ref: '#/components/schemas/Order'
+                        $ref: "#/components/schemas/Order"
         "401":
-          $ref: '#/components/responses/Unauthorized'
+          $ref: "#/components/responses/Unauthorized"
         "403":
           description: Access denied - Cannot access other user's order
           content:
@@ -308,7 +330,7 @@ paths:
         - cookieAuth: []
         - bearerAuth: []
       parameters:
-        - $ref: '#/components/parameters/orderId'
+        - $ref: "#/components/parameters/orderId"
       responses:
         "200":
           description: Order marked as paid successfully
@@ -324,9 +346,9 @@ paths:
                     type: object
                     properties:
                       order:
-                        $ref: '#/components/schemas/Order'
+                        $ref: "#/components/schemas/Order"
         "401":
-          $ref: '#/components/responses/Unauthorized'
+          $ref: "#/components/responses/Unauthorized"
         "403":
           description: Access denied - Cannot update other user's order
           content:
@@ -394,14 +416,14 @@ components:
             properties:
               productId:
                 type: string
-                pattern: '^[0-9a-fA-F]{24}$'
+                pattern: "^[0-9a-fA-F]{24}$"
                 example: "60d21b4667d0d8992e610c85"
               qty:
                 type: integer
                 minimum: 1
                 example: 2
         shippingAddress:
-          $ref: '#/components/schemas/ShippingAddress'
+          $ref: "#/components/schemas/ShippingAddress"
         paymentMethod:
           type: string
           example: "Credit Card"
@@ -432,14 +454,14 @@ components:
             properties:
               productId:
                 type: string
-                pattern: '^[0-9a-fA-F]{24}$'
+                pattern: "^[0-9a-fA-F]{24}$"
                 example: "60d21b4667d0d8992e610c85"
               qty:
                 type: integer
                 minimum: 1
                 example: 3
         shippingAddress:
-          $ref: '#/components/schemas/ShippingAddress'
+          $ref: "#/components/schemas/ShippingAddress"
         paymentMethod:
           type: string
           example: "PayPal"
@@ -467,7 +489,7 @@ components:
       required: true
       schema:
         type: string
-        pattern: '^[0-9a-fA-F]{24}$'
+        pattern: "^[0-9a-fA-F]{24}$"
         example: "60d21b4667d0d8992e610c85"
       description: "شناسه سفارش"
 

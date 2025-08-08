@@ -12,47 +12,35 @@ import mongoose from "mongoose";
 // ============ Helper Requests =================
 // ===============================================
 
-export const signupRequest = async (
-	body: ISignupDto
-): Promise<Response> => {
+export const signupRequest = async (body: ISignupDto): Promise<Response> => {
 	return await request(app).post("/api/users/signup").send(body);
 };
 
-export const loginRequest = async (
-	body: ILoginDto
-): Promise<Response> => {
+export const loginRequest = async (body: ILoginDto): Promise<Response> => {
 	return await request(app).post("/api/users/login").send(body);
 };
 
-export const logoutRequest = async (
-	cookie: string
-): Promise<Response> => {
-	return await request(app)
-		.post("/api/users/logout")
-		.set("Cookie", cookie);
+export const logoutRequest = async (cookie: string): Promise<Response> => {
+	return await request(app).post("/api/users/logout").set("Cookie", cookie);
 };
 
 export const forgotPasswordRequest = async (
-	body: IForgotPasswordDto
+	body: IForgotPasswordDto,
 ): Promise<Response> => {
-	return await request(app)
-		.post("/api/users/forgot-password")
-		.send(body);
+	return await request(app).post("/api/users/forgot-password").send(body);
 };
 
 export const resetPasswordRequest = async (
 	body: IResetPasswordDto,
-	query: { resetToken: string }
+	query: { resetToken: string },
 ): Promise<Response> => {
 	return await request(app)
-		.patch(
-			`/api/users/reset-password?resetToken=${query.resetToken}`
-		)
+		.patch(`/api/users/reset-password?resetToken=${query.resetToken}`)
 		.send(body);
 };
 
 export const refreshTokenRequest = async (
-	cookie?: string
+	cookie?: string,
 ): Promise<Response> => {
 	const req = request(app).post("/api/users/refresh-token");
 	if (cookie) req.set("Cookie", cookie);
@@ -85,7 +73,7 @@ export const getUniqueUser = (suffix: string): IValidUser => ({
 });
 
 export const signupAndRequestForgotPassword = async (
-	user: IValidUser
+	user: IValidUser,
 ): Promise<string> => {
 	// Make the request to signup
 	await signupRequest(user);
@@ -94,9 +82,7 @@ export const signupAndRequestForgotPassword = async (
 	await forgotPasswordRequest({ email: user.email });
 
 	// Get the reset token from the mocked email
-	const mockSendEmail = sendEmail as jest.MockedFunction<
-		typeof sendEmail
-	>;
+	const mockSendEmail = sendEmail as jest.MockedFunction<typeof sendEmail>;
 	const emailCall = mockSendEmail.mock.calls[0];
 	const url = emailCall[1] as string;
 

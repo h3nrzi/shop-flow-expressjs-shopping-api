@@ -15,7 +15,7 @@ const protect: RequestHandler = async (req, res, next) => {
 	// if no token, throw an error
 	if (!token) {
 		throw new NotAuthorizedError(
-			"شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
+			"شما وارد نشده اید! لطفا برای دسترسی وارد شوید",
 		);
 	}
 
@@ -51,9 +51,7 @@ const protect: RequestHandler = async (req, res, next) => {
 const restrictTo = (...roles: string[]): RequestHandler => {
 	return (req, res, next) => {
 		if (!roles.includes(req.user.role)) {
-			throw new ForbiddenError(
-				"شما اجازه انجام این عمل را ندارید!"
-			);
+			throw new ForbiddenError("شما اجازه انجام این عمل را ندارید!");
 		}
 		return next();
 	};

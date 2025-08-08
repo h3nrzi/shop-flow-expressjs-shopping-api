@@ -31,7 +31,9 @@ describe("DELETE /api/notifications/delete-all", () => {
 			const res = await deleteAllNotificationsRequest();
 
 			expect(res.status).toBe(401);
-			expect(res.body.errors[0].message).toBe("شما وارد نشده اید! لطفا برای دسترسی وارد شوید");
+			expect(res.body.errors[0].message).toBe(
+				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید",
+			);
 		});
 
 		it("user is not authenticated (invalid token)", async () => {
@@ -39,7 +41,9 @@ describe("DELETE /api/notifications/delete-all", () => {
 			const res = await deleteAllNotificationsRequest(invalidCookie);
 
 			expect(res.status).toBe(401);
-			expect(res.body.errors[0].message).toBe("کاربر متعلق به این توکن دیگر وجود ندارد!");
+			expect(res.body.errors[0].message).toBe(
+				"کاربر متعلق به این توکن دیگر وجود ندارد!",
+			);
 		});
 	});
 
@@ -53,9 +57,18 @@ describe("DELETE /api/notifications/delete-all", () => {
 
 		it("all user notifications are deleted", async () => {
 			// Create multiple notifications for the user
-			await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
-			await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
-			await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
+			await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
+			await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
+			await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
 
 			// Verify notifications exist before deletion
 			const beforeRes = await getNotificationsRequest(userCookie);
@@ -76,9 +89,18 @@ describe("DELETE /api/notifications/delete-all", () => {
 
 		it("only current user's notifications are deleted", async () => {
 			// Create notifications for both users
-			await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
-			await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
-			await createNotificationRequest(getValidNotificationData(admin._id), adminCookie);
+			await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
+			await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
+			await createNotificationRequest(
+				getValidNotificationData(admin._id),
+				adminCookie,
+			);
 
 			// Verify initial state
 			const userBeforeRes = await getNotificationsRequest(userCookie);
@@ -103,9 +125,18 @@ describe("DELETE /api/notifications/delete-all", () => {
 
 		it("unread count is reset to zero after deletion", async () => {
 			// Create multiple notifications
-			await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
-			await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
-			await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
+			await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
+			await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
+			await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
 
 			// Verify initial unread count
 			const beforeRes = await getUnreadCountRequest(userCookie);
@@ -121,14 +152,31 @@ describe("DELETE /api/notifications/delete-all", () => {
 
 		it("deletes both read and unread notifications", async () => {
 			// Create notifications
-			const createRes1 = await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
-			const createRes2 = await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
-			await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
+			const createRes1 = await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
+			const createRes2 = await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
+			await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
 
 			// Mark some notifications as read
-			const { markAsReadRequest } = await import("@/__tests__/helpers/notifications.helper");
-			await markAsReadRequest(createRes1.body.data.notification._id, userCookie);
-			await markAsReadRequest(createRes2.body.data.notification._id, userCookie);
+			const { markAsReadRequest } = await import(
+				"@/__tests__/helpers/notifications.helper"
+			);
+			await markAsReadRequest(
+				createRes1.body.data.notification._id,
+				userCookie,
+			);
+			await markAsReadRequest(
+				createRes2.body.data.notification._id,
+				userCookie,
+			);
 
 			// Verify mixed read/unread state
 			const beforeRes = await getNotificationsRequest(userCookie);
@@ -149,10 +197,22 @@ describe("DELETE /api/notifications/delete-all", () => {
 
 		it("deletes notifications of all types", async () => {
 			// Create notifications of different types
-			const systemNotification = { ...getValidNotificationData(user._id), type: "system" as NotificationType };
-			const orderNotification = { ...getValidNotificationData(user._id), type: "order" as NotificationType };
-			const promotionNotification = { ...getValidNotificationData(user._id), type: "promotion" as NotificationType };
-			const reviewNotification = { ...getValidNotificationData(user._id), type: "review" as NotificationType };
+			const systemNotification = {
+				...getValidNotificationData(user._id),
+				type: "system" as NotificationType,
+			};
+			const orderNotification = {
+				...getValidNotificationData(user._id),
+				type: "order" as NotificationType,
+			};
+			const promotionNotification = {
+				...getValidNotificationData(user._id),
+				type: "promotion" as NotificationType,
+			};
+			const reviewNotification = {
+				...getValidNotificationData(user._id),
+				type: "review" as NotificationType,
+			};
 
 			await createNotificationRequest(systemNotification, adminCookie);
 			await createNotificationRequest(orderNotification, adminCookie);
@@ -204,8 +264,14 @@ describe("DELETE /api/notifications/delete-all", () => {
 
 		it("admin can delete all their own notifications", async () => {
 			// Create notifications for admin
-			await createNotificationRequest(getValidNotificationData(admin._id), adminCookie);
-			await createNotificationRequest(getValidNotificationData(admin._id), adminCookie);
+			await createNotificationRequest(
+				getValidNotificationData(admin._id),
+				adminCookie,
+			);
+			await createNotificationRequest(
+				getValidNotificationData(admin._id),
+				adminCookie,
+			);
 
 			// Verify admin has notifications
 			const beforeRes = await getNotificationsRequest(adminCookie);
@@ -223,8 +289,14 @@ describe("DELETE /api/notifications/delete-all", () => {
 
 		it("operation is idempotent", async () => {
 			// Create notifications
-			await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
-			await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
+			await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
+			await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
 
 			// Delete all notifications first time
 			const res1 = await deleteAllNotificationsRequest(userCookie);
@@ -247,7 +319,12 @@ describe("DELETE /api/notifications/delete-all", () => {
 			// Create many notifications
 			const promises = [];
 			for (let i = 0; i < 10; i++) {
-				promises.push(createNotificationRequest(getValidNotificationData(user._id), adminCookie));
+				promises.push(
+					createNotificationRequest(
+						getValidNotificationData(user._id),
+						adminCookie,
+					),
+				);
 			}
 			await Promise.all(promises);
 

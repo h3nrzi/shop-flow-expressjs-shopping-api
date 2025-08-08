@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendEmail = void 0;
 const nodemailer_1 = __importDefault(require("nodemailer"));
 const sendEmail = (email, resetUrl, subject) => __awaiter(void 0, void 0, void 0, function* () {
-    const { EMAIL_HOST, EMAIL_PORT, EMAIL_USERNAME, EMAIL_PASSWORD, } = process.env;
+    const { EMAIL_HOST, EMAIL_PORT, EMAIL_USERNAME, EMAIL_PASSWORD } = process.env;
     const transporter = nodemailer_1.default.createTransport({
         service: "Gmail",
         host: EMAIL_HOST,

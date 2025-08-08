@@ -7,14 +7,7 @@ module.exports = {
     transform: {
         "^.+\\.tsx?$": "ts-jest",
     },
-    moduleFileExtensions: [
-        "ts",
-        "tsx",
-        "js",
-        "jsx",
-        "json",
-        "node",
-    ],
+    moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
     setupFilesAfterEnv: ["<rootDir>/src/__tests__/setup.ts"],
     testTimeout: 30000,
     moduleNameMapper: {

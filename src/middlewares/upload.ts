@@ -11,9 +11,7 @@ const fileFilter = (
 	callback: multer.FileFilterCallback,
 ) => {
 	const fileTypes = /jpg|jpeg|png|webp/;
-	const extname = fileTypes.test(
-		path.extname(file.originalname).toLowerCase(),
-	);
+	const extname = fileTypes.test(path.extname(file.originalname).toLowerCase());
 	const mimetype = fileTypes.test(file.mimetype);
 
 	if (!extname || !mimetype) {

@@ -18,10 +18,7 @@ export class UserRepository {
 		total: number;
 		users: IUserDoc[];
 	}> {
-		const features = new APIFeatures(
-			this.userModel as any,
-			query
-		);
+		const features = new APIFeatures(this.userModel as any, query);
 		const { pagination, skip, total } = await features
 			.filter()
 			.search()
@@ -34,28 +31,18 @@ export class UserRepository {
 		return { pagination, skip, total, users };
 	}
 
-	async findById(
-		userId: string,
-		select?: string
-	): Promise<IUserDoc | null> {
-		const user = await this.userModel
-			.findById(userId)
-			.select(select ?? "");
+	async findById(userId: string, select?: string): Promise<IUserDoc | null> {
+		const user = await this.userModel.findById(userId).select(select ?? "");
 		return user as IUserDoc;
 	}
 
-	async findByEmail(
-		email: string,
-		select?: string
-	): Promise<IUserDoc | null> {
-		const user = await this.userModel
-			.findOne({ email })
-			.select(select ?? "");
+	async findByEmail(email: string, select?: string): Promise<IUserDoc | null> {
+		const user = await this.userModel.findOne({ email }).select(select ?? "");
 		return user as IUserDoc;
 	}
 
 	async findByPasswordRestToken(
-		passwordResetToken: string
+		passwordResetToken: string,
 	): Promise<IUserDoc | null> {
 		return this.userModel.findOne({
 			passwordResetToken,
@@ -69,7 +56,7 @@ export class UserRepository {
 
 	async findCountByDay(
 		endDate: Date,
-		startDate?: Date
+		startDate?: Date,
 	): Promise<{ count: number; date: Date }[]> {
 		const match = startDate
 			? { createdAt: { $gte: startDate, $lte: endDate } }
@@ -111,9 +98,7 @@ export class UserRepository {
 	 ************* @description CREATE OPERATIONS ****************
 	 *************************************************************/
 
-	async create(
-		createUserDto: ICreateUserDto
-	): Promise<IUserDoc> {
+	async create(createUserDto: ICreateUserDto): Promise<IUserDoc> {
 		return this.userModel.create(createUserDto);
 	}
 
@@ -126,7 +111,7 @@ export class UserRepository {
 		payload:
 			| IUpdateUserDto
 			| IUpdateCurrentUserInfoDto
-			| IUpdateCurrentUserPasswordDto
+			| IUpdateCurrentUserPasswordDto,
 	): Promise<IUserDoc | null> {
 		return this.userModel.findByIdAndUpdate(userId, payload, {
 			new: true, // return the updated user

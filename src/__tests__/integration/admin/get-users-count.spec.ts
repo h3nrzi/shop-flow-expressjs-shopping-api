@@ -21,9 +21,7 @@ beforeEach(async () => {
 	const admin = getUniqueUser("admin");
 	const adminRes = await signupRequest(admin);
 	adminCookie = adminRes.headers["set-cookie"][0];
-	const adminUser = await userRepository.findByEmail(
-		admin.email
-	);
+	const adminUser = await userRepository.findByEmail(admin.email);
 	adminUser!.role = "admin";
 	await adminUser!.save({ validateBeforeSave: false });
 
@@ -36,9 +34,7 @@ beforeEach(async () => {
 	};
 	const mainAdminRes = await signupRequest(mainAdmin);
 	mainAdminCookie = mainAdminRes.headers["set-cookie"][0];
-	const mainAdminUser = await userRepository.findByEmail(
-		mainAdmin.email
-	);
+	const mainAdminUser = await userRepository.findByEmail(mainAdmin.email);
 	mainAdminUser!.role = "admin";
 	await mainAdminUser!.save({ validateBeforeSave: false });
 });
@@ -58,15 +54,12 @@ describe("GET /api/users/get-users-count", () => {
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
-				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
+				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید",
 			);
 		});
 
 		it("If token is invalid", async () => {
-			const res = await getUsersCountByDayRequest(
-				"jwt=invalid-token",
-				"week"
-			);
+			const res = await getUsersCountByDayRequest("jwt=invalid-token", "week");
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe("توکن معتبر نیست");
@@ -74,14 +67,11 @@ describe("GET /api/users/get-users-count", () => {
 
 		it("If user for token does not exist", async () => {
 			const fakeToken = getInvalidToken();
-			const res = await getUsersCountByDayRequest(
-				`jwt=${fakeToken}`,
-				"week"
-			);
+			const res = await getUsersCountByDayRequest(`jwt=${fakeToken}`, "week");
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
-				"کاربر متعلق به این توکن دیگر وجود ندارد!"
+				"کاربر متعلق به این توکن دیگر وجود ندارد!",
 			);
 		});
 
@@ -89,19 +79,14 @@ describe("GET /api/users/get-users-count", () => {
 			const user = getUniqueUser("inactive");
 			const signupRes = await signupRequest(user);
 			const cookie = signupRes.headers["set-cookie"][0];
-			const repoUser = await userRepository.findByEmail(
-				user.email
-			);
+			const repoUser = await userRepository.findByEmail(user.email);
 			repoUser!.active = false;
 			await repoUser!.save({ validateBeforeSave: false });
-			const res = await getUsersCountByDayRequest(
-				cookie,
-				"week"
-			);
+			const res = await getUsersCountByDayRequest(cookie, "week");
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
-				"کاربری که به این ایمیل مرتبط است غیرفعال شده!"
+				"کاربری که به این ایمیل مرتبط است غیرفعال شده!",
 			);
 		});
 
@@ -127,89 +112,54 @@ describe("GET /api/users/get-users-count", () => {
 		// });
 
 		it("If user's role is not admin", async () => {
-			const res = await getUsersCountByDayRequest(
-				userCookie,
-				"week"
-			);
+			const res = await getUsersCountByDayRequest(userCookie, "week");
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
-				"شما اجازه انجام این عمل را ندارید!"
+				"شما اجازه انجام این عمل را ندارید!",
 			);
 		});
 	});
 
 	describe("should return 400", () => {
-		validationCases.forEach(
-			({ description, params, expectedMessage }) => {
-				it(description, async () => {
-					const res = await getUsersCountByDayRequest(
-						adminCookie,
-						params.period
-					);
-					expect(res.status).toBe(400);
-					expect(res.body.errors[0].message).toBe(
-						expectedMessage
-					);
-				});
-			}
-		);
+		validationCases.forEach(({ description, params, expectedMessage }) => {
+			it(description, async () => {
+				const res = await getUsersCountByDayRequest(adminCookie, params.period);
+				expect(res.status).toBe(400);
+				expect(res.body.errors[0].message).toBe(expectedMessage);
+			});
+		});
 	});
 
 	describe("should return 200", () => {
 		it("For week", async () => {
-			const res = await getUsersCountByDayRequest(
-				adminCookie,
-				"week"
-			);
+			const res = await getUsersCountByDayRequest(adminCookie, "week");
 			expect(res.status).toBe(200);
-			expect(Array.isArray(res.body.data.usersCountByDay)).toBe(
-				true
-			);
+			expect(Array.isArray(res.body.data.usersCountByDay)).toBe(true);
 		});
 
 		it("For month", async () => {
-			const res = await getUsersCountByDayRequest(
-				adminCookie,
-				"month"
-			);
+			const res = await getUsersCountByDayRequest(adminCookie, "month");
 			expect(res.status).toBe(200);
-			expect(Array.isArray(res.body.data.usersCountByDay)).toBe(
-				true
-			);
+			expect(Array.isArray(res.body.data.usersCountByDay)).toBe(true);
 		});
 
 		it("For year", async () => {
-			const res = await getUsersCountByDayRequest(
-				adminCookie,
-				"year"
-			);
+			const res = await getUsersCountByDayRequest(adminCookie, "year");
 			expect(res.status).toBe(200);
-			expect(Array.isArray(res.body.data.usersCountByDay)).toBe(
-				true
-			);
+			expect(Array.isArray(res.body.data.usersCountByDay)).toBe(true);
 		});
 
 		it("For all", async () => {
-			const res = await getUsersCountByDayRequest(
-				adminCookie,
-				"all"
-			);
+			const res = await getUsersCountByDayRequest(adminCookie, "all");
 			expect(res.status).toBe(200);
-			expect(Array.isArray(res.body.data.usersCountByDay)).toBe(
-				true
-			);
+			expect(Array.isArray(res.body.data.usersCountByDay)).toBe(true);
 		});
 
 		it("For main admin", async () => {
-			const res = await getUsersCountByDayRequest(
-				mainAdminCookie,
-				"week"
-			);
+			const res = await getUsersCountByDayRequest(mainAdminCookie, "week");
 			expect(res.status).toBe(200);
-			expect(Array.isArray(res.body.data.usersCountByDay)).toBe(
-				true
-			);
+			expect(Array.isArray(res.body.data.usersCountByDay)).toBe(true);
 		});
 	});
 });

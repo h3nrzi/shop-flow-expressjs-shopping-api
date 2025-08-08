@@ -60,9 +60,7 @@ beforeEach(async () => {
 	const admin = getUniqueUser("admin");
 	const adminRes = await signupRequest(admin);
 	adminCookie = adminRes.headers["set-cookie"][0];
-	const adminUser = await userRepository.findByEmail(
-		admin.email
-	);
+	const adminUser = await userRepository.findByEmail(admin.email);
 	adminUser!.role = "admin";
 	await adminUser!.save({ validateBeforeSave: false });
 	adminId = adminUser!._id.toString();
@@ -76,9 +74,7 @@ beforeEach(async () => {
 	};
 	const mainAdminRes = await signupRequest(mainAdmin);
 	mainAdminCookie = mainAdminRes.headers["set-cookie"][0];
-	const mainAdminUser = await userRepository.findByEmail(
-		mainAdmin.email
-	);
+	const mainAdminUser = await userRepository.findByEmail(mainAdmin.email);
 	mainAdminUser!.role = "admin";
 	await mainAdminUser!.save({ validateBeforeSave: false });
 	mainAdminId = mainAdminUser!._id.toString();
@@ -92,16 +88,14 @@ describe("PATCH /api/users/:id", () => {
 			});
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].message).toBe(
-				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
+				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید",
 			);
 		});
 
 		it("If token is invalid", async () => {
-			const res = await updateUserRequest(
-				"jwt=invalid-token",
-				userId,
-				{ name: "new name" }
-			);
+			const res = await updateUserRequest("jwt=invalid-token", userId, {
+				name: "new name",
+			});
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe("توکن معتبر نیست");
@@ -109,15 +103,13 @@ describe("PATCH /api/users/:id", () => {
 
 		it("If user for token does not exist", async () => {
 			const fakeToken = getInvalidToken();
-			const res = await updateUserRequest(
-				`jwt=${fakeToken}`,
-				userId,
-				{ name: "new name" }
-			);
+			const res = await updateUserRequest(`jwt=${fakeToken}`, userId, {
+				name: "new name",
+			});
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
-				"کاربر متعلق به این توکن دیگر وجود ندارد!"
+				"کاربر متعلق به این توکن دیگر وجود ندارد!",
 			);
 		});
 
@@ -125,9 +117,7 @@ describe("PATCH /api/users/:id", () => {
 			const user = getUniqueUser("inactive");
 			const signupRes = await signupRequest(user);
 			const cookie = signupRes.headers["set-cookie"][0];
-			const repoUser = await userRepository.findByEmail(
-				user.email
-			);
+			const repoUser = await userRepository.findByEmail(user.email);
 			repoUser!.active = false;
 			await repoUser!.save({ validateBeforeSave: false });
 			const res = await updateUserRequest(cookie, userId, {
@@ -136,7 +126,7 @@ describe("PATCH /api/users/:id", () => {
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
-				"کاربری که به این ایمیل مرتبط است غیرفعال شده!"
+				"کاربری که به این ایمیل مرتبط است غیرفعال شده!",
 			);
 		});
 
@@ -166,7 +156,7 @@ describe("PATCH /api/users/:id", () => {
 			});
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].message).toBe(
-				"شما اجازه انجام این عمل را ندارید!"
+				"شما اجازه انجام این عمل را ندارید!",
 			);
 		});
 
@@ -176,31 +166,29 @@ describe("PATCH /api/users/:id", () => {
 			});
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].message).toBe(
-				"شما نمی توانید حساب ادمین را آپدیت کنید فقط مدیر سیستم می تواند این کار را انجام دهد"
+				"شما نمی توانید حساب ادمین را آپدیت کنید فقط مدیر سیستم می تواند این کار را انجام دهد",
 			);
 		});
 
 		it("If an admin tries to update the main admin", async () => {
-			const res = await updateUserRequest(
-				adminCookie,
-				mainAdminId,
-				{ name: "Hacker" }
-			);
+			const res = await updateUserRequest(adminCookie, mainAdminId, {
+				name: "Hacker",
+			});
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].message).toBe(
-				"شما نمی توانید حساب ادمین را آپدیت کنید فقط مدیر سیستم می تواند این کار را انجام دهد"
+				"شما نمی توانید حساب ادمین را آپدیت کنید فقط مدیر سیستم می تواند این کار را انجام دهد",
 			);
 		});
 	});
 
 	describe("should return 400", () => {
-		validationCases.forEach(testCase => {
+		validationCases.forEach((testCase) => {
 			it(testCase.description, async () => {
 				const id = testCase.userId || userId;
 				const res = await updateUserRequest(
 					adminCookie,
 					id,
-					testCase.body as any
+					testCase.body as any,
 				);
 				expect(res.status).toBe(testCase.status);
 				expect(res.body.errors[0].message).toBe(testCase.error);
@@ -211,25 +199,19 @@ describe("PATCH /api/users/:id", () => {
 			// Create a second admin with the same email
 			const admin = getUniqueUser("going-to-be-admin");
 			await signupRequest(admin);
-			const admin2Doc = await userRepository.findByEmail(
-				admin.email
-			);
+			const admin2Doc = await userRepository.findByEmail(admin.email);
 			admin2Doc!.role = "admin";
 			await admin2Doc!.save({ validateBeforeSave: false });
 			const adminId2 = admin2Doc!._id.toString();
 
 			// Try to update the admin to have the same email as the main admin
-			const res = await updateUserRequest(
-				mainAdminCookie,
-				adminId2,
-				{ email: "admin@gmail.com" }
-			);
+			const res = await updateUserRequest(mainAdminCookie, adminId2, {
+				email: "admin@gmail.com",
+			});
 
 			// Due to the fact that the admin is already in the database, the update will fail
 			expect(res.status).toBe(400);
-			expect(res.body.errors[0].message).toBe(
-				"این ایمیل قبلا استفاده شده است"
-			);
+			expect(res.body.errors[0].message).toBe("این ایمیل قبلا استفاده شده است");
 		});
 	});
 
@@ -239,11 +221,11 @@ describe("PATCH /api/users/:id", () => {
 			const res = await updateUserRequest(
 				adminCookie,
 				nonExistentId.toString(),
-				{ name: "new name" }
+				{ name: "new name" },
 			);
 			expect(res.status).toBe(404);
 			expect(res.body.errors[0].message).toBe(
-				"هیچ موردی با این شناسه یافت نشد"
+				"هیچ موردی با این شناسه یافت نشد",
 			);
 		});
 	});
@@ -258,21 +240,17 @@ describe("PATCH /api/users/:id", () => {
 		});
 
 		it("If main admin wants to update another admin", async () => {
-			const res = await updateUserRequest(
-				mainAdminCookie,
-				adminId,
-				{ name: "Admin Updated" }
-			);
+			const res = await updateUserRequest(mainAdminCookie, adminId, {
+				name: "Admin Updated",
+			});
 			expect(res.status).toBe(200);
 			expect(res.body.data.user).toBeDefined();
 		});
 
 		it("If main admin wants to update himself", async () => {
-			const res = await updateUserRequest(
-				mainAdminCookie,
-				mainAdminId,
-				{ name: "Main Admin Updated" }
-			);
+			const res = await updateUserRequest(mainAdminCookie, mainAdminId, {
+				name: "Main Admin Updated",
+			});
 			expect(res.status).toBe(200);
 			expect(res.body.data.user).toBeDefined();
 		});

@@ -1,26 +1,41 @@
 import { BadRequestError } from "../../../errors/bad-request-error";
 import { NotFoundError } from "../../../errors/not-found-error";
-import { INotificationDoc, NotificationType } from "../infrastructure/notification.interface";
+import {
+	INotificationDoc,
+	NotificationType,
+} from "../infrastructure/notification.interface";
 import { NotificationRepository } from "../infrastructure/notification.repository";
 import { CreateNotificationDto } from "../presentation/notification.dto";
 
 export class NotificationService {
-	constructor(private readonly notificationRepository: NotificationRepository) {}
+	constructor(
+		private readonly notificationRepository: NotificationRepository,
+	) {}
 
 	/******************************************************
 	 ************* @description GET HANDLERS *************
 	 ******************************************************/
 
-	async getCurrentUserNotifications(userId: string): Promise<{ notifications: INotificationDoc[]; totalCount: number; unreadCount: number }> {
-		const notifications = await this.notificationRepository.findAllForUser(userId);
+	async getCurrentUserNotifications(userId: string): Promise<{
+		notifications: INotificationDoc[];
+		totalCount: number;
+		unreadCount: number;
+	}> {
+		const notifications =
+			await this.notificationRepository.findAllForUser(userId);
 		const totalCount = notifications.length;
-		const unreadCount = await this.notificationRepository.findUnreadCountForUser(userId);
+		const unreadCount =
+			await this.notificationRepository.findUnreadCountForUser(userId);
 
 		return { notifications, totalCount, unreadCount };
 	}
 
-	async getNotificationById(notificationId: string, userId: string): Promise<INotificationDoc> {
-		const notification = await this.notificationRepository.findById(notificationId);
+	async getNotificationById(
+		notificationId: string,
+		userId: string,
+	): Promise<INotificationDoc> {
+		const notification =
+			await this.notificationRepository.findById(notificationId);
 
 		if (!notification) {
 			throw new NotFoundError("اعلان مورد نظر یافت نشد");
@@ -42,12 +57,19 @@ export class NotificationService {
 	 ************* @description POST HANDLERS *************
 	 ******************************************************/
 
-	async createNotification(createNotificationDto: CreateNotificationDto): Promise<INotificationDoc> {
+	async createNotification(
+		createNotificationDto: CreateNotificationDto,
+	): Promise<INotificationDoc> {
 		return this.notificationRepository.create(createNotificationDto);
 	}
 
 	// Helper method to create system notifications
-	async createSystemNotification(userId: string, title: string, message: string, data?: any): Promise<INotificationDoc> {
+	async createSystemNotification(
+		userId: string,
+		title: string,
+		message: string,
+		data?: any,
+	): Promise<INotificationDoc> {
 		return this.createNotification({
 			user: userId,
 			title,
@@ -58,7 +80,12 @@ export class NotificationService {
 	}
 
 	// Helper method to create order notifications
-	async createOrderNotification(userId: string, title: string, message: string, orderId?: string): Promise<INotificationDoc> {
+	async createOrderNotification(
+		userId: string,
+		title: string,
+		message: string,
+		orderId?: string,
+	): Promise<INotificationDoc> {
 		return this.createNotification({
 			user: userId,
 			title,
@@ -69,7 +96,12 @@ export class NotificationService {
 	}
 
 	// Helper method to create promotion notifications
-	async createPromotionNotification(userId: string, title: string, message: string, data?: any): Promise<INotificationDoc> {
+	async createPromotionNotification(
+		userId: string,
+		title: string,
+		message: string,
+		data?: any,
+	): Promise<INotificationDoc> {
 		return this.createNotification({
 			user: userId,
 			title,
@@ -80,7 +112,12 @@ export class NotificationService {
 	}
 
 	// Helper method to create review notifications
-	async createReviewNotification(userId: string, title: string, message: string, data?: any): Promise<INotificationDoc> {
+	async createReviewNotification(
+		userId: string,
+		title: string,
+		message: string,
+		data?: any,
+	): Promise<INotificationDoc> {
 		return this.createNotification({
 			user: userId,
 			title,
@@ -94,11 +131,15 @@ export class NotificationService {
 	 ************* @description PATCH HANDLERS *************
 	 *******************************************************/
 
-	async markNotificationAsRead(notificationId: string, userId: string): Promise<INotificationDoc> {
+	async markNotificationAsRead(
+		notificationId: string,
+		userId: string,
+	): Promise<INotificationDoc> {
 		// First check if notification exists and belongs to user
 		await this.getNotificationById(notificationId, userId);
 
-		const updatedNotification = await this.notificationRepository.markAsRead(notificationId);
+		const updatedNotification =
+			await this.notificationRepository.markAsRead(notificationId);
 
 		if (!updatedNotification) {
 			throw new NotFoundError("خطا در به‌روزرسانی اعلان");
@@ -115,7 +156,10 @@ export class NotificationService {
 	 ************* @description DELETE HANDLERS ************
 	 *******************************************************/
 
-	async deleteNotification(notificationId: string, userId: string): Promise<void> {
+	async deleteNotification(
+		notificationId: string,
+		userId: string,
+	): Promise<void> {
 		// First check if notification exists and belongs to user
 		await this.getNotificationById(notificationId, userId);
 
@@ -131,7 +175,13 @@ export class NotificationService {
 	 ******************************************************/
 
 	// Send notification to multiple users
-	async createBulkNotifications(userIds: string[], title: string, message: string, type: NotificationType, data?: any): Promise<INotificationDoc[]> {
+	async createBulkNotifications(
+		userIds: string[],
+		title: string,
+		message: string,
+		type: NotificationType,
+		data?: any,
+	): Promise<INotificationDoc[]> {
 		const notifications = userIds.map((userId) => ({
 			user: userId,
 			title,
@@ -144,9 +194,16 @@ export class NotificationService {
 	}
 
 	// Send notification to all users (for system-wide announcements)
-	async createNotificationForAllUsers(title: string, message: string, type: NotificationType = "system", data?: any): Promise<void> {
+	async createNotificationForAllUsers(
+		title: string,
+		message: string,
+		type: NotificationType = "system",
+		data?: any,
+	): Promise<void> {
 		// This would require user service to get all user IDs
 		// For now, we'll leave this as a placeholder
-		throw new BadRequestError("عملیات ارسال اعلان برای همه کاربران هنوز پیاده‌سازی نشده است");
+		throw new BadRequestError(
+			"عملیات ارسال اعلان برای همه کاربران هنوز پیاده‌سازی نشده است",
+		);
 	}
 }

@@ -35,7 +35,21 @@ paths:
           name: sort
           schema:
             type: string
-            enum: [-name, name, -email, email, -role, role, -active, active, -createdAt, createdAt, -updatedAt, updatedAt]
+            enum:
+              [
+                -name,
+                name,
+                -email,
+                email,
+                -role,
+                role,
+                -active,
+                active,
+                -createdAt,
+                createdAt,
+                -updatedAt,
+                updatedAt,
+              ]
             example: -createdAt
           required: false
           description: ترتیب مرتب‌سازی نتایج (صعودی یا نزولی)

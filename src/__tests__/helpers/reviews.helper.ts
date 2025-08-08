@@ -1,11 +1,7 @@
 import app from "@/app";
 import request, { Response } from "supertest";
 import { signupRequest, getUniqueUser } from "./auth.helper";
-import {
-	productRepository,
-	userRepository,
-	reviewRepository,
-} from "@/core";
+import { productRepository, userRepository, reviewRepository } from "@/core";
 import { validProduct } from "./products.helper";
 import mongoose from "mongoose";
 
@@ -16,7 +12,7 @@ import mongoose from "mongoose";
 export const getAllReviewsRequest = (
 	productId: string,
 	query?: any,
-	cookie?: string
+	cookie?: string,
 ): Promise<Response> => {
 	const queryString = query
 		? Object.entries(query)
@@ -25,7 +21,7 @@ export const getAllReviewsRequest = (
 		: "";
 
 	const req = request(app).get(
-		`/api/products/${productId}/reviews?${queryString}`
+		`/api/products/${productId}/reviews?${queryString}`,
 	);
 
 	if (cookie) {
@@ -38,10 +34,10 @@ export const getAllReviewsRequest = (
 export const getReviewByIdRequest = (
 	productId: string,
 	reviewId: string,
-	cookie?: string
+	cookie?: string,
 ): Promise<Response> => {
 	const req = request(app).get(
-		`/api/products/${productId}/reviews/${reviewId}`
+		`/api/products/${productId}/reviews/${reviewId}`,
 	);
 
 	if (cookie) {
@@ -54,7 +50,7 @@ export const getReviewByIdRequest = (
 export const createReviewRequest = (
 	productId: string,
 	body: any,
-	cookie?: string
+	cookie?: string,
 ): Promise<Response> => {
 	const req = request(app)
 		.post(`/api/products/${productId}/reviews`)
@@ -71,7 +67,7 @@ export const updateReviewRequest = (
 	productId: string,
 	reviewId: string,
 	body: any,
-	cookie?: string
+	cookie?: string,
 ): Promise<Response> => {
 	const req = request(app)
 		.patch(`/api/products/${productId}/reviews/${reviewId}`)
@@ -87,10 +83,10 @@ export const updateReviewRequest = (
 export const deleteReviewRequest = (
 	productId: string,
 	reviewId: string,
-	cookie?: string
+	cookie?: string,
 ): Promise<Response> => {
 	const req = request(app).delete(
-		`/api/products/${productId}/reviews/${reviewId}`
+		`/api/products/${productId}/reviews/${reviewId}`,
 	);
 
 	if (cookie) {
@@ -116,7 +112,7 @@ export const invalidReview = {
 
 export const getValidReviewData = (
 	rating: number = 4,
-	comment: string = "Great product!"
+	comment: string = "Great product!",
 ) => ({
 	rating,
 	comment,
@@ -160,7 +156,7 @@ export const getInvalidReviewData = () => [
 // ===============================================
 
 export const createTestUserAndGetCookie = async (
-	suffix: string = "reviewer"
+	suffix: string = "reviewer",
 ) => {
 	const user = getUniqueUser(suffix);
 	const signupResponse = await signupRequest(user);
@@ -170,26 +166,18 @@ export const createTestUserAndGetCookie = async (
 		throw new Error("Failed to create test user");
 	}
 	// Convert to plain object to ensure _id is accessible
-	const plainUser = userDoc.toObject
-		? userDoc.toObject()
-		: userDoc;
+	const plainUser = userDoc.toObject ? userDoc.toObject() : userDoc;
 	return { user: plainUser, cookie, userData: user };
 };
 
 export const createTestProduct = async () => {
-	const product = await productRepository.createOne(
-		validProduct
-	);
+	const product = await productRepository.createOne(validProduct);
 	if (!product) {
-		throw new Error(
-			"Failed to create test product - product is null"
-		);
+		throw new Error("Failed to create test product - product is null");
 	}
 	if (!product._id) {
 		console.log("Product created but _id is missing:", product);
-		throw new Error(
-			"Failed to create test product - _id is missing"
-		);
+		throw new Error("Failed to create test product - _id is missing");
 	}
 	// Ensure _id is accessible by converting to plain object or accessing directly
 	const result = product.toObject ? product.toObject() : product;
@@ -197,7 +185,7 @@ export const createTestProduct = async () => {
 		console.log("Result after toObject:", result);
 		console.log("Original product:", product);
 		throw new Error(
-			"Failed to create test product - _id lost after conversion"
+			"Failed to create test product - _id lost after conversion",
 		);
 	}
 	return result;
@@ -206,7 +194,7 @@ export const createTestProduct = async () => {
 export const createTestReview = async (
 	productId: string,
 	userId: string,
-	reviewData = validReview
+	reviewData = validReview,
 ) => {
 	const review = await reviewRepository.create({
 		...reviewData,
@@ -222,21 +210,15 @@ export const createTestReview = async (
 
 export const createMultipleTestReviews = async (
 	productId: string,
-	count: number = 3
+	count: number = 3,
 ) => {
 	const reviews = [];
 	for (let i = 0; i < count; i++) {
-		const { user } = await createTestUserAndGetCookie(
-			`reviewer${i}`
-		);
-		const review = await createTestReview(
-			productId,
-			user._id.toString(),
-			{
-				rating: Math.floor(Math.random() * 5) + 1,
-				comment: `Test review ${i + 1}`,
-			}
-		);
+		const { user } = await createTestUserAndGetCookie(`reviewer${i}`);
+		const review = await createTestReview(productId, user._id.toString(), {
+			rating: Math.floor(Math.random() * 5) + 1,
+			comment: `Test review ${i + 1}`,
+		});
 		reviews.push(review);
 	}
 	return reviews;
@@ -251,10 +233,7 @@ export const getInvalidId = () => "invalid-id";
 // ============ Assertion Helpers ===============
 // ===============================================
 
-export const expectValidReviewResponse = (
-	review: any,
-	expectedData?: any
-) => {
+export const expectValidReviewResponse = (review: any, expectedData?: any) => {
 	expect(review).toHaveProperty("_id");
 	expect(review).toHaveProperty("rating");
 	expect(review).toHaveProperty("comment");
@@ -269,9 +248,7 @@ export const expectValidReviewResponse = (
 	}
 };
 
-export const expectValidPaginationResponse = (
-	pagination: any
-) => {
+export const expectValidPaginationResponse = (pagination: any) => {
 	expect(pagination).toHaveProperty("page");
 	expect(pagination).toHaveProperty("limit");
 	expect(pagination).toHaveProperty("totalPages");
@@ -283,7 +260,7 @@ export const expectValidPaginationResponse = (
 export const expectProductRatingUpdate = async (
 	productId: string,
 	expectedRating?: number,
-	expectedNumReviews?: number
+	expectedNumReviews?: number,
 ) => {
 	const product = await productRepository.getOne(productId);
 	expect(product).toBeTruthy();

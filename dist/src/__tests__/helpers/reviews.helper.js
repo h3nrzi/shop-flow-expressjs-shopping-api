@@ -122,9 +122,7 @@ const createTestUserAndGetCookie = (...args_1) => __awaiter(void 0, [...args_1],
     if (!userDoc || !userDoc._id) {
         throw new Error("Failed to create test user");
     }
-    const plainUser = userDoc.toObject
-        ? userDoc.toObject()
-        : userDoc;
+    const plainUser = userDoc.toObject ? userDoc.toObject() : userDoc;
     return { user: plainUser, cookie, userData: user };
 });
 exports.createTestUserAndGetCookie = createTestUserAndGetCookie;

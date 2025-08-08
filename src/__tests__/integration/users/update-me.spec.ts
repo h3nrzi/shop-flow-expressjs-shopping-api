@@ -27,8 +27,7 @@ const validationCases = [
 		expectedError: "فرمت ایمیل کاربر معتبر نیست",
 	},
 	{
-		description:
-			"should return 400 if only name is provided but it is invalid",
+		description: "should return 400 if only name is provided but it is invalid",
 		body: {
 			name: "",
 		},
@@ -53,7 +52,7 @@ describe("PUT /api/users/update-me", () => {
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
-				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
+				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید",
 			);
 		});
 
@@ -76,7 +75,7 @@ describe("PUT /api/users/update-me", () => {
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
-				"کاربر متعلق به این توکن دیگر وجود ندارد!"
+				"کاربر متعلق به این توکن دیگر وجود ندارد!",
 			);
 		});
 
@@ -84,9 +83,7 @@ describe("PUT /api/users/update-me", () => {
 			const user = getUniqueUser("inactive");
 			const signupRes = await signupRequest(user);
 			const cookie = signupRes.headers["set-cookie"][0];
-			const repoUser = await userRepository.findByEmail(
-				user.email
-			);
+			const repoUser = await userRepository.findByEmail(user.email);
 			repoUser!.active = false;
 			await repoUser!.save({ validateBeforeSave: false });
 			const res = await updateMePasswordRequest(cookie, {
@@ -97,7 +94,7 @@ describe("PUT /api/users/update-me", () => {
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
-				"کاربری که به این ایمیل مرتبط است غیرفعال شده!"
+				"کاربری که به این ایمیل مرتبط است غیرفعال شده!",
 			);
 		});
 
@@ -125,16 +122,14 @@ describe("PUT /api/users/update-me", () => {
 	});
 
 	describe("should return 400, if", () => {
-		validationCases.forEach(
-			({ description, body, expectedError }) => {
-				it(description, async () => {
-					const res = await updateMeRequest(token, body);
-					expect(res.status).toBe(400);
-					expect(res.body.errors).toBeDefined();
-					expect(res.body.errors[0].message).toBe(expectedError);
-				});
-			}
-		);
+		validationCases.forEach(({ description, body, expectedError }) => {
+			it(description, async () => {
+				const res = await updateMeRequest(token, body);
+				expect(res.status).toBe(400);
+				expect(res.body.errors).toBeDefined();
+				expect(res.body.errors[0].message).toBe(expectedError);
+			});
+		});
 	});
 
 	describe("should return 422, if", () => {
@@ -145,7 +140,7 @@ describe("PUT /api/users/update-me", () => {
 			});
 			expect(res.status).toBe(422);
 			expect(res.body.errors[0].message).toBe(
-				"با این درخواست نمی توانید رمز عبور را آپدیت کنید"
+				"با این درخواست نمی توانید رمز عبور را آپدیت کنید",
 			);
 		});
 	});
@@ -157,12 +152,8 @@ describe("PUT /api/users/update-me", () => {
 				photo: "https://pic.com",
 			});
 			expect(res.status).toBe(200);
-			expect(res.body.data.updatedUser.email).toBe(
-				"newemail@test.com"
-			);
-			expect(res.body.data.updatedUser.photo).toBe(
-				"https://pic.com"
-			);
+			expect(res.body.data.updatedUser.email).toBe("newemail@test.com");
+			expect(res.body.data.updatedUser.photo).toBe("https://pic.com");
 		});
 	});
 });

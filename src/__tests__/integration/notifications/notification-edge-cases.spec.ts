@@ -28,14 +28,24 @@ describe("Notification Edge Cases", () => {
 		it("should handle rapid successive operations on the same notification", async () => {
 			// Create notification
 			const notificationData = getValidNotificationData(user._id);
-			const createRes = await createNotificationRequest(notificationData, adminCookie);
+			const createRes = await createNotificationRequest(
+				notificationData,
+				adminCookie,
+			);
 			const notificationId = createRes.body.data.notification._id;
 
 			// Perform rapid successive operations
 			const markReadPromise = markAsReadRequest(notificationId, userCookie);
-			const getNotificationPromise = require("@/__tests__/helpers/notifications.helper").getNotificationByIdRequest(notificationId, userCookie);
+			const getNotificationPromise =
+				require("@/__tests__/helpers/notifications.helper").getNotificationByIdRequest(
+					notificationId,
+					userCookie,
+				);
 
-			const [markReadRes, getRes] = await Promise.all([markReadPromise, getNotificationPromise]);
+			const [markReadRes, getRes] = await Promise.all([
+				markReadPromise,
+				getNotificationPromise,
+			]);
 
 			// Both operations should succeed
 			expect(markReadRes.status).toBe(200);
@@ -45,7 +55,10 @@ describe("Notification Edge Cases", () => {
 		it("should handle marking notification as read multiple times concurrently", async () => {
 			// Create notification
 			const notificationData = getValidNotificationData(user._id);
-			const createRes = await createNotificationRequest(notificationData, adminCookie);
+			const createRes = await createNotificationRequest(
+				notificationData,
+				adminCookie,
+			);
 			const notificationId = createRes.body.data.notification._id;
 
 			// Mark as read multiple times concurrently
@@ -64,17 +77,28 @@ describe("Notification Edge Cases", () => {
 		it("should handle deleting a notification while it's being marked as read", async () => {
 			// Create notification
 			const notificationData = getValidNotificationData(user._id);
-			const createRes = await createNotificationRequest(notificationData, adminCookie);
+			const createRes = await createNotificationRequest(
+				notificationData,
+				adminCookie,
+			);
 			const notificationId = createRes.body.data.notification._id;
 
 			// Try to mark as read and delete concurrently
 			const markReadPromise = markAsReadRequest(notificationId, userCookie);
-			const deletePromise = deleteNotificationRequest(notificationId, userCookie);
+			const deletePromise = deleteNotificationRequest(
+				notificationId,
+				userCookie,
+			);
 
-			const results = await Promise.allSettled([markReadPromise, deletePromise]);
+			const results = await Promise.allSettled([
+				markReadPromise,
+				deletePromise,
+			]);
 
 			// At least one should succeed, the other might fail due to race condition
-			const successCount = results.filter((result) => result.status === "fulfilled" && result.value.status < 400).length;
+			const successCount = results.filter(
+				(result) => result.status === "fulfilled" && result.value.status < 400,
+			).length;
 
 			expect(successCount).toBeGreaterThanOrEqual(1);
 		});
@@ -98,7 +122,10 @@ describe("Notification Edge Cases", () => {
 					tags: Array(50)
 						.fill(null)
 						.map((_, i) => `tag-${i}`),
-					details: "Very long description that contains a lot of information about this notification".repeat(20),
+					details:
+						"Very long description that contains a lot of information about this notification".repeat(
+							20,
+						),
 				},
 			};
 
@@ -107,7 +134,10 @@ describe("Notification Edge Cases", () => {
 				data: largeData,
 			};
 
-			const res = await createNotificationRequest(notificationData, adminCookie);
+			const res = await createNotificationRequest(
+				notificationData,
+				adminCookie,
+			);
 
 			expect(res.status).toBe(201);
 			const notification = res.body.data.notification;
@@ -133,7 +163,9 @@ describe("Notification Edge Cases", () => {
 			// All should succeed
 			results.forEach((res, index) => {
 				expect(res.status).toBe(201);
-				expect(res.body.data.notification.title).toBe(`Notification ${index + 1}`);
+				expect(res.body.data.notification.title).toBe(
+					`Notification ${index + 1}`,
+				);
 			});
 
 			// Verify user sees all notifications
@@ -148,10 +180,14 @@ describe("Notification Edge Cases", () => {
 			const specialCharsData = {
 				...getValidNotificationData(user._id),
 				title: "Special: ñáéíóú çñ 中文 العربية 🎉🚀💡",
-				message: "Message with special chars: @#$%^&*()_+-=[]{}|;':\",./<>? and emojis 😀🎊🌟🔥💯",
+				message:
+					"Message with special chars: @#$%^&*()_+-=[]{}|;':\",./<>? and emojis 😀🎊🌟🔥💯",
 			};
 
-			const res = await createNotificationRequest(specialCharsData, adminCookie);
+			const res = await createNotificationRequest(
+				specialCharsData,
+				adminCookie,
+			);
 
 			expect(res.status).toBe(201);
 			const notification = res.body.data.notification;
@@ -163,7 +199,8 @@ describe("Notification Edge Cases", () => {
 			const htmlLikeData = {
 				...getValidNotificationData(user._id),
 				title: "<div>HTML Title</div>",
-				message: "<script>alert('xss')</script><p>This looks like HTML but should be treated as text</p>",
+				message:
+					"<script>alert('xss')</script><p>This looks like HTML but should be treated as text</p>",
 			};
 
 			const res = await createNotificationRequest(htmlLikeData, adminCookie);
@@ -195,9 +232,16 @@ describe("Notification Edge Cases", () => {
 			// Create multiple notifications
 			const createPromises = Array(5)
 				.fill(null)
-				.map(() => createNotificationRequest(getValidNotificationData(user._id), adminCookie));
+				.map(() =>
+					createNotificationRequest(
+						getValidNotificationData(user._id),
+						adminCookie,
+					),
+				);
 			const createResults = await Promise.all(createPromises);
-			const notificationIds = createResults.map((res) => res.body.data.notification._id);
+			const notificationIds = createResults.map(
+				(res) => res.body.data.notification._id,
+			);
 
 			// Verify initial unread count
 			let unreadRes = await getUnreadCountRequest(userCookie);
@@ -228,8 +272,14 @@ describe("Notification Edge Cases", () => {
 
 		it("should handle concurrent read/unread count requests", async () => {
 			// Create notifications
-			await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
-			await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
+			await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
+			await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
 
 			// Make multiple concurrent unread count requests
 			const promises = Array(5)
@@ -258,7 +308,10 @@ describe("Notification Edge Cases", () => {
 				},
 			};
 
-			const createRes = await createNotificationRequest(originalData, adminCookie);
+			const createRes = await createNotificationRequest(
+				originalData,
+				adminCookie,
+			);
 			const notificationId = createRes.body.data.notification._id;
 
 			// Mark as read
@@ -304,7 +357,10 @@ describe("Notification Edge Cases", () => {
 
 			// Create and delete notifications rapidly
 			for (let i = 0; i < 10; i++) {
-				const createOp = createNotificationRequest(getValidNotificationData(user._id), adminCookie)
+				const createOp = createNotificationRequest(
+					getValidNotificationData(user._id),
+					adminCookie,
+				)
 					.then((res) => res.body.data.notification._id)
 					.then((id) => deleteNotificationRequest(id, userCookie));
 
@@ -314,24 +370,39 @@ describe("Notification Edge Cases", () => {
 			const results = await Promise.allSettled(operations);
 
 			// Most operations should succeed
-			const successCount = results.filter((result) => result.status === "fulfilled").length;
+			const successCount = results.filter(
+				(result) => result.status === "fulfilled",
+			).length;
 
 			expect(successCount).toBeGreaterThanOrEqual(8); // Allow some to fail due to race conditions
 		});
 
 		it("should handle concurrent notification list requests during modifications", async () => {
 			// Create initial notifications
-			await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
-			await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
+			await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
+			await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
 
 			// Start concurrent operations
 			const listPromises = Array(5)
 				.fill(null)
 				.map(() => getNotificationsRequest(userCookie));
-			const createPromise = createNotificationRequest(getValidNotificationData(user._id), adminCookie);
+			const createPromise = createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
 			const countPromise = getUnreadCountRequest(userCookie);
 
-			const results = await Promise.all([...listPromises, createPromise, countPromise]);
+			const results = await Promise.all([
+				...listPromises,
+				createPromise,
+				countPromise,
+			]);
 
 			// All list requests should succeed
 			listPromises.forEach((_, index) => {
@@ -349,7 +420,12 @@ describe("Notification Edge Cases", () => {
 			// Create many notifications
 			const promises = Array(50)
 				.fill(null)
-				.map(() => createNotificationRequest(getValidNotificationData(user._id), adminCookie));
+				.map(() =>
+					createNotificationRequest(
+						getValidNotificationData(user._id),
+						adminCookie,
+					),
+				);
 			await Promise.all(promises);
 
 			// Verify all created
@@ -357,7 +433,9 @@ describe("Notification Edge Cases", () => {
 			expect(listRes.body.data.notifications).toHaveLength(50);
 
 			// Bulk delete all
-			const { deleteAllNotificationsRequest } = await import("@/__tests__/helpers/notifications.helper");
+			const { deleteAllNotificationsRequest } = await import(
+				"@/__tests__/helpers/notifications.helper"
+			);
 			const deleteRes = await deleteAllNotificationsRequest(userCookie);
 			expect(deleteRes.status).toBe(204);
 

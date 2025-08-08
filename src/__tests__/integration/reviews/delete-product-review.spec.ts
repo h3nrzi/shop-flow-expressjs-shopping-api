@@ -18,9 +18,7 @@ describe("DELETE /api/products/:productId/reviews/:id", () => {
 
 	beforeEach(async () => {
 		product = await createTestProduct();
-		const testUser = await createTestUserAndGetCookie(
-			"reviewer"
-		);
+		const testUser = await createTestUserAndGetCookie("reviewer");
 		user = testUser.user;
 		cookie = testUser.cookie;
 
@@ -28,7 +26,7 @@ describe("DELETE /api/products/:productId/reviews/:id", () => {
 		review = await createTestReview(
 			product._id.toString(),
 			user._id.toString(),
-			{ rating: 4, comment: "Good product" }
+			{ rating: 4, comment: "Good product" },
 		);
 	});
 
@@ -36,12 +34,12 @@ describe("DELETE /api/products/:productId/reviews/:id", () => {
 		it("user is not authenticated (no token)", async () => {
 			const res = await deleteReviewRequest(
 				product._id.toString(),
-				review._id.toString()
+				review._id.toString(),
 			);
 
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].message).toBe(
-				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
+				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید",
 			);
 		});
 
@@ -50,12 +48,12 @@ describe("DELETE /api/products/:productId/reviews/:id", () => {
 			const res = await deleteReviewRequest(
 				product._id.toString(),
 				review._id.toString(),
-				invalidCookie
+				invalidCookie,
 			);
 
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].message).toBe(
-				"کاربر متعلق به این توکن دیگر وجود ندارد!"
+				"کاربر متعلق به این توکن دیگر وجود ندارد!",
 			);
 		});
 	});
@@ -65,26 +63,22 @@ describe("DELETE /api/products/:productId/reviews/:id", () => {
 			const res = await deleteReviewRequest(
 				getInvalidId(),
 				review._id.toString(),
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(400);
-			expect(res.body.errors[0].message).toBe(
-				"شناسه نظر معتبر نیست"
-			);
+			expect(res.body.errors[0].message).toBe("شناسه نظر معتبر نیست");
 		});
 
 		it("review ID is not a valid ObjectId", async () => {
 			const res = await deleteReviewRequest(
 				product._id.toString(),
 				getInvalidId(),
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(400);
-			expect(res.body.errors[0].message).toBe(
-				"شناسه نظر معتبر نیست"
-			);
+			expect(res.body.errors[0].message).toBe("شناسه نظر معتبر نیست");
 		});
 	});
 
@@ -98,14 +92,14 @@ describe("DELETE /api/products/:productId/reviews/:id", () => {
 			const anotherReview = await createTestReview(
 				product._id.toString(),
 				anotherUser._id.toString(),
-				{ rating: 2, comment: "Poor product" }
+				{ rating: 2, comment: "Poor product" },
 			);
 
 			// Try to delete another user's review
 			const res = await deleteReviewRequest(
 				product._id.toString(),
 				anotherReview._id.toString(),
-				cookie // Using original user's cookie
+				cookie, // Using original user's cookie
 			);
 
 			expect(res.status).toBe(403);
@@ -118,7 +112,7 @@ describe("DELETE /api/products/:productId/reviews/:id", () => {
 			const res = await deleteReviewRequest(
 				nonExistentProductId,
 				review._id.toString(),
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(404);
@@ -129,13 +123,11 @@ describe("DELETE /api/products/:productId/reviews/:id", () => {
 			const res = await deleteReviewRequest(
 				product._id.toString(),
 				nonExistentReviewId,
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(404);
-			expect(res.body.errors[0].message).toBe(
-				"نظری با این شناسه یافت نشد"
-			);
+			expect(res.body.errors[0].message).toBe("نظری با این شناسه یافت نشد");
 		});
 
 		it("review has already been deleted", async () => {
@@ -143,7 +135,7 @@ describe("DELETE /api/products/:productId/reviews/:id", () => {
 			const firstDeleteRes = await deleteReviewRequest(
 				product._id.toString(),
 				review._id.toString(),
-				cookie
+				cookie,
 			);
 			expect(firstDeleteRes.status).toBe(204);
 
@@ -151,12 +143,12 @@ describe("DELETE /api/products/:productId/reviews/:id", () => {
 			const secondDeleteRes = await deleteReviewRequest(
 				product._id.toString(),
 				review._id.toString(),
-				cookie
+				cookie,
 			);
 
 			expect(secondDeleteRes.status).toBe(404);
 			expect(secondDeleteRes.body.errors[0].message).toBe(
-				"نظری با این شناسه یافت نشد"
+				"نظری با این شناسه یافت نشد",
 			);
 		});
 	});
@@ -166,7 +158,7 @@ describe("DELETE /api/products/:productId/reviews/:id", () => {
 			const res = await deleteReviewRequest(
 				product._id.toString(),
 				review._id.toString(),
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(204);
@@ -179,7 +171,7 @@ describe("DELETE /api/products/:productId/reviews/:id", () => {
 			const deleteRes = await deleteReviewRequest(
 				product._id.toString(),
 				review._id.toString(),
-				cookie
+				cookie,
 			);
 			expect(deleteRes.status).toBe(204);
 
@@ -187,98 +179,69 @@ describe("DELETE /api/products/:productId/reviews/:id", () => {
 			const getRes = await getReviewByIdRequest(
 				product._id.toString(),
 				review._id.toString(),
-				cookie
+				cookie,
 			);
 
 			expect(getRes.status).toBe(404);
-			expect(getRes.body.errors[0].message).toBe(
-				"نظری با این شناسه یافت نشد"
-			);
+			expect(getRes.body.errors[0].message).toBe("نظری با این شناسه یافت نشد");
 		});
 
 		it("product rating and numReviews are updated after review deletion", async () => {
 			// Verify initial product state (should have rating 4 and 1 review)
-			await expectProductRatingUpdate(
-				product._id.toString(),
-				4,
-				1
-			);
+			await expectProductRatingUpdate(product._id.toString(), 4, 1);
 
 			// Delete the review
 			const res = await deleteReviewRequest(
 				product._id.toString(),
 				review._id.toString(),
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(204);
 
 			// Verify product rating and numReviews are updated (should be 0 and 0)
-			await expectProductRatingUpdate(
-				product._id.toString(),
-				0,
-				0
-			);
+			await expectProductRatingUpdate(product._id.toString(), 0, 0);
 		});
 
 		it("product average rating is recalculated correctly after deletion with multiple reviews", async () => {
 			// Create second review with rating 2
-			const { user: user2 } = await createTestUserAndGetCookie(
-				"reviewer2"
-			);
-			await createTestReview(
-				product._id.toString(),
-				user2._id.toString(),
-				{ rating: 2, comment: "Poor product" }
-			);
+			const { user: user2 } = await createTestUserAndGetCookie("reviewer2");
+			await createTestReview(product._id.toString(), user2._id.toString(), {
+				rating: 2,
+				comment: "Poor product",
+			});
 
 			// Initial average should be (4 + 2) / 2 = 3
-			await expectProductRatingUpdate(
-				product._id.toString(),
-				3,
-				2
-			);
+			await expectProductRatingUpdate(product._id.toString(), 3, 2);
 
 			// Delete first review (rating 4)
 			const res = await deleteReviewRequest(
 				product._id.toString(),
 				review._id.toString(),
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(204);
 
 			// New average should be 2 (only second review remains)
-			await expectProductRatingUpdate(
-				product._id.toString(),
-				2,
-				1
-			);
+			await expectProductRatingUpdate(product._id.toString(), 2, 1);
 		});
 
 		it("deleting last review resets product rating to 0", async () => {
 			// Verify initial state
-			await expectProductRatingUpdate(
-				product._id.toString(),
-				4,
-				1
-			);
+			await expectProductRatingUpdate(product._id.toString(), 4, 1);
 
 			// Delete the only review
 			const res = await deleteReviewRequest(
 				product._id.toString(),
 				review._id.toString(),
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(204);
 
 			// Product should have no rating and no reviews
-			await expectProductRatingUpdate(
-				product._id.toString(),
-				0,
-				0
-			);
+			await expectProductRatingUpdate(product._id.toString(), 0, 0);
 		});
 
 		it("user can delete their own review", async () => {
@@ -286,18 +249,16 @@ describe("DELETE /api/products/:productId/reviews/:id", () => {
 			const getRes = await getReviewByIdRequest(
 				product._id.toString(),
 				review._id.toString(),
-				cookie
+				cookie,
 			);
 			expect(getRes.status).toBe(200);
-			expect(getRes.body.data.review.user._id).toBe(
-				user._id.toString()
-			);
+			expect(getRes.body.data.review.user._id).toBe(user._id.toString());
 
 			// Delete the review
 			const deleteRes = await deleteReviewRequest(
 				product._id.toString(),
 				review._id.toString(),
-				cookie
+				cookie,
 			);
 
 			expect(deleteRes.status).toBe(204);
@@ -311,13 +272,13 @@ describe("DELETE /api/products/:productId/reviews/:id", () => {
 				const testReview = await createTestReview(
 					product._id.toString(),
 					user._id.toString(),
-					{ rating, comment: `Review with rating ${rating}` }
+					{ rating, comment: `Review with rating ${rating}` },
 				);
 
 				const res = await deleteReviewRequest(
 					product._id.toString(),
 					testReview._id.toString(),
-					cookie
+					cookie,
 				);
 
 				expect(res.status).toBe(204);
@@ -331,13 +292,13 @@ describe("DELETE /api/products/:productId/reviews/:id", () => {
 			const longCommentReview = await createTestReview(
 				product._id.toString(),
 				user._id.toString(),
-				{ rating: 4, comment: longComment }
+				{ rating: 4, comment: longComment },
 			);
 
 			const res = await deleteReviewRequest(
 				product._id.toString(),
 				longCommentReview._id.toString(),
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(204);
@@ -349,13 +310,13 @@ describe("DELETE /api/products/:productId/reviews/:id", () => {
 			const specialReview = await createTestReview(
 				product._id.toString(),
 				user._id.toString(),
-				{ rating: 5, comment: specialComment }
+				{ rating: 5, comment: specialComment },
 			);
 
 			const res = await deleteReviewRequest(
 				product._id.toString(),
 				specialReview._id.toString(),
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(204);
@@ -366,13 +327,13 @@ describe("DELETE /api/products/:productId/reviews/:id", () => {
 			const unicodeReview = await createTestReview(
 				product._id.toString(),
 				user._id.toString(),
-				{ rating: 5, comment: unicodeComment }
+				{ rating: 5, comment: unicodeComment },
 			);
 
 			const res = await deleteReviewRequest(
 				product._id.toString(),
 				unicodeReview._id.toString(),
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(204);
@@ -384,12 +345,12 @@ describe("DELETE /api/products/:productId/reviews/:id", () => {
 				deleteReviewRequest(
 					product._id.toString(),
 					review._id.toString(),
-					cookie
+					cookie,
 				),
 				deleteReviewRequest(
 					product._id.toString(),
 					review._id.toString(),
-					cookie
+					cookie,
 				),
 			]);
 
@@ -404,47 +365,31 @@ describe("DELETE /api/products/:productId/reviews/:id", () => {
 			const anotherReview = await createTestReview(
 				anotherProduct._id.toString(),
 				user._id.toString(),
-				{ rating: 3, comment: "Different product review" }
+				{ rating: 3, comment: "Different product review" },
 			);
 
 			// Verify both products have reviews
-			await expectProductRatingUpdate(
-				product._id.toString(),
-				4,
-				1
-			);
-			await expectProductRatingUpdate(
-				anotherProduct._id.toString(),
-				3,
-				1
-			);
+			await expectProductRatingUpdate(product._id.toString(), 4, 1);
+			await expectProductRatingUpdate(anotherProduct._id.toString(), 3, 1);
 
 			// Delete review from first product
 			const res = await deleteReviewRequest(
 				product._id.toString(),
 				review._id.toString(),
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(204);
 
 			// First product should have no reviews, second should be unchanged
-			await expectProductRatingUpdate(
-				product._id.toString(),
-				0,
-				0
-			);
-			await expectProductRatingUpdate(
-				anotherProduct._id.toString(),
-				3,
-				1
-			);
+			await expectProductRatingUpdate(product._id.toString(), 0, 0);
+			await expectProductRatingUpdate(anotherProduct._id.toString(), 3, 1);
 
 			// Other product's review should still exist
 			const getOtherRes = await getReviewByIdRequest(
 				anotherProduct._id.toString(),
 				anotherReview._id.toString(),
-				cookie
+				cookie,
 			);
 			expect(getOtherRes.status).toBe(200);
 		});
@@ -460,41 +405,33 @@ describe("DELETE /api/products/:productId/reviews/:id", () => {
 			const user2Review = await createTestReview(
 				product._id.toString(),
 				user2Id.toString(),
-				{ rating: 2, comment: "Different user review" }
+				{ rating: 2, comment: "Different user review" },
 			);
 
 			// Verify product has 2 reviews with average (4 + 2) / 2 = 3
-			await expectProductRatingUpdate(
-				product._id.toString(),
-				3,
-				2
-			);
+			await expectProductRatingUpdate(product._id.toString(), 3, 2);
 
 			// Delete first user's review
 			const res = await deleteReviewRequest(
 				product._id.toString(),
 				review._id.toString(),
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(204);
 
 			// Product should now have only second user's review
-			await expectProductRatingUpdate(
-				product._id.toString(),
-				2,
-				1
-			);
+			await expectProductRatingUpdate(product._id.toString(), 2, 1);
 
 			// Second user's review should still exist
 			const getUser2ReviewRes = await getReviewByIdRequest(
 				product._id.toString(),
 				user2Review._id.toString(),
-				cookie2
+				cookie2,
 			);
 			expect(getUser2ReviewRes.status).toBe(200);
 			expect(getUser2ReviewRes.body.data.review.user._id).toBe(
-				user2._id.toString()
+				user2._id.toString(),
 			);
 		});
 	});
@@ -508,14 +445,14 @@ describe("DELETE /api/products/:productId/reviews/:id", () => {
 			const testReview = await createTestReview(
 				product._id.toString(),
 				user._id.toString(),
-				{ rating: 4, comment: "Test review" }
+				{ rating: 4, comment: "Test review" },
 			);
 
 			// User should be able to delete their own review
 			const res = await deleteReviewRequest(
 				product._id.toString(),
 				testReview._id.toString(),
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(204);
@@ -526,7 +463,7 @@ describe("DELETE /api/products/:productId/reviews/:id", () => {
 			const res = await deleteReviewRequest(
 				product._id.toString(),
 				review._id.toString(),
-				malformedCookie
+				malformedCookie,
 			);
 
 			expect(res.status).toBe(401);
@@ -539,7 +476,7 @@ describe("DELETE /api/products/:productId/reviews/:id", () => {
 			const res = await deleteReviewRequest(
 				product._id.toString(),
 				review._id.toString(),
-				expiredCookie
+				expiredCookie,
 			);
 
 			expect(res.status).toBe(401);
@@ -554,7 +491,7 @@ describe("DELETE /api/products/:productId/reviews/:id", () => {
 			const deleteRes = await deleteReviewRequest(
 				product._id.toString(),
 				reviewId,
-				cookie
+				cookie,
 			);
 			expect(deleteRes.status).toBe(204);
 
@@ -562,7 +499,7 @@ describe("DELETE /api/products/:productId/reviews/:id", () => {
 			const getRes = await getReviewByIdRequest(
 				product._id.toString(),
 				reviewId,
-				cookie
+				cookie,
 			);
 			expect(getRes.status).toBe(404);
 		});
@@ -577,21 +514,17 @@ describe("DELETE /api/products/:productId/reviews/:id", () => {
 			const review2 = await createTestReview(
 				product._id.toString(),
 				user2._id.toString(),
-				{ rating: 3, comment: "Average" }
+				{ rating: 3, comment: "Average" },
 			);
 
 			const review3 = await createTestReview(
 				product._id.toString(),
 				user3._id.toString(),
-				{ rating: 5, comment: "Excellent" }
+				{ rating: 5, comment: "Excellent" },
 			);
 
 			// Verify initial state: (4 + 3 + 5) / 3 = 4
-			await expectProductRatingUpdate(
-				product._id.toString(),
-				4,
-				3
-			);
+			await expectProductRatingUpdate(product._id.toString(), 4, 3);
 
 			// Delete reviews one by one and verify consistency
 
@@ -599,40 +532,28 @@ describe("DELETE /api/products/:productId/reviews/:id", () => {
 			const res1 = await deleteReviewRequest(
 				product._id.toString(),
 				review._id.toString(),
-				cookie
+				cookie,
 			);
 			expect(res1.status).toBe(204);
-			await expectProductRatingUpdate(
-				product._id.toString(),
-				4,
-				2
-			);
+			await expectProductRatingUpdate(product._id.toString(), 4, 2);
 
 			// Delete second review: 5 / 1 = 5
 			const res2 = await deleteReviewRequest(
 				product._id.toString(),
 				review2._id.toString(),
-				cookie2
+				cookie2,
 			);
 			expect(res2.status).toBe(204);
-			await expectProductRatingUpdate(
-				product._id.toString(),
-				5,
-				1
-			);
+			await expectProductRatingUpdate(product._id.toString(), 5, 1);
 
 			// Delete third review: 0 / 0 = 0
 			const res3 = await deleteReviewRequest(
 				product._id.toString(),
 				review3._id.toString(),
-				cookie3
+				cookie3,
 			);
 			expect(res3.status).toBe(204);
-			await expectProductRatingUpdate(
-				product._id.toString(),
-				0,
-				0
-			);
+			await expectProductRatingUpdate(product._id.toString(), 0, 0);
 		});
 	});
 });

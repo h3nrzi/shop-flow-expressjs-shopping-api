@@ -6,12 +6,10 @@ import { UpdateProductDto } from "./dtos/update-product.dto";
 import { NotFoundError } from "../../errors/not-found-error";
 
 export class ProductService {
-	constructor(
-		private readonly productRepository: ProductRepository
-	) {}
+	constructor(private readonly productRepository: ProductRepository) {}
 
 	async getAllProducts(
-		query: any
+		query: any,
 	): Promise<{ pagination: any; products: IProductDoc[] }> {
 		const { pagination, skip, total, products } =
 			await this.productRepository.getAll(query);
@@ -25,39 +23,32 @@ export class ProductService {
 
 	async getProductById(
 		id: string,
-		populate?: PopulateOptions
+		populate?: PopulateOptions,
 	): Promise<IProductDoc> {
-		const product = await this.productRepository.getOne(
-			id,
-			populate
-		);
+		const product = await this.productRepository.getOne(id, populate);
 		if (!product) {
-			throw new NotFoundError(
-				"هیچ محصولی با این شناسه یافت نشد"
-			);
+			throw new NotFoundError("هیچ محصولی با این شناسه یافت نشد");
 		}
 
 		return product;
 	}
 
 	async createProduct(
-		createProductDto: CreateProductDto
+		createProductDto: CreateProductDto,
 	): Promise<IProductDoc> {
 		return this.productRepository.createOne(createProductDto);
 	}
 
 	async updateProduct(
 		id: string,
-		updateProductDto: UpdateProductDto
+		updateProductDto: UpdateProductDto,
 	): Promise<IProductDoc> {
 		const product = await this.productRepository.updateOne(
 			id,
-			updateProductDto
+			updateProductDto,
 		);
 		if (!product) {
-			throw new NotFoundError(
-				"هیچ محصولی با این شناسه یافت نشد"
-			);
+			throw new NotFoundError("هیچ محصولی با این شناسه یافت نشد");
 		}
 
 		return product;
@@ -66,9 +57,7 @@ export class ProductService {
 	async deleteProduct(id: string): Promise<IProductDoc> {
 		const product = await this.productRepository.deleteOne(id);
 		if (!product) {
-			throw new NotFoundError(
-				"هیچ محصولی با این شناسه یافت نشد"
-			);
+			throw new NotFoundError("هیچ محصولی با این شناسه یافت نشد");
 		}
 
 		return product;

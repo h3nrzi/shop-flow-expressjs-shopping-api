@@ -20,9 +20,7 @@ beforeEach(async () => {
 	const admin = getUniqueUser("admin");
 	const adminRes = await signupRequest(admin);
 	adminCookie = adminRes.headers["set-cookie"][0];
-	const adminUser = await userRepository.findByEmail(
-		admin.email
-	);
+	const adminUser = await userRepository.findByEmail(admin.email);
 	adminUser!.role = "admin";
 	await adminUser!.save({ validateBeforeSave: false });
 });
@@ -34,15 +32,12 @@ describe("POST /api/admin/products", () => {
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
-				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
+				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید",
 			);
 		});
 
 		it("If token is invalid", async () => {
-			const res = await createProductRequest(
-				"jwt=invalid-token",
-				validProduct
-			);
+			const res = await createProductRequest("jwt=invalid-token", validProduct);
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe("توکن معتبر نیست");
@@ -50,14 +45,11 @@ describe("POST /api/admin/products", () => {
 
 		it("If user for token does not exist", async () => {
 			const fakeToken = getInvalidToken();
-			const res = await createProductRequest(
-				`jwt=${fakeToken}`,
-				validProduct
-			);
+			const res = await createProductRequest(`jwt=${fakeToken}`, validProduct);
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
-				"کاربر متعلق به این توکن دیگر وجود ندارد!"
+				"کاربر متعلق به این توکن دیگر وجود ندارد!",
 			);
 		});
 
@@ -65,19 +57,14 @@ describe("POST /api/admin/products", () => {
 			const user = getUniqueUser("inactive");
 			const signupRes = await signupRequest(user);
 			const cookie = signupRes.headers["set-cookie"][0];
-			const repoUser = await userRepository.findByEmail(
-				user.email
-			);
+			const repoUser = await userRepository.findByEmail(user.email);
 			repoUser!.active = false;
 			await repoUser!.save({ validateBeforeSave: false });
-			const res = await createProductRequest(
-				cookie,
-				validProduct
-			);
+			const res = await createProductRequest(cookie, validProduct);
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
-				"کاربری که به این ایمیل مرتبط است غیرفعال شده!"
+				"کاربری که به این ایمیل مرتبط است غیرفعال شده!",
 			);
 		});
 
@@ -103,24 +90,18 @@ describe("POST /api/admin/products", () => {
 		// });
 
 		it("If user's role is not admin", async () => {
-			const res = await createProductRequest(
-				userCookie,
-				validProduct
-			);
+			const res = await createProductRequest(userCookie, validProduct);
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
-				"شما اجازه انجام این عمل را ندارید!"
+				"شما اجازه انجام این عمل را ندارید!",
 			);
 		});
 	});
 
 	describe("should return 201", () => {
 		it("If user is admin", async () => {
-			const res = await createProductRequest(
-				adminCookie,
-				validProduct
-			);
+			const res = await createProductRequest(adminCookie, validProduct);
 			expect(res.status).toBe(201);
 			expect(res.body.data.product).toBeDefined();
 		});

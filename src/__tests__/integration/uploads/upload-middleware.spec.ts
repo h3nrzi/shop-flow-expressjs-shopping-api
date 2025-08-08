@@ -22,9 +22,7 @@ describe("Upload Middleware Tests", () => {
 	let cookie: string;
 
 	beforeEach(async () => {
-		const testUser = await createTestUserAndGetCookie(
-			"middleware"
-		);
+		const testUser = await createTestUserAndGetCookie("middleware");
 		cookie = testUser.cookie;
 	});
 
@@ -35,13 +33,11 @@ describe("Upload Middleware Tests", () => {
 				invalidBuffer,
 				"test.txt",
 				"text/plain",
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(400);
-			expect(res.body.errors[0].message).toBe(
-				"تصویر فقط پشتیبانی میشود!"
-			);
+			expect(res.body.errors[0].message).toBe("تصویر فقط پشتیبانی میشود!");
 		});
 
 		it("should reject files with invalid MIME types", async () => {
@@ -50,13 +46,11 @@ describe("Upload Middleware Tests", () => {
 				invalidBuffer,
 				"test.png",
 				"application/octet-stream",
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(400);
-			expect(res.body.errors[0].message).toBe(
-				"تصویر فقط پشتیبانی میشود!"
-			);
+			expect(res.body.errors[0].message).toBe("تصویر فقط پشتیبانی میشود!");
 		});
 
 		it("should reject files with mismatched extension and MIME type", async () => {
@@ -65,13 +59,11 @@ describe("Upload Middleware Tests", () => {
 				invalidBuffer,
 				"test.png",
 				"text/plain",
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(400);
-			expect(res.body.errors[0].message).toBe(
-				"تصویر فقط پشتیبانی میشود!"
-			);
+			expect(res.body.errors[0].message).toBe("تصویر فقط پشتیبانی میشود!");
 		});
 
 		it("should accept valid image extensions and MIME types", async () => {
@@ -92,7 +84,7 @@ describe("Upload Middleware Tests", () => {
 					validBuffer,
 					`test.${ext}`,
 					mime,
-					cookie
+					cookie,
 				);
 
 				expect(res.status).toBe(201);
@@ -110,7 +102,7 @@ describe("Upload Middleware Tests", () => {
 				imageBuffer,
 				"test.png",
 				"image/png",
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(201);
@@ -130,7 +122,7 @@ describe("Upload Middleware Tests", () => {
 				imageBuffer,
 				"test.png",
 				"image/png",
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(201);

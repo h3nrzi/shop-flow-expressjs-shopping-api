@@ -9,9 +9,7 @@ export class UploadService {
 		});
 	}
 
-	async uploadImage(
-		fileUri: string,
-	): Promise<UploadApiResponse> {
+	async uploadImage(fileUri: string): Promise<UploadApiResponse> {
 		return await cloudinary.uploader.upload(fileUri, {
 			folder: "Azooghe",
 		});

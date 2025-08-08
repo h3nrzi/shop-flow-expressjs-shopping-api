@@ -50,9 +50,7 @@ const editProduct = (data, productId) => __awaiter(void 0, void 0, void 0, funct
             window.location.href = "/admin";
     }
     catch (err) {
-        alert(((_b = (_a = err.response) === null || _a === void 0 ? void 0 : _a.data) === null || _b === void 0 ? void 0 : _b.message) ||
-            err.message ||
-            "An error occurred");
+        alert(((_b = (_a = err.response) === null || _a === void 0 ? void 0 : _a.data) === null || _b === void 0 ? void 0 : _b.message) || err.message || "An error occurred");
     }
 });
 exports.editProduct = editProduct;
@@ -85,7 +83,7 @@ const logout = () => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.logout = logout;
-const uploadImage = formData => {
+const uploadImage = (formData) => {
     return axios.post("/api/uploads", formData, {
         headers: { "Content-Type": "multipart/form-data" },
         withCredentials: true,

@@ -4,12 +4,10 @@ import { Request, Response } from "express";
 export class ReviewController {
 	constructor(private readonly reviewService: ReviewService) {}
 
-	async getAllReviews(
-		req: Request,
-		res: Response
-	): Promise<void> {
-		const { pagination, reviews } =
-			await this.reviewService.getAllReviews(req.query);
+	async getAllReviews(req: Request, res: Response): Promise<void> {
+		const { pagination, reviews } = await this.reviewService.getAllReviews(
+			req.query,
+		);
 
 		res.status(200).json({
 			status: "success",
@@ -19,10 +17,7 @@ export class ReviewController {
 		});
 	}
 
-	async getReviewById(
-		req: Request,
-		res: Response
-	): Promise<void> {
+	async getReviewById(req: Request, res: Response): Promise<void> {
 		const { id } = req.params;
 		const review = await this.reviewService.getReviewById(id);
 
@@ -32,13 +27,8 @@ export class ReviewController {
 		});
 	}
 
-	async createReview(
-		req: Request,
-		res: Response
-	): Promise<void> {
-		const review = await this.reviewService.createReview(
-			req.body
-		);
+	async createReview(req: Request, res: Response): Promise<void> {
+		const review = await this.reviewService.createReview(req.body);
 
 		res.status(201).json({
 			status: "success",
@@ -46,15 +36,9 @@ export class ReviewController {
 		});
 	}
 
-	async updateReview(
-		req: Request,
-		res: Response
-	): Promise<void> {
+	async updateReview(req: Request, res: Response): Promise<void> {
 		const { id } = req.params;
-		const review = await this.reviewService.updateReview(
-			id,
-			req.body
-		);
+		const review = await this.reviewService.updateReview(id, req.body);
 
 		res.status(200).json({
 			status: "success",
@@ -62,10 +46,7 @@ export class ReviewController {
 		});
 	}
 
-	async deleteReview(
-		req: Request,
-		res: Response
-	): Promise<void> {
+	async deleteReview(req: Request, res: Response): Promise<void> {
 		const { id } = req.params;
 		const { productId } = req.body;
 		const userId = req.user._id;

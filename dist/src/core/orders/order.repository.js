@@ -18,9 +18,9 @@ class OrderRepository {
     constructor(orderModel) {
         this.orderModel = orderModel;
     }
-    findAll(query, initialFilter) {
+    findAll(query, initialFilter, populate) {
         return __awaiter(this, void 0, void 0, function* () {
-            const features = new apiFeatures_1.default(this.orderModel, query, initialFilter);
+            const features = new apiFeatures_1.default(this.orderModel, query, initialFilter, populate);
             const { pagination, skip, total } = yield features
                 .filter()
                 .search()
@@ -28,7 +28,12 @@ class OrderRepository {
                 .limitFields()
                 .pagination();
             const orders = yield features.dbQuery;
-            return { pagination, skip, total, orders };
+            return {
+                pagination,
+                skip,
+                total,
+                orders,
+            };
         });
     }
     findAllTops(limit) {
@@ -72,11 +77,10 @@ class OrderRepository {
     }
     create(payload, userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!payload.orderItems ||
-                !Array.isArray(payload.orderItems)) {
+            if (!payload.orderItems || !Array.isArray(payload.orderItems)) {
                 throw new Error("orderItems is required and must be an array");
             }
-            return this.orderModel.create(Object.assign(Object.assign({}, payload), { user: userId, orderItems: payload.orderItems.map(item => ({
+            return this.orderModel.create(Object.assign(Object.assign({}, payload), { user: userId, orderItems: payload.orderItems.map((item) => ({
                     product: item.productId,
                     qty: item.qty,
                 })) }));

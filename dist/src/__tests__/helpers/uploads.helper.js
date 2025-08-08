@@ -336,9 +336,7 @@ const createTestUserAndGetCookie = (...args_1) => __awaiter(void 0, [...args_1],
         password: "test123456",
         passwordConfirmation: "test123456",
     };
-    const res = yield (0, supertest_1.default)(app_1.default)
-        .post("/api/users/signup")
-        .send(user);
+    const res = yield (0, supertest_1.default)(app_1.default).post("/api/users/signup").send(user);
     return {
         user,
         cookie: res.headers["set-cookie"][0],

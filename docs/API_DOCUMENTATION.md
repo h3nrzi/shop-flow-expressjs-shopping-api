@@ -271,12 +271,7 @@ The API supports two authentication methods:
 {
 	"CreateUserDto": {
 		"type": "object",
-		"required": [
-			"name",
-			"email",
-			"password",
-			"passwordConfirmation"
-		],
+		"required": ["name", "email", "password", "passwordConfirmation"],
 		"properties": {
 			"name": {
 				"type": "string",
@@ -720,11 +715,7 @@ import swaggerSpec from "../swagger/config";
 
 module.exports = (app: Express) => {
 	// Swagger UI route
-	app.use(
-		"/api-docs",
-		swaggerUi.serve,
-		swaggerUi.setup(swaggerSpec)
-	);
+	app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 };
 ```
 

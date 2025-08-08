@@ -33,17 +33,13 @@ class UserRepository {
     }
     findById(userId, select) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield this.userModel
-                .findById(userId)
-                .select(select !== null && select !== void 0 ? select : "");
+            const user = yield this.userModel.findById(userId).select(select !== null && select !== void 0 ? select : "");
             return user;
         });
     }
     findByEmail(email, select) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield this.userModel
-                .findOne({ email })
-                .select(select !== null && select !== void 0 ? select : "");
+            const user = yield this.userModel.findOne({ email }).select(select !== null && select !== void 0 ? select : "");
             return user;
         });
     }

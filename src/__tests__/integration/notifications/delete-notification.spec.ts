@@ -30,7 +30,10 @@ describe("DELETE /api/notifications/:id", () => {
 
 		// Create a test notification for the user
 		const notificationData = getValidNotificationData(user._id);
-		const createRes = await createNotificationRequest(notificationData, adminCookie);
+		const createRes = await createNotificationRequest(
+			notificationData,
+			adminCookie,
+		);
 		notificationId = createRes.body.data.notification._id;
 	});
 
@@ -39,15 +42,22 @@ describe("DELETE /api/notifications/:id", () => {
 			const res = await deleteNotificationRequest(notificationId);
 
 			expect(res.status).toBe(401);
-			expect(res.body.errors[0].message).toBe("شما وارد نشده اید! لطفا برای دسترسی وارد شوید");
+			expect(res.body.errors[0].message).toBe(
+				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید",
+			);
 		});
 
 		it("user is not authenticated (invalid token)", async () => {
 			const invalidCookie = `jwt=${getInvalidToken()}`;
-			const res = await deleteNotificationRequest(notificationId, invalidCookie);
+			const res = await deleteNotificationRequest(
+				notificationId,
+				invalidCookie,
+			);
 
 			expect(res.status).toBe(401);
-			expect(res.body.errors[0].message).toBe("کاربر متعلق به این توکن دیگر وجود ندارد!");
+			expect(res.body.errors[0].message).toBe(
+				"کاربر متعلق به این توکن دیگر وجود ندارد!",
+			);
 		});
 	});
 
@@ -62,14 +72,22 @@ describe("DELETE /api/notifications/:id", () => {
 		it("user tries to delete another user's notification", async () => {
 			// Create notification for admin
 			const adminNotificationData = getValidNotificationData(admin._id);
-			const adminCreateRes = await createNotificationRequest(adminNotificationData, adminCookie);
+			const adminCreateRes = await createNotificationRequest(
+				adminNotificationData,
+				adminCookie,
+			);
 			const adminNotificationId = adminCreateRes.body.data.notification._id;
 
 			// User tries to delete admin's notification
-			const res = await deleteNotificationRequest(adminNotificationId, userCookie);
+			const res = await deleteNotificationRequest(
+				adminNotificationId,
+				userCookie,
+			);
 
 			expect(res.status).toBe(400);
-			expect(res.body.errors[0].message).toBe("شما مجاز به مشاهده این اعلان نیستید");
+			expect(res.body.errors[0].message).toBe(
+				"شما مجاز به مشاهده این اعلان نیستید",
+			);
 		});
 	});
 
@@ -86,7 +104,10 @@ describe("DELETE /api/notifications/:id", () => {
 	describe("should return 204, if", () => {
 		it("notification is deleted successfully", async () => {
 			// Verify notification exists before deletion
-			const beforeRes = await getNotificationByIdRequest(notificationId, userCookie);
+			const beforeRes = await getNotificationByIdRequest(
+				notificationId,
+				userCookie,
+			);
 			expect(beforeRes.status).toBe(200);
 
 			const res = await deleteNotificationRequest(notificationId, userCookie);
@@ -95,14 +116,23 @@ describe("DELETE /api/notifications/:id", () => {
 			expect(res.body.status).toBe("success");
 
 			// Verify notification no longer exists
-			const afterRes = await getNotificationByIdRequest(notificationId, userCookie);
+			const afterRes = await getNotificationByIdRequest(
+				notificationId,
+				userCookie,
+			);
 			expect(afterRes.status).toBe(404);
 		});
 
 		it("notification is completely removed from database", async () => {
 			// Create multiple notifications
-			await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
-			const createRes2 = await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
+			await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
+			const createRes2 = await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
 
 			// Verify user has 3 notifications total
 			const beforeRes = await getNotificationsRequest(userCookie);
@@ -117,18 +147,25 @@ describe("DELETE /api/notifications/:id", () => {
 			expect(afterRes.body.data.totalCount).toBe(2);
 
 			// Verify the correct notification was deleted
-			const remainingIds = afterRes.body.data.notifications.map((n: any) => n._id);
+			const remainingIds = afterRes.body.data.notifications.map(
+				(n: any) => n._id,
+			);
 			expect(remainingIds).not.toContain(notificationId);
 			expect(remainingIds).toContain(createRes2.body.data.notification._id);
 		});
 
 		it("deleting read notification works correctly", async () => {
 			// Mark notification as read first
-			const { markAsReadRequest } = await import("@/__tests__/helpers/notifications.helper");
+			const { markAsReadRequest } = await import(
+				"@/__tests__/helpers/notifications.helper"
+			);
 			await markAsReadRequest(notificationId, userCookie);
 
 			// Verify notification is read
-			const readRes = await getNotificationByIdRequest(notificationId, userCookie);
+			const readRes = await getNotificationByIdRequest(
+				notificationId,
+				userCookie,
+			);
 			expect(readRes.body.data.notification.isRead).toBe(true);
 
 			// Delete the read notification
@@ -137,33 +174,53 @@ describe("DELETE /api/notifications/:id", () => {
 			expect(res.status).toBe(204);
 
 			// Verify it's deleted
-			const afterRes = await getNotificationByIdRequest(notificationId, userCookie);
+			const afterRes = await getNotificationByIdRequest(
+				notificationId,
+				userCookie,
+			);
 			expect(afterRes.status).toBe(404);
 		});
 
 		it("admin can delete their own notification", async () => {
 			// Create notification for admin
 			const adminNotificationData = getValidNotificationData(admin._id);
-			const adminCreateRes = await createNotificationRequest(adminNotificationData, adminCookie);
+			const adminCreateRes = await createNotificationRequest(
+				adminNotificationData,
+				adminCookie,
+			);
 			const adminNotificationId = adminCreateRes.body.data.notification._id;
 
-			const res = await deleteNotificationRequest(adminNotificationId, adminCookie);
+			const res = await deleteNotificationRequest(
+				adminNotificationId,
+				adminCookie,
+			);
 
 			expect(res.status).toBe(204);
 			expect(res.body.status).toBe("success");
 
 			// Verify notification is deleted
-			const afterRes = await getNotificationByIdRequest(adminNotificationId, adminCookie);
+			const afterRes = await getNotificationByIdRequest(
+				adminNotificationId,
+				adminCookie,
+			);
 			expect(afterRes.status).toBe(404);
 		});
 
 		it("deleting notification updates unread count correctly", async () => {
 			// Create additional unread notifications
-			await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
-			await createNotificationRequest(getValidNotificationData(user._id), adminCookie);
+			await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
+			await createNotificationRequest(
+				getValidNotificationData(user._id),
+				adminCookie,
+			);
 
 			// Verify initial unread count
-			const { getUnreadCountRequest } = await import("@/__tests__/helpers/notifications.helper");
+			const { getUnreadCountRequest } = await import(
+				"@/__tests__/helpers/notifications.helper"
+			);
 			const beforeRes = await getUnreadCountRequest(userCookie);
 			expect(beforeRes.body.data.unreadCount).toBe(3);
 
@@ -185,15 +242,24 @@ describe("DELETE /api/notifications/:id", () => {
 				data: { orderId: "12345", customField: "test" },
 			};
 
-			const customCreateRes = await createNotificationRequest(customData, adminCookie);
+			const customCreateRes = await createNotificationRequest(
+				customData,
+				adminCookie,
+			);
 			const customNotificationId = customCreateRes.body.data.notification._id;
 
-			const res = await deleteNotificationRequest(customNotificationId, userCookie);
+			const res = await deleteNotificationRequest(
+				customNotificationId,
+				userCookie,
+			);
 
 			expect(res.status).toBe(204);
 
 			// Verify it's deleted
-			const afterRes = await getNotificationByIdRequest(customNotificationId, userCookie);
+			const afterRes = await getNotificationByIdRequest(
+				customNotificationId,
+				userCookie,
+			);
 			expect(afterRes.status).toBe(404);
 		});
 	});

@@ -13,10 +13,7 @@ class ProductRepository {
 		total: number;
 		products: IProductDoc[];
 	}> {
-		const features = new APIFeatures(
-			this.productModel as any,
-			query
-		);
+		const features = new APIFeatures(this.productModel as any, query);
 		const { pagination, skip, total } = await features
 			.filter()
 			.search()
@@ -29,23 +26,15 @@ class ProductRepository {
 		return { pagination, skip, total, products };
 	}
 
-	getOne(
-		id: string,
-		populate?: PopulateOptions
-	): Promise<IProductDoc | null> {
-		return this.productModel
-			.findById(id)
-			.populate(populate as PopulateOptions);
+	getOne(id: string, populate?: PopulateOptions): Promise<IProductDoc | null> {
+		return this.productModel.findById(id).populate(populate as PopulateOptions);
 	}
 
 	createOne(data: CreateProductDto): Promise<IProductDoc> {
 		return this.productModel.create(data);
 	}
 
-	updateOne(
-		id: string,
-		data: UpdateProductDto
-	): Promise<IProductDoc | null> {
+	updateOne(id: string, data: UpdateProductDto): Promise<IProductDoc | null> {
 		return this.productModel.findByIdAndUpdate(id, data, {
 			new: true,
 		});

@@ -80,9 +80,9 @@ describe("GET /api/orders/get-myorders", () => {
         }));
         it("orders are sorted by creation date (newest first)", () => __awaiter(void 0, void 0, void 0, function* () {
             yield (0, orders_helper_1.createMultipleTestOrders)(user._id.toString(), 1);
-            yield new Promise(resolve => setTimeout(resolve, 10));
+            yield new Promise((resolve) => setTimeout(resolve, 10));
             yield (0, orders_helper_1.createMultipleTestOrders)(user._id.toString(), 1);
-            yield new Promise(resolve => setTimeout(resolve, 10));
+            yield new Promise((resolve) => setTimeout(resolve, 10));
             yield (0, orders_helper_1.createMultipleTestOrders)(user._id.toString(), 1);
             const res = yield (0, orders_helper_1.getCurrentUserOrdersRequest)(cookie);
             expect(res.status).toBe(200);

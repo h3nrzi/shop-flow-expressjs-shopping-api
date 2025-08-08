@@ -60,6 +60,10 @@ const userSchema = new mongoose_1.Schema({
         transform(doc, ret) {
             delete ret._id;
             delete ret.__v;
+            delete ret.passwordResetExpires;
+            delete ret.passwordResetToken;
+            delete ret.refreshToken;
+            delete ret.refreshTokenExpires;
             return ret;
         },
     },

@@ -186,7 +186,7 @@ describe("GET /api/products/:productId/reviews/:id", () => {
                 .fill(null)
                 .map(() => (0, reviews_helper_1.getReviewByIdRequest)(product._id.toString(), review._id.toString(), cookie));
             const responses = yield Promise.all(promises);
-            responses.forEach(res => {
+            responses.forEach((res) => {
                 expect(res.status).toBe(200);
                 expect(res.body.data.review._id).toBe(review._id.toString());
             });

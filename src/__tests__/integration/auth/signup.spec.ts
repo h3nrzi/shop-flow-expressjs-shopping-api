@@ -1,7 +1,4 @@
-import {
-	signupRequest,
-	getUniqueUser,
-} from "@/__tests__/helpers/auth.helper";
+import { signupRequest, getUniqueUser } from "@/__tests__/helpers/auth.helper";
 
 const validationCases = [
 	{
@@ -62,9 +59,7 @@ describe("POST /api/users/signup", () => {
 			await signupRequest(user);
 			const res = await signupRequest(user);
 			expect(res.status).toBe(400);
-			expect(res.body.errors[0].message).toBe(
-				"این ایمیل قبلا استفاده شده است"
-			);
+			expect(res.body.errors[0].message).toBe("این ایمیل قبلا استفاده شده است");
 		});
 	});
 

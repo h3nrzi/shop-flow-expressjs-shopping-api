@@ -11,9 +11,7 @@ describe("GET /api/orders/get-myorders", () => {
 	let user: any;
 
 	beforeEach(async () => {
-		const testUser = await createTestUserAndGetCookie(
-			"orderuser"
-		);
+		const testUser = await createTestUserAndGetCookie("orderuser");
 		cookie = testUser.cookie;
 		user = testUser.user;
 	});
@@ -24,19 +22,17 @@ describe("GET /api/orders/get-myorders", () => {
 
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].message).toBe(
-				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
+				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید",
 			);
 		});
 
 		it("user is not authenticated (invalid token)", async () => {
 			const invalidCookie = `jwt=${getInvalidToken()}`;
-			const res = await getCurrentUserOrdersRequest(
-				invalidCookie
-			);
+			const res = await getCurrentUserOrdersRequest(invalidCookie);
 
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].message).toBe(
-				"کاربر متعلق به این توکن دیگر وجود ندارد!"
+				"کاربر متعلق به این توکن دیگر وجود ندارد!",
 			);
 		});
 	});
@@ -74,13 +70,8 @@ describe("GET /api/orders/get-myorders", () => {
 			await createMultipleTestOrders(user._id.toString(), 2);
 
 			// Create another user and their orders
-			const otherUser = await createTestUserAndGetCookie(
-				"otheruser"
-			);
-			await createMultipleTestOrders(
-				otherUser.user._id.toString(),
-				3
-			);
+			const otherUser = await createTestUserAndGetCookie("otheruser");
+			await createMultipleTestOrders(otherUser.user._id.toString(), 3);
 
 			const res = await getCurrentUserOrdersRequest(cookie);
 
@@ -117,9 +108,9 @@ describe("GET /api/orders/get-myorders", () => {
 		it("orders are sorted by creation date (newest first)", async () => {
 			// Create orders with slight delay to ensure different timestamps
 			await createMultipleTestOrders(user._id.toString(), 1);
-			await new Promise(resolve => setTimeout(resolve, 10));
+			await new Promise((resolve) => setTimeout(resolve, 10));
 			await createMultipleTestOrders(user._id.toString(), 1);
-			await new Promise(resolve => setTimeout(resolve, 10));
+			await new Promise((resolve) => setTimeout(resolve, 10));
 			await createMultipleTestOrders(user._id.toString(), 1);
 
 			const res = await getCurrentUserOrdersRequest(cookie);
@@ -132,9 +123,9 @@ describe("GET /api/orders/get-myorders", () => {
 			for (let i = 0; i < orders.length - 1; i++) {
 				const currentOrderDate = new Date(orders[i].createdAt);
 				const nextOrderDate = new Date(orders[i + 1].createdAt);
-				expect(
-					currentOrderDate.getTime()
-				).toBeGreaterThanOrEqual(nextOrderDate.getTime());
+				expect(currentOrderDate.getTime()).toBeGreaterThanOrEqual(
+					nextOrderDate.getTime(),
+				);
 			}
 		});
 	});

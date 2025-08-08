@@ -16,9 +16,7 @@ exports.deleteMeRequest = exports.updateMePasswordRequest = exports.updateMeRequ
 const supertest_1 = __importDefault(require("supertest"));
 const app_1 = __importDefault(require("@/app"));
 const getMeRequest = (cookie) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield (0, supertest_1.default)(app_1.default)
-        .get("/api/users/get-me")
-        .set("Cookie", cookie);
+    return yield (0, supertest_1.default)(app_1.default).get("/api/users/get-me").set("Cookie", cookie);
 });
 exports.getMeRequest = getMeRequest;
 const updateMeRequest = (cookie, body) => __awaiter(void 0, void 0, void 0, function* () {

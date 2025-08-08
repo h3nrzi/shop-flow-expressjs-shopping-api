@@ -47,9 +47,7 @@ export class UserRepository {
 		return this.userModel.findById(userId);
 	}
 
-	async create(
-		createUserDto: ICreateUserDto
-	): Promise<IUserDoc> {
+	async create(createUserDto: ICreateUserDto): Promise<IUserDoc> {
 		return this.userModel.create(createUserDto);
 	}
 }
@@ -123,7 +121,7 @@ userSchema.methods.signToken = function (): string {
 };
 
 userSchema.methods.correctPassword = async function (
-	candidatePassword: string
+	candidatePassword: string,
 ) {
 	return await bcrypt.compare(candidatePassword, this.password);
 };

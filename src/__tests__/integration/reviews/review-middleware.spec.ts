@@ -15,9 +15,7 @@ describe("Review Middleware Integration Tests", () => {
 
 	beforeEach(async () => {
 		product = await createTestProduct();
-		const testUser = await createTestUserAndGetCookie(
-			"reviewer"
-		);
+		const testUser = await createTestUserAndGetCookie("reviewer");
 		user = testUser.user;
 		cookie = testUser.cookie;
 	});
@@ -25,35 +23,30 @@ describe("Review Middleware Integration Tests", () => {
 	describe("beforeGetAll Middleware", () => {
 		it("sets initialFilter with productId from URL params", async () => {
 			// Create reviews for this product
-			await createTestReview(
-				product._id.toString(),
-				user._id.toString(),
-				{ rating: 4, comment: "Product review" }
-			);
+			await createTestReview(product._id.toString(), user._id.toString(), {
+				rating: 4,
+				comment: "Product review",
+			});
 
 			// Create another product and review to ensure filtering works
 			const anotherProduct = await createTestProduct();
 			await createTestReview(
 				anotherProduct._id.toString(),
 				user._id.toString(),
-				{ rating: 3, comment: "Another product review" }
+				{ rating: 3, comment: "Another product review" },
 			);
 
 			// Get reviews for specific product
 			const res = await getAllReviewsRequest(
 				product._id.toString(),
 				{},
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(200);
 			expect(res.body.results).toBe(1);
-			expect(res.body.data.reviews[0].product._id).toBe(
-				product._id.toString()
-			);
-			expect(res.body.data.reviews[0].comment).toBe(
-				"Product review"
-			);
+			expect(res.body.data.reviews[0].product._id).toBe(product._id.toString());
+			expect(res.body.data.reviews[0].comment).toBe("Product review");
 		});
 
 		it("correctly filters reviews by product when multiple products exist", async () => {
@@ -69,15 +62,16 @@ describe("Review Middleware Integration Tests", () => {
 			// Create different numbers of reviews for each product
 			for (let i = 0; i < products.length; i++) {
 				for (let j = 0; j < expectedReviewCounts[i]; j++) {
-					const { user: reviewUser } =
-						await createTestUserAndGetCookie(`user${i}_${j}`);
+					const { user: reviewUser } = await createTestUserAndGetCookie(
+						`user${i}_${j}`,
+					);
 					await createTestReview(
 						products[i]._id.toString(),
 						reviewUser._id.toString(),
 						{
 							rating: j + 3,
 							comment: `Review ${j + 1} for product ${i + 1}`,
-						}
+						},
 					);
 				}
 			}
@@ -87,7 +81,7 @@ describe("Review Middleware Integration Tests", () => {
 				const res = await getAllReviewsRequest(
 					products[i]._id.toString(),
 					{},
-					cookie
+					cookie,
 				);
 
 				expect(res.status).toBe(200);
@@ -95,9 +89,7 @@ describe("Review Middleware Integration Tests", () => {
 
 				// Verify all returned reviews belong to the correct product
 				res.body.data.reviews.forEach((review: any) => {
-					expect(review.product._id).toBe(
-						products[i]._id.toString()
-					);
+					expect(review.product._id).toBe(products[i]._id.toString());
 				});
 			}
 		});
@@ -114,13 +106,11 @@ describe("Review Middleware Integration Tests", () => {
 			const res = await createReviewRequest(
 				product._id.toString(),
 				reviewData,
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(201);
-			expect(res.body.data.review.user._id).toBe(
-				user._id.toString()
-			);
+			expect(res.body.data.review.user._id).toBe(user._id.toString());
 		});
 
 		it("sets product from URL params (req.params.productId)", async () => {
@@ -133,13 +123,11 @@ describe("Review Middleware Integration Tests", () => {
 			const res = await createReviewRequest(
 				product._id.toString(),
 				reviewData,
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(201);
-			expect(res.body.data.review.product._id).toBe(
-				product._id.toString()
-			);
+			expect(res.body.data.review.product._id).toBe(product._id.toString());
 		});
 
 		it("overrides user field if provided in body with authenticated user", async () => {
@@ -152,17 +140,13 @@ describe("Review Middleware Integration Tests", () => {
 			const res = await createReviewRequest(
 				product._id.toString(),
 				reviewData,
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(201);
 			// Should use authenticated user, not the one provided in body
-			expect(res.body.data.review.user._id).toBe(
-				user._id.toString()
-			);
-			expect(res.body.data.review.user._id).not.toBe(
-				reviewData.user
-			);
+			expect(res.body.data.review.user._id).toBe(user._id.toString());
+			expect(res.body.data.review.user._id).not.toBe(reviewData.user);
 		});
 
 		it("overrides product field if provided in body with URL param", async () => {
@@ -175,17 +159,13 @@ describe("Review Middleware Integration Tests", () => {
 			const res = await createReviewRequest(
 				product._id.toString(),
 				reviewData,
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(201);
 			// Should use product from URL, not the one provided in body
-			expect(res.body.data.review.product._id).toBe(
-				product._id.toString()
-			);
-			expect(res.body.data.review.product._id).not.toBe(
-				reviewData.product
-			);
+			expect(res.body.data.review.product._id).toBe(product._id.toString());
+			expect(res.body.data.review.product._id).not.toBe(reviewData.product);
 		});
 
 		it("preserves rating and comment from request body", async () => {
@@ -197,16 +177,12 @@ describe("Review Middleware Integration Tests", () => {
 			const res = await createReviewRequest(
 				product._id.toString(),
 				reviewData,
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(201);
-			expect(res.body.data.review.rating).toBe(
-				reviewData.rating
-			);
-			expect(res.body.data.review.comment).toBe(
-				reviewData.comment
-			);
+			expect(res.body.data.review.rating).toBe(reviewData.rating);
+			expect(res.body.data.review.comment).toBe(reviewData.comment);
 		});
 
 		it("creates clean request body with only necessary fields", async () => {
@@ -222,7 +198,7 @@ describe("Review Middleware Integration Tests", () => {
 			const res = await createReviewRequest(
 				product._id.toString(),
 				reviewData,
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(201);
@@ -246,7 +222,7 @@ describe("Review Middleware Integration Tests", () => {
 			review = await createTestReview(
 				product._id.toString(),
 				user._id.toString(),
-				{ rating: 3, comment: "Original comment" }
+				{ rating: 3, comment: "Original comment" },
 			);
 		});
 
@@ -264,7 +240,7 @@ describe("Review Middleware Integration Tests", () => {
 				product._id.toString(),
 				review._id.toString(),
 				updateData,
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(200);
@@ -275,9 +251,7 @@ describe("Review Middleware Integration Tests", () => {
 
 			// Original user and product should be preserved
 			expect(updatedReview.user._id).toBe(user._id.toString());
-			expect(updatedReview.product._id).toBe(
-				product._id.toString()
-			);
+			expect(updatedReview.product._id).toBe(product._id.toString());
 			expect(updatedReview._id).toBe(review._id.toString());
 
 			// Extra fields should not affect the review
@@ -294,7 +268,7 @@ describe("Review Middleware Integration Tests", () => {
 				product._id.toString(),
 				review._id.toString(),
 				updateData,
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(200);
@@ -314,7 +288,7 @@ describe("Review Middleware Integration Tests", () => {
 				product._id.toString(),
 				review._id.toString(),
 				updateData,
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(200);
@@ -334,7 +308,7 @@ describe("Review Middleware Integration Tests", () => {
 				product._id.toString(),
 				review._id.toString(),
 				updateData,
-				cookie
+				cookie,
 			);
 
 			expect(res.status).toBe(200);
@@ -360,17 +334,13 @@ describe("Review Middleware Integration Tests", () => {
 			const res = await createReviewRequest(
 				product._id.toString(),
 				reviewData,
-				anotherCookie
+				anotherCookie,
 			);
 
 			expect(res.status).toBe(201);
 			// Should use the authenticated user (anotherUser), not the original user
-			expect(res.body.data.review.user._id).toBe(
-				anotherUser._id.toString()
-			);
-			expect(res.body.data.review.user._id).not.toBe(
-				user._id.toString()
-			);
+			expect(res.body.data.review.user._id).toBe(anotherUser._id.toString());
+			expect(res.body.data.review.user._id).not.toBe(user._id.toString());
 		});
 
 		it("middleware respects authentication context for different users", async () => {
@@ -390,31 +360,29 @@ describe("Review Middleware Integration Tests", () => {
 				const res = await createReviewRequest(
 					product._id.toString(),
 					{ rating: i + 3, comment: `Review by user ${i}` },
-					cookies[i]
+					cookies[i],
 				);
 
 				expect(res.status).toBe(201);
-				expect(res.body.data.review.user._id).toBe(
-					users[i]._id.toString()
-				);
+				expect(res.body.data.review.user._id).toBe(users[i]._id.toString());
 			}
 
 			// Verify all reviews exist and belong to correct users
 			const allReviewsRes = await getAllReviewsRequest(
 				product._id.toString(),
 				{},
-				cookie
+				cookie,
 			);
 			expect(allReviewsRes.status).toBe(200);
 			expect(allReviewsRes.body.results).toBe(3);
 
 			// Check that each review belongs to the correct user
 			const reviewUserIds = allReviewsRes.body.data.reviews.map(
-				(r: any) => r.user._id
+				(r: any) => r.user._id,
 			);
-			const expectedUserIds = users.map(u => u._id.toString());
+			const expectedUserIds = users.map((u) => u._id.toString());
 
-			expectedUserIds.forEach(userId => {
+			expectedUserIds.forEach((userId) => {
 				expect(reviewUserIds).toContain(userId);
 			});
 		});

@@ -60,7 +60,7 @@ const userSchema = new Schema<IUserDoc>(
 		},
 		toObject: { virtuals: true },
 		timestamps: true,
-	}
+	},
 );
 
 //////////// Instance Methods ////////////
@@ -77,18 +77,30 @@ userSchema.methods.signRefreshToken = function (): string {
 	});
 };
 
-userSchema.methods.correctPassword = async function (this: IUserDoc, candidate_password: string) {
+userSchema.methods.correctPassword = async function (
+	this: IUserDoc,
+	candidate_password: string,
+) {
 	return await bcrypt.compare(candidate_password, this.password);
 };
 
-userSchema.methods.changePasswordAfter = function (this: IUserDoc, jwtTimeStamp: number) {
-	return this.passwordChangedAt ? this.passwordChangedAt.getTime() / 1000 >= jwtTimeStamp : false;
+userSchema.methods.changePasswordAfter = function (
+	this: IUserDoc,
+	jwtTimeStamp: number,
+) {
+	return this.passwordChangedAt
+		? this.passwordChangedAt.getTime() / 1000 >= jwtTimeStamp
+		: false;
 };
 
 userSchema.methods.createPasswordResetToken = function (this: IUserDoc) {
 	const resetToken = crypto.randomBytes(32).toString("hex");
-	this.passwordResetToken = crypto.createHash("sha256").update(resetToken).digest("hex");
-	this.passwordResetExpires = Date.now() + ms(process.env.PASSWORD_RESET_EXPIRES_IN!);
+	this.passwordResetToken = crypto
+		.createHash("sha256")
+		.update(resetToken)
+		.digest("hex");
+	this.passwordResetExpires =
+		Date.now() + ms(process.env.PASSWORD_RESET_EXPIRES_IN!);
 	return resetToken;
 };
 

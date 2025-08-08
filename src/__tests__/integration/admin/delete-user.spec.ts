@@ -27,9 +27,7 @@ beforeEach(async () => {
 	const admin = getUniqueUser("admin");
 	const adminRes = await signupRequest(admin);
 	adminCookie = adminRes.headers["set-cookie"][0];
-	const adminUser = await userRepository.findByEmail(
-		admin.email
-	);
+	const adminUser = await userRepository.findByEmail(admin.email);
 	adminUser!.role = "admin";
 	await adminUser!.save({ validateBeforeSave: false });
 	adminId = adminUser!._id.toString();
@@ -43,9 +41,7 @@ beforeEach(async () => {
 	};
 	const mainAdminRes = await signupRequest(mainAdmin);
 	mainAdminCookie = mainAdminRes.headers["set-cookie"][0];
-	const mainAdminUser = await userRepository.findByEmail(
-		mainAdmin.email
-	);
+	const mainAdminUser = await userRepository.findByEmail(mainAdmin.email);
 	mainAdminUser!.role = "admin";
 	await mainAdminUser!.save({ validateBeforeSave: false });
 	mainAdminId = mainAdminUser!._id.toString();
@@ -57,15 +53,12 @@ describe("DELETE /api/users/:id", () => {
 			const res = await deleteUserRequest("", userId);
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].message).toBe(
-				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
+				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید",
 			);
 		});
 
 		it("If token is invalid", async () => {
-			const res = await deleteUserRequest(
-				"jwt=invalid-token",
-				userId
-			);
+			const res = await deleteUserRequest("jwt=invalid-token", userId);
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe("توکن معتبر نیست");
@@ -73,14 +66,11 @@ describe("DELETE /api/users/:id", () => {
 
 		it("If user for token does not exist", async () => {
 			const fakeToken = getInvalidToken();
-			const res = await deleteUserRequest(
-				`jwt=${fakeToken}`,
-				userId
-			);
+			const res = await deleteUserRequest(`jwt=${fakeToken}`, userId);
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
-				"کاربر متعلق به این توکن دیگر وجود ندارد!"
+				"کاربر متعلق به این توکن دیگر وجود ندارد!",
 			);
 		});
 
@@ -88,9 +78,7 @@ describe("DELETE /api/users/:id", () => {
 			const user = getUniqueUser("inactive");
 			const signupRes = await signupRequest(user);
 			const cookie = signupRes.headers["set-cookie"][0];
-			const repoUser = await userRepository.findByEmail(
-				user.email
-			);
+			const repoUser = await userRepository.findByEmail(user.email);
 			repoUser!.active = false;
 			await repoUser!.save({ validateBeforeSave: false });
 
@@ -99,7 +87,7 @@ describe("DELETE /api/users/:id", () => {
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
-				"کاربری که به این ایمیل مرتبط است غیرفعال شده!"
+				"کاربری که به این ایمیل مرتبط است غیرفعال شده!",
 			);
 		});
 
@@ -126,7 +114,7 @@ describe("DELETE /api/users/:id", () => {
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
-				"شما اجازه انجام این عمل را ندارید!"
+				"شما اجازه انجام این عمل را ندارید!",
 			);
 		});
 
@@ -135,47 +123,35 @@ describe("DELETE /api/users/:id", () => {
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
-				"شما نمی توانید حساب ادمین را حذف کنید فقط مدیر سیستم می تواند این کار را انجام دهد"
+				"شما نمی توانید حساب ادمین را حذف کنید فقط مدیر سیستم می تواند این کار را انجام دهد",
 			);
 		});
 
 		it("If an admin tries to delete the main admin", async () => {
-			const res = await deleteUserRequest(
-				adminCookie,
-				mainAdminId
-			);
+			const res = await deleteUserRequest(adminCookie, mainAdminId);
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
-				"شما نمی توانید حساب ادمین را حذف کنید فقط مدیر سیستم می تواند این کار را انجام دهد"
+				"شما نمی توانید حساب ادمین را حذف کنید فقط مدیر سیستم می تواند این کار را انجام دهد",
 			);
 		});
 	});
 
 	describe("should return 400", () => {
 		it("If userId is invalid", async () => {
-			const res = await deleteUserRequest(
-				adminCookie,
-				"invalid-id"
-			);
+			const res = await deleteUserRequest(adminCookie, "invalid-id");
 			expect(res.status).toBe(400);
-			expect(res.body.errors[0].message).toBe(
-				"شناسه کاربر معتبر نیست"
-			);
+			expect(res.body.errors[0].message).toBe("شناسه کاربر معتبر نیست");
 		});
 	});
 
 	describe("should return 404", () => {
 		it("If user does not exist", async () => {
-			const nonExistentId =
-				new mongoose.Types.ObjectId().toString();
-			const res = await deleteUserRequest(
-				adminCookie,
-				nonExistentId
-			);
+			const nonExistentId = new mongoose.Types.ObjectId().toString();
+			const res = await deleteUserRequest(adminCookie, nonExistentId);
 			expect(res.status).toBe(404);
 			expect(res.body.errors[0].message).toBe(
-				"هیچ موردی با این شناسه یافت نشد"
+				"هیچ موردی با این شناسه یافت نشد",
 			);
 		});
 	});
@@ -184,33 +160,23 @@ describe("DELETE /api/users/:id", () => {
 		it("If user is admin and wants to delete a normal user", async () => {
 			const res = await deleteUserRequest(adminCookie, userId);
 			expect(res.status).toBe(204);
-			const deletedUser = await userRepository.findByEmail(
-				user.email
-			);
+			const deletedUser = await userRepository.findByEmail(user.email);
 			expect(deletedUser).toBeNull();
 		});
 
 		it("If user is main admin and wants to delete an normal admin", async () => {
-			const res = await deleteUserRequest(
-				mainAdminCookie,
-				adminId
-			);
+			const res = await deleteUserRequest(mainAdminCookie, adminId);
 			expect(res.status).toBe(204);
-			const deletedAdmin = await userRepository.findByEmail(
-				`testadmin@test.com`
-			);
+			const deletedAdmin =
+				await userRepository.findByEmail(`testadmin@test.com`);
 			expect(deletedAdmin).toBeNull();
 		});
 
 		it("If user is main admin and wants to delete the main admin", async () => {
-			const res = await deleteUserRequest(
-				mainAdminCookie,
-				mainAdminId
-			);
+			const res = await deleteUserRequest(mainAdminCookie, mainAdminId);
 			expect(res.status).toBe(204);
-			const deletedMainAdmin = await userRepository.findByEmail(
-				"admin@gmail.com"
-			);
+			const deletedMainAdmin =
+				await userRepository.findByEmail("admin@gmail.com");
 			expect(deletedMainAdmin).toBeNull();
 		});
 	});

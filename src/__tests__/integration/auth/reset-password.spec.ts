@@ -21,8 +21,7 @@ const validationCases = [
 		error: "تایید رمز عبور کاربر الزامی است",
 	},
 	{
-		testCaseName:
-			"Password and password confirmation are not the same",
+		testCaseName: "Password and password confirmation are not the same",
 		body: {
 			password: "test123456",
 			passwordConfirmation: "1234567",
@@ -43,21 +42,17 @@ const validationCases = [
 
 describe("PATCH /api/users/reset-password", () => {
 	beforeEach(() => {
-		(
-			sendEmail as jest.MockedFunction<typeof sendEmail>
-		).mockClear();
+		(sendEmail as jest.MockedFunction<typeof sendEmail>).mockClear();
 	});
 
 	describe("should return 400, if", () => {
-		validationCases.forEach(
-			({ testCaseName, body, query, error }) => {
-				it(testCaseName, async () => {
-					const res = await resetPasswordRequest(body, query);
-					expect(res.status).toBe(400);
-					expect(res.body.errors[0].message).toBe(error);
-				});
-			}
-		);
+		validationCases.forEach(({ testCaseName, body, query, error }) => {
+			it(testCaseName, async () => {
+				const res = await resetPasswordRequest(body, query);
+				expect(res.status).toBe(400);
+				expect(res.body.errors[0].message).toBe(error);
+			});
+		});
 	});
 
 	describe("should return 401, if", () => {
@@ -70,23 +65,19 @@ describe("PATCH /api/users/reset-password", () => {
 					password: "test123456",
 					passwordConfirmation: "test123456",
 				},
-				{ resetToken: "invalid-token" }
+				{ resetToken: "invalid-token" },
 			);
 
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].message).toBe(
-				"توکن نامعتبر است یا منقضی شده است!"
+				"توکن نامعتبر است یا منقضی شده است!",
 			);
 		});
 
 		it("Reset token is expired", async () => {
 			const user = getUniqueUser("test2");
-			const resetToken = await signupAndRequestForgotPassword(
-				user
-			);
-			const dbUser = await userRepository.findByEmail(
-				user.email
-			);
+			const resetToken = await signupAndRequestForgotPassword(user);
+			const dbUser = await userRepository.findByEmail(user.email);
 			dbUser!.passwordResetExpires = Date.now() - 1000;
 			await dbUser!.save({ validateBeforeSave: false });
 
@@ -95,20 +86,18 @@ describe("PATCH /api/users/reset-password", () => {
 					password: "test123456",
 					passwordConfirmation: "test123456",
 				},
-				{ resetToken }
+				{ resetToken },
 			);
 
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].message).toBe(
-				"توکن نامعتبر است یا منقضی شده است!"
+				"توکن نامعتبر است یا منقضی شده است!",
 			);
 		});
 
 		it("Login with the old password is unsuccessful", async () => {
 			const user = getUniqueUser("test4");
-			const resetToken = await signupAndRequestForgotPassword(
-				user
-			);
+			const resetToken = await signupAndRequestForgotPassword(user);
 
 			const newPassword = "newpassword123";
 			await resetPasswordRequest(
@@ -116,7 +105,7 @@ describe("PATCH /api/users/reset-password", () => {
 					password: newPassword,
 					passwordConfirmation: newPassword,
 				},
-				{ resetToken }
+				{ resetToken },
 			);
 
 			const oldLoginRes = await loginRequest({
@@ -126,7 +115,7 @@ describe("PATCH /api/users/reset-password", () => {
 
 			expect(oldLoginRes.status).toBe(401);
 			expect(oldLoginRes.body.errors[0].message).toBe(
-				"ایمیل یا رمز عبور اشتباه است!"
+				"ایمیل یا رمز عبور اشتباه است!",
 			);
 		});
 	});
@@ -134,9 +123,7 @@ describe("PATCH /api/users/reset-password", () => {
 	describe("should return 200, if", () => {
 		it("Reset password is successful", async () => {
 			const user = getUniqueUser("test3");
-			const resetToken = await signupAndRequestForgotPassword(
-				user
-			);
+			const resetToken = await signupAndRequestForgotPassword(user);
 
 			const newPassword = "newpassword123";
 			const resetPasswordRes = await resetPasswordRequest(
@@ -144,7 +131,7 @@ describe("PATCH /api/users/reset-password", () => {
 					password: newPassword,
 					passwordConfirmation: newPassword,
 				},
-				{ resetToken }
+				{ resetToken },
 			);
 
 			expect(resetPasswordRes.status).toBe(200);
@@ -152,9 +139,7 @@ describe("PATCH /api/users/reset-password", () => {
 
 		it("Login with the new password is successful", async () => {
 			const user = getUniqueUser("test2");
-			const resetToken = await signupAndRequestForgotPassword(
-				user
-			);
+			const resetToken = await signupAndRequestForgotPassword(user);
 
 			const newPassword = "newpassword123";
 			await resetPasswordRequest(
@@ -162,7 +147,7 @@ describe("PATCH /api/users/reset-password", () => {
 					password: newPassword,
 					passwordConfirmation: newPassword,
 				},
-				{ resetToken }
+				{ resetToken },
 			);
 
 			const loginRes = await loginRequest({

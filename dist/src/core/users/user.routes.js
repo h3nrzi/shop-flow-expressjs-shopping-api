@@ -195,10 +195,7 @@ router
     .get([__1.userController.findUserById.bind(__1.userController)])
     .delete([__1.userController.deleteUser.bind(__1.userController)])
     .patch([
-    (0, express_validator_1.body)("name")
-        .optional()
-        .isString()
-        .withMessage("فرمت نام کاربر معتبر نیست"),
+    (0, express_validator_1.body)("name").optional().isString().withMessage("فرمت نام کاربر معتبر نیست"),
     (0, express_validator_1.body)("email")
         .optional()
         .isEmail()

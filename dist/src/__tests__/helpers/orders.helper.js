@@ -68,9 +68,7 @@ const getAllOrdersRequest = (cookie) => {
 };
 exports.getAllOrdersRequest = getAllOrdersRequest;
 const updateOrderRequest = (orderId, body, cookie) => {
-    const req = (0, supertest_1.default)(app_1.default)
-        .patch(`/api/orders/${orderId}`)
-        .send(body);
+    const req = (0, supertest_1.default)(app_1.default).patch(`/api/orders/${orderId}`).send(body);
     if (cookie) {
         req.set("Cookie", cookie);
     }
@@ -395,9 +393,7 @@ const createTestUserAndGetCookie = (...args_1) => __awaiter(void 0, [...args_1],
             role: "admin",
         });
     }
-    const plainUser = userDoc.toObject
-        ? userDoc.toObject()
-        : userDoc;
+    const plainUser = userDoc.toObject ? userDoc.toObject() : userDoc;
     return { user: plainUser, cookie, userData: user };
 });
 exports.createTestUserAndGetCookie = createTestUserAndGetCookie;

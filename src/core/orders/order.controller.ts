@@ -5,14 +5,19 @@ import { CreateOrderDto } from "./dtos/create-order.dto";
 import { NotificationService } from "../notifications/application/notification.service";
 
 export class OrderController {
-	constructor(private readonly orderService: OrderService, private readonly notificationService: NotificationService) {}
+	constructor(
+		private readonly orderService: OrderService,
+		private readonly notificationService: NotificationService,
+	) {}
 
 	/*******************************************************
 	 ****************** GET HANDLERS ************************
 	 ******************************************************** */
 
 	async getAllOrders(req: Request, res: Response) {
-		const { pagination, orders } = await this.orderService.getAllOrders(req.query);
+		const { pagination, orders } = await this.orderService.getAllOrders(
+			req.query,
+		);
 
 		res.status(200).json({
 			status: "success",
@@ -23,7 +28,10 @@ export class OrderController {
 	}
 
 	async getCurrentUserOrders(req: Request, res: Response) {
-		const { pagination, orders } = await this.orderService.getCurrentUserOrders(req.user.id, req.query);
+		const { pagination, orders } = await this.orderService.getCurrentUserOrders(
+			req.user.id,
+			req.query,
+		);
 
 		res.status(200).json({
 			status: "success",
@@ -34,7 +42,11 @@ export class OrderController {
 	}
 
 	getOrderById = async (req: Request, res: Response): Promise<void> => {
-		const order = await this.orderService.getOrderById(req.params.id, req.user.id, req.user.role);
+		const order = await this.orderService.getOrderById(
+			req.params.id,
+			req.user.id,
+			req.user.role,
+		);
 		res.status(200).json({
 			status: "success",
 			data: { order },
@@ -79,7 +91,12 @@ export class OrderController {
 	 ******************************************************** */
 
 	updateOrder = async (req: Request, res: Response): Promise<void> => {
-		const order = await this.orderService.updateOrder(req.params.id, req.body as UpdateOrderDto, req.user.id, req.user.role);
+		const order = await this.orderService.updateOrder(
+			req.params.id,
+			req.body as UpdateOrderDto,
+			req.user.id,
+			req.user.role,
+		);
 		res.status(200).json({
 			status: "success",
 			data: { order },
@@ -90,7 +107,11 @@ export class OrderController {
 		const orderId = req.params.id;
 		const userId = req.user.id;
 
-		const order = await this.orderService.updateOrderToPaid(orderId, userId, req.user.role);
+		const order = await this.orderService.updateOrderToPaid(
+			orderId,
+			userId,
+			req.user.role,
+		);
 
 		this.notificationService.createNotification({
 			user: userId,
@@ -110,7 +131,11 @@ export class OrderController {
 		const orderId = req.params.id;
 		const userId = req.user.id;
 
-		const order = await this.orderService.updateOrderToDeliver(orderId, userId, req.user.role);
+		const order = await this.orderService.updateOrderToDeliver(
+			orderId,
+			userId,
+			req.user.role,
+		);
 
 		this.notificationService.createNotification({
 			user: userId,
@@ -131,7 +156,11 @@ export class OrderController {
 	 ******************************************************** */
 
 	deleteOrder = async (req: Request, res: Response): Promise<void> => {
-		await this.orderService.deleteOrder(req.params.id, req.user.id, req.user.role);
+		await this.orderService.deleteOrder(
+			req.params.id,
+			req.user.id,
+			req.user.role,
+		);
 		res.status(204);
 		res.json({
 			status: "success",

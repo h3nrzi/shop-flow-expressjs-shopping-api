@@ -21,9 +21,7 @@ const isLoggedIn: RequestHandler = async (req, res, next) => {
 			};
 
 			// Check if user still exists
-			const currentUser = await userRepository.findById(
-				decoded.id,
-			);
+			const currentUser = await userRepository.findById(decoded.id);
 			if (!currentUser) {
 				return res.redirect("/admin/login");
 			}

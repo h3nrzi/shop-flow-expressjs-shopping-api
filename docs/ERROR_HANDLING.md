@@ -172,10 +172,7 @@ export class UnprocessableEntityError extends CustomError {
 
 	constructor(public override message: string) {
 		super(message);
-		Object.setPrototypeOf(
-			this,
-			UnprocessableEntityError.prototype
-		);
+		Object.setPrototypeOf(this, UnprocessableEntityError.prototype);
 	}
 }
 ```
@@ -202,7 +199,7 @@ export class RequestValidationError extends CustomError {
 	}
 
 	serializeErrors = () => {
-		return this.errors.map(error => ({
+		return this.errors.map((error) => ({
 			field: error.type === "field" ? error.path : null,
 			message: error.msg,
 		}));
@@ -245,12 +242,7 @@ export class InternalServerError extends CustomError {
 The [`errorHandler`](../src/middlewares/error-handler.ts) middleware provides centralized error processing:
 
 ```typescript
-export const errorHandler: ErrorRequestHandler = (
-	err,
-	req,
-	res,
-	next
-) => {
+export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
 	// Handle Mongoose CastError
 	if (err.name === "CastError") {
 		return res.status(400).send({
@@ -345,20 +337,18 @@ async getProductById(id: string): Promise<IProductDoc> {
 const protect: RequestHandler = async (req, res, next) => {
 	if (!token) {
 		throw new NotAuthorizedError(
-			"شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
+			"شما وارد نشده اید! لطفا برای دسترسی وارد شوید",
 		);
 	}
 
 	const user = await userRepository.findById(decoded.id);
 	if (!user) {
-		throw new NotAuthorizedError(
-			"کاربر متعلق به این توکن دیگر وجود ندارد!"
-		);
+		throw new NotAuthorizedError("کاربر متعلق به این توکن دیگر وجود ندارد!");
 	}
 
 	if (!user.active) {
 		throw new NotAuthorizedError(
-			"کاربری که به این ایمیل مرتبط است غیرفعال شده!"
+			"کاربری که به این ایمیل مرتبط است غیرفعال شده!",
 		);
 	}
 };
@@ -371,9 +361,7 @@ const protect: RequestHandler = async (req, res, next) => {
 const restrictTo = (...roles: string[]): RequestHandler => {
 	return (req, res, next) => {
 		if (!roles.includes(req.user.role)) {
-			throw new ForbiddenError(
-				"شما اجازه انجام این عمل را ندارید!"
-			);
+			throw new ForbiddenError("شما اجازه انجام این عمل را ندارید!");
 		}
 		return next();
 	};
@@ -384,11 +372,7 @@ const restrictTo = (...roles: string[]): RequestHandler => {
 
 ```typescript
 // In validateRequest middleware
-export const validateRequest: RequestHandler = (
-	req,
-	res,
-	next
-) => {
+export const validateRequest: RequestHandler = (req, res, next) => {
 	const errors = validationResult(req);
 
 	if (!errors.isEmpty()) {
@@ -450,9 +434,7 @@ app.get("/users/:id", async (req, res) => {
 // Routes automatically handle thrown errors
 router.get("/products/:id", async (req, res) => {
 	// This will automatically be caught by error handler
-	const product = await productService.getProductById(
-		req.params.id
-	);
+	const product = await productService.getProductById(req.params.id);
 	res.json({ status: "success", data: product });
 });
 ```

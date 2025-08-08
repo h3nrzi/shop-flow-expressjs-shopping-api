@@ -9,14 +9,11 @@ export class RequestValidationError extends CustomError {
 		this.errors = errors;
 
 		// Only because we are extending a built-in class
-		Object.setPrototypeOf(
-			this,
-			RequestValidationError.prototype,
-		);
+		Object.setPrototypeOf(this, RequestValidationError.prototype);
 	}
 
 	serializeErrors = () => {
-		return this.errors.map(error => {
+		return this.errors.map((error) => {
 			return {
 				field: error.type === "field" ? error.path : null,
 				message: error.msg,

@@ -33,9 +33,7 @@ beforeEach(async () => {
 	const admin = getUniqueUser("admin");
 	const adminRes = await signupRequest(admin);
 	adminCookie = adminRes.headers["set-cookie"][0];
-	const adminUser = await userRepository.findByEmail(
-		admin.email
-	);
+	const adminUser = await userRepository.findByEmail(admin.email);
 	adminUser!.role = "admin";
 	await adminUser!.save({ validateBeforeSave: false });
 
@@ -48,9 +46,7 @@ beforeEach(async () => {
 	};
 	const mainAdminRes = await signupRequest(mainAdmin);
 	mainAdminCookie = mainAdminRes.headers["set-cookie"][0];
-	const mainAdminUser = await userRepository.findByEmail(
-		mainAdmin.email
-	);
+	const mainAdminUser = await userRepository.findByEmail(mainAdmin.email);
 	mainAdminUser!.role = "admin";
 	await mainAdminUser!.save({ validateBeforeSave: false });
 });
@@ -62,15 +58,12 @@ describe("GET /api/users/:id", () => {
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
-				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید"
+				"شما وارد نشده اید! لطفا برای دسترسی وارد شوید",
 			);
 		});
 
 		it("If token is invalid", async () => {
-			const res = await getUserRequest(
-				"jwt=invalid-token",
-				userId
-			);
+			const res = await getUserRequest("jwt=invalid-token", userId);
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe("توکن معتبر نیست");
@@ -78,14 +71,11 @@ describe("GET /api/users/:id", () => {
 
 		it("If user for token does not exist", async () => {
 			const fakeToken = getInvalidToken();
-			const res = await getUserRequest(
-				`jwt=${fakeToken}`,
-				userId
-			);
+			const res = await getUserRequest(`jwt=${fakeToken}`, userId);
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
-				"کاربر متعلق به این توکن دیگر وجود ندارد!"
+				"کاربر متعلق به این توکن دیگر وجود ندارد!",
 			);
 		});
 
@@ -93,16 +83,14 @@ describe("GET /api/users/:id", () => {
 			const user = getUniqueUser("inactive");
 			const signupRes = await signupRequest(user);
 			const cookie = signupRes.headers["set-cookie"][0];
-			const repoUser = await userRepository.findByEmail(
-				user.email
-			);
+			const repoUser = await userRepository.findByEmail(user.email);
 			repoUser!.active = false;
 			await repoUser!.save({ validateBeforeSave: false });
 			const res = await getUserRequest(cookie, userId);
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
-				"کاربری که به این ایمیل مرتبط است غیرفعال شده!"
+				"کاربری که به این ایمیل مرتبط است غیرفعال شده!",
 			);
 		});
 
@@ -128,39 +116,29 @@ describe("GET /api/users/:id", () => {
 			const res = await getUserRequest(userCookie, userId);
 			expect(res.status).toBe(401);
 			expect(res.body.errors[0].message).toBe(
-				"شما اجازه انجام این عمل را ندارید!"
+				"شما اجازه انجام این عمل را ندارید!",
 			);
 		});
 	});
 
 	describe("should return 400", () => {
-		validationCases.forEach(
-			({ description, params, expectedMessage }) => {
-				it(description, async () => {
-					const res = await getUserRequest(
-						adminCookie,
-						params.id
-					);
-					expect(res.status).toBe(400);
-					expect(res.body.errors[0].message).toBe(
-						expectedMessage
-					);
-				});
-			}
-		);
+		validationCases.forEach(({ description, params, expectedMessage }) => {
+			it(description, async () => {
+				const res = await getUserRequest(adminCookie, params.id);
+				expect(res.status).toBe(400);
+				expect(res.body.errors[0].message).toBe(expectedMessage);
+			});
+		});
 	});
 
 	describe("should return 404", () => {
 		it("If the user does not exist", async () => {
 			const nonExistentId = new mongoose.Types.ObjectId();
-			const res = await getUserRequest(
-				adminCookie,
-				nonExistentId.toString()
-			);
+			const res = await getUserRequest(adminCookie, nonExistentId.toString());
 			expect(res.status).toBe(404);
 			expect(res.body.errors[0].field).toBeNull();
 			expect(res.body.errors[0].message).toBe(
-				"هیچ موردی با این شناسه یافت نشد"
+				"هیچ موردی با این شناسه یافت نشد",
 			);
 		});
 	});
