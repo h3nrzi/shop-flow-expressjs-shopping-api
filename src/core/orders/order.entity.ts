@@ -1,4 +1,4 @@
-import mongoose, { Query } from "mongoose";
+import mongoose from "mongoose";
 import { IOrderItem, IShippingAddress, OrderDoc, OrderModel } from "./order.interface";
 
 const orderItemSchema = new mongoose.Schema<IOrderItem>(
@@ -71,11 +71,6 @@ const orderSchema = new mongoose.Schema<OrderDoc>(
 		},
 	}
 );
-
-orderItemSchema.pre(/^find/, async function (this: Query<any, OrderDoc>, next) {
-	this.populate("user");
-	next();
-});
 
 const Order = mongoose.model<OrderDoc, OrderModel>("Order", orderSchema);
 export { Order };

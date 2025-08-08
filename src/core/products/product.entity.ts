@@ -66,8 +66,18 @@ const productSchema = new Schema<IProductDoc>(
 		},
 	},
 	{
-		toJSON: { virtuals: true },
-		toObject: { virtuals: true },
+		toJSON: {
+			virtuals: true,
+			transform(doc, ret, options) {
+				doc.id = doc._id;
+				// @ts-expect-error
+				delete doc._id;
+				delete doc.__v;
+			},
+		},
+		toObject: {
+			virtuals: true,
+		},
 		timestamps: true,
 	}
 );
@@ -93,8 +103,5 @@ productSchema.pre("save", function (next) {
 	next();
 });
 
-const Product = model<IProductDoc, IProductModel>(
-	"Product",
-	productSchema
-);
+const Product = model<IProductDoc, IProductModel>("Product", productSchema);
 export { Product };
