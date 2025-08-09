@@ -56,7 +56,10 @@ export class OrderService {
 		role: "admin" | "user"
 	): Promise<OrderDoc | null> {
 		// check if order exists, if not throw error
-		const order = await this.orderRepository.findById(orderId, "user");
+		const order = await this.orderRepository.findById(
+			orderId,
+			"user orderItems.product"
+		);
 		if (!order) {
 			throw new NotFoundError("هیچ سفارشی با این شناسه یافت نشد");
 		}
