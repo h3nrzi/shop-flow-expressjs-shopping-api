@@ -13,7 +13,7 @@ export class OrderRepository {
 	async findAll(
 		query: any,
 		initialFilter?: any,
-		populate?: string,
+		populate?: string
 	): Promise<{
 		pagination: any;
 		skip: number;
@@ -24,7 +24,7 @@ export class OrderRepository {
 			this.orderModel as any,
 			query,
 			initialFilter,
-			populate,
+			populate
 		);
 		const { pagination, skip, total } = await features
 			.filter()
@@ -76,8 +76,8 @@ export class OrderRepository {
 		]);
 	}
 
-	async findById(orderId: string): Promise<OrderDoc | null> {
-		return this.orderModel.findById(orderId);
+	async findById(orderId: string, populate?: string): Promise<OrderDoc | null> {
+		return this.orderModel.findById(orderId).populate(populate || "");
 	}
 
 	/* ********************************************************
@@ -102,7 +102,7 @@ export class OrderRepository {
 
 	async updateById(
 		orderId: string,
-		payload: UpdateOrderDto,
+		payload: UpdateOrderDto
 	): Promise<OrderDoc | null> {
 		return this.orderModel.findByIdAndUpdate(orderId, payload, {
 			new: true,

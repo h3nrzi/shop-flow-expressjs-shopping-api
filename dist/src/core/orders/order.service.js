@@ -40,7 +40,7 @@ class OrderService {
     }
     getOrderById(orderId, userId, role) {
         return __awaiter(this, void 0, void 0, function* () {
-            const order = yield this.orderRepository.findById(orderId);
+            const order = yield this.orderRepository.findById(orderId, "user");
             if (!order) {
                 throw new not_found_error_1.NotFoundError("هیچ سفارشی با این شناسه یافت نشد");
             }

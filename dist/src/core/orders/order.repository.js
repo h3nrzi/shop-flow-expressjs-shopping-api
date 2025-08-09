@@ -70,9 +70,9 @@ class OrderRepository {
             ]);
         });
     }
-    findById(orderId) {
+    findById(orderId, populate) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.orderModel.findById(orderId);
+            return this.orderModel.findById(orderId).populate(populate || "");
         });
     }
     create(payload, userId) {
