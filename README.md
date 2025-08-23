@@ -1,4 +1,4 @@
-# Shop Flow - E-commerce API Documentation
+# Shop Flow - E-commerce API
 
 A comprehensive e-commerce API built with Node.js, Express, TypeScript, and MongoDB, featuring JWT authentication, role-based authorization, and a clean architecture pattern.
 
