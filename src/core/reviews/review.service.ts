@@ -9,15 +9,18 @@ import ProductRepository from "../products/product.repository";
 export class ReviewService {
 	constructor(
 		private readonly reviewRepository: ReviewRepository,
-		private readonly productRepository: ProductRepository,
+		private readonly productRepository: ProductRepository
 	) {}
 
-	async getAllReviews(query: any): Promise<{
+	async getAllReviews(
+		query: any,
+		initialFilter?: any
+	): Promise<{
 		pagination: any;
 		reviews: IReviewDoc[];
 	}> {
 		const { pagination, skip, total, reviews } =
-			await this.reviewRepository.getAll(query);
+			await this.reviewRepository.getAll(query, initialFilter);
 
 		if (query.page && skip >= total) {
 			throw new NotFoundError("این صفحه وجود ندارد");
@@ -39,7 +42,7 @@ export class ReviewService {
 
 	async createReview(createReviewDto: ICreateReviewDto): Promise<IReviewDoc> {
 		const product = await this.productRepository.getOne(
-			createReviewDto.product,
+			createReviewDto.product
 		);
 		if (!product) {
 			throw new NotFoundError("آیدی محصول ارائه برای درج نظر وجود ندارد.");
@@ -50,7 +53,7 @@ export class ReviewService {
 
 	async updateReview(
 		id: string,
-		updateReviewDto: IUpdateReviewDto,
+		updateReviewDto: IUpdateReviewDto
 	): Promise<IReviewDoc | null> {
 		// check if review exists, if not throw error
 		await this.getReviewById(id);
@@ -62,7 +65,7 @@ export class ReviewService {
 	async deleteReview(
 		id: string,
 		productId: string,
-		userId: string,
+		userId: string
 	): Promise<IReviewDoc | null> {
 		// Check if product exists
 		const product = await this.productRepository.getOne(productId);

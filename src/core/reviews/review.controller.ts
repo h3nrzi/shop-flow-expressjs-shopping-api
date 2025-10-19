@@ -7,6 +7,7 @@ export class ReviewController {
 	async getAllReviews(req: Request, res: Response): Promise<void> {
 		const { pagination, reviews } = await this.reviewService.getAllReviews(
 			req.query,
+			req.body.initialFilter
 		);
 
 		res.status(200).json({

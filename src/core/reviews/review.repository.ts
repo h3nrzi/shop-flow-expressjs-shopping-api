@@ -5,13 +5,20 @@ import { IReviewDoc, ReviewModel } from "./review.interface";
 
 export class ReviewRepository {
 	constructor(private readonly reviewModel: ReviewModel) {}
-	async getAll(query: any): Promise<{
+	async getAll(
+		query: any,
+		initialFilter?: any
+	): Promise<{
 		pagination: any;
 		skip: number;
 		total: number;
 		reviews: IReviewDoc[];
 	}> {
-		const features = new APIFeatures(this.reviewModel as any, query);
+		const features = new APIFeatures(
+			this.reviewModel as any,
+			query,
+			initialFilter
+		);
 		const { pagination, skip, total } = await features
 			.filter()
 			.search()
@@ -34,7 +41,7 @@ export class ReviewRepository {
 
 	update(
 		id: string,
-		updateReviewDto: IUpdateReviewDto,
+		updateReviewDto: IUpdateReviewDto
 	): Promise<IReviewDoc | null> {
 		return this.reviewModel.findByIdAndUpdate(id, updateReviewDto, {
 			new: true,
