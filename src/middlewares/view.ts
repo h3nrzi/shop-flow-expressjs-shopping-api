@@ -31,6 +31,11 @@ const isLoggedIn: RequestHandler = async (req, res, next) => {
 				return res.redirect("/admin/login");
 			}
 
+			// Check if user is admin
+			if (currentUser.role !== "admin") {
+				return res.redirect("/admin/login");
+			}
+
 			// THERE IS A Logged-in USER
 			res.locals.user = currentUser;
 			return next();
