@@ -18,9 +18,9 @@ class ReviewRepository {
     constructor(reviewModel) {
         this.reviewModel = reviewModel;
     }
-    getAll(query) {
+    getAll(query, initialFilter) {
         return __awaiter(this, void 0, void 0, function* () {
-            const features = new apiFeatures_1.default(this.reviewModel, query);
+            const features = new apiFeatures_1.default(this.reviewModel, query, initialFilter);
             const { pagination, skip, total } = yield features
                 .filter()
                 .search()

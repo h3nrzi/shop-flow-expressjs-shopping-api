@@ -31,6 +31,9 @@ const isLoggedIn = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
             if (currentUser.changePasswordAfter(decoded.iat)) {
                 return res.redirect("/admin/login");
             }
+            if (currentUser.role !== "admin") {
+                return res.redirect("/admin/login");
+            }
             res.locals.user = currentUser;
             return next();
         }

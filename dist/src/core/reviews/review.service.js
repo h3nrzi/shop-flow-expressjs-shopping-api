@@ -17,9 +17,9 @@ class ReviewService {
         this.reviewRepository = reviewRepository;
         this.productRepository = productRepository;
     }
-    getAllReviews(query) {
+    getAllReviews(query, initialFilter) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { pagination, skip, total, reviews } = yield this.reviewRepository.getAll(query);
+            const { pagination, skip, total, reviews } = yield this.reviewRepository.getAll(query, initialFilter);
             if (query.page && skip >= total) {
                 throw new not_found_error_1.NotFoundError("این صفحه وجود ندارد");
             }

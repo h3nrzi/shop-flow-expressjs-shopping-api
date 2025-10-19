@@ -16,7 +16,7 @@ class ReviewController {
     }
     getAllReviews(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { pagination, reviews } = yield this.reviewService.getAllReviews(req.query);
+            const { pagination, reviews } = yield this.reviewService.getAllReviews(req.query, req.body.initialFilter);
             res.status(200).json({
                 status: "success",
                 results: reviews.length,
